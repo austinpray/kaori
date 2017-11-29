@@ -7,10 +7,10 @@ import pygraphviz as pgv
 class AtGraphCommand(Command):
     def __init__(self, db_session) -> None:
         help_text = "{bot} mentions <layout=dot> - show the mention graph. Available formats are" \
-                    "dot, neato, fdp, sfdp, twopi, circo\n "
+                    "dot, neato, fdp, sfdp, twopi, circo, raw\n "
         self.db_session = db_session
 
-        pattern = "mentions(?: (dot|neato|fdp|sfdp|twopi|circo))?$"
+        pattern = "mentions(?: (dot|neato|fdp|sfdp|twopi|circo|raw))?$"
         super().__init__('mention-graph', pattern, help_text, True)
 
     def respond(self, slack_client, message, matches):
@@ -25,6 +25,13 @@ class AtGraphCommand(Command):
         G = pgv.AGraph(directed=True)
         for edge in edges:
             G.add_edge(edge.head_user.name, edge.tail_user.name, label=edge.weight, weight=edge.weight)
+
+        if layout == 'raw':
+            return slack_client.api_call('files.upload',
+                                         as_user=True,
+                                         channels=message['channel'],
+                                         filename='graph.dot',
+                                         file=G.string())
 
         image_path = '/tmp/graph.png'
 
