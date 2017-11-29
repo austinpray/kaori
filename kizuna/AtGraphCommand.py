@@ -14,6 +14,12 @@ class AtGraphCommand(Command):
         pattern = "mentions(?: (dot|neato|fdp|sfdp|twopi|circo|raw))?$"
         super().__init__('mention-graph', pattern, help_text, True)
 
+    @staticmethod
+    def linear_scale(old_max, old_min, new_max, new_min, value):
+        old_range = (old_max - old_min)
+        new_range = (new_max - new_min)
+        return (((value - old_min) * new_range) / old_range) + new_min
+
     def respond(self, slack_client, message, matches):
         session = self.db_session()
 
@@ -35,21 +41,28 @@ class AtGraphCommand(Command):
             user_color_map[user.name] = color
             G.add_node(user.name, color=color)
 
-        max_penwidth = 5
-        min_penwidth = 0.10
-
         max_weight = edges[len(edges) - 1].weight
         min_weight = edges[0].weight
 
+        max_penwidth = 5
+        min_penwidth = 0.10
+
+        max_fontsize = 20
+        min_fontsize = 7
+
+        def scale_penwidth_by(value):
+            return self.linear_scale(max_weight, min_weight, max_penwidth, min_penwidth, value)
+
+        def scale_fontsize_by(value):
+            return self.linear_scale(max_weight, min_weight, max_fontsize, min_fontsize, value)
+
         for edge in edges:
-            old_range = (max_weight - min_weight)
-            new_range = (max_penwidth - min_penwidth)
-            penwidth = (((edge.weight - min_weight) * new_range) / old_range) + min_penwidth
             G.add_edge(edge.head_user.name,
                        edge.tail_user.name,
-                       penwidth=penwidth,
+                       penwidth=scale_penwidth_by(edge.weight),
                        label=edge.weight,
                        weight=edge.weight,
+                       fontsize=scale_fontsize_by(edge.weight),
                        fontcolor=user_color_map[edge.head_user.name],
                        color=user_color_map[edge.head_user.name])
 
