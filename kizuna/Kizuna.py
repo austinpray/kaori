@@ -25,6 +25,9 @@ class Kizuna:
         if 'user' in message and message['user'] == self.bot_id:
             return
 
+        if 'text' in message and message['text']:
+            message['text'] = message['text'].strip()
+
         text = message['text']
         channel = message['channel']
         if self.is_at(text):
