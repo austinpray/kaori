@@ -2,6 +2,7 @@ from kizuna.AtGraphEdge import AtGraphEdge
 from kizuna.User import User
 from kizuna.Command import Command
 import pygraphviz as pgv
+from palettable import tableau
 
 
 class AtGraphCommand(Command):
@@ -16,15 +17,41 @@ class AtGraphCommand(Command):
     def respond(self, slack_client, message, matches):
         session = self.db_session()
 
-        edges = session.query(AtGraphEdge).all()
+        edges = session.query(AtGraphEdge).order_by(AtGraphEdge.weight.asc()).all()
+        users = session.query(User).order_by(User.name.asc()).all()
         layout = 'dot' if not matches[0] else matches[0]
 
         if not edges or len(edges) < 1:
             return
 
         G = pgv.AGraph(directed=True)
+        color_index = 0
+        user_color_map = {}
+        colors = tableau.get_map('Tableau_20').hex_colors
+
+        for user in users:
+            color = colors[color_index]
+            color_index = color_index + 1 if color_index < (len(colors) - 1) else 0
+            user_color_map[user.name] = color
+            G.add_node(user.name, color=color)
+
+        max_penwidth = 5
+        min_penwidth = 0.10
+
+        max_weight = edges[len(edges) - 1].weight
+        min_weight = edges[0].weight
+
         for edge in edges:
-            G.add_edge(edge.head_user.name, edge.tail_user.name, label=edge.weight, weight=edge.weight)
+            old_range = (max_weight - min_weight)
+            new_range = (max_penwidth - min_penwidth)
+            penwidth = (((edge.weight - min_weight) * new_range) / old_range) + min_penwidth
+            G.add_edge(edge.head_user.name,
+                       edge.tail_user.name,
+                       penwidth=penwidth,
+                       label=edge.weight,
+                       weight=edge.weight,
+                       fontcolor=user_color_map[edge.head_user.name],
+                       color=user_color_map[edge.head_user.name])
 
         if layout == 'raw':
             return slack_client.api_call('files.upload',
