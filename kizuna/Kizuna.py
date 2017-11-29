@@ -27,6 +27,8 @@ class Kizuna:
 
         if 'text' in message and message['text']:
             message['text'] = message['text'].strip()
+        else:
+            return
 
         text = message['text']
         channel = message['channel']
