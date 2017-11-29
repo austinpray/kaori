@@ -7,7 +7,7 @@ from kizuna.User import User
 
 class AtGraphDataCollector(Command):
     def __init__(self, db_session, slack_client) -> None:
-        super().__init__('at-graph-data-collector', '.*', None, False)
+        super().__init__('at-graph-data-collector', '.*', '', False)
         self.db_session = db_session
         self.sc = slack_client
 
