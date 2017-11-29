@@ -22,7 +22,7 @@ class Kizuna:
         self.registered_commands.append(command)
 
     def handle_message(self, message):
-        if message['user'] == self.bot_id:
+        if 'user' in message and message['user'] == self.bot_id:
             return
 
         text = message['text']
