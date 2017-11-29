@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    ports:
+      - "4444:5432"
+    volumes:
+      - "/var/lib/postgresql/data"
+    environment:
+      POSTGRES_DB: kizuna
+      POSTGRES_PASSWORD: kizuna
+      POSTGRES_USER: kizuna
+  bot:
+    build: .
+    env_file: .env
+    volumes:
+      - .:/kizuna
+    depends_on:
+      - db
