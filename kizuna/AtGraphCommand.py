@@ -4,6 +4,11 @@ from kizuna.Command import Command
 import pygraphviz as pgv
 from palettable import tableau
 
+from .strings import WAIT_A_SEC, JAP_DOT
+
+from threading import Thread
+from time import sleep
+
 
 class AtGraphCommand(Command):
     def __init__(self, db_session) -> None:
@@ -29,6 +34,37 @@ class AtGraphCommand(Command):
 
         if not edges or len(edges) < 1:
             return
+
+        channel = message['channel']
+        loading_message = slack_client.api_call("chat.postMessage",
+                                                channel=channel,
+                                                text=WAIT_A_SEC + JAP_DOT,
+                                                as_user=True)
+
+        loaded = False
+
+        def continiously_update_loading_message():
+            cycle_count = 0
+            dot_count = 1
+            while not loaded and cycle_count < 20:
+                print('loading...')
+                sleep(1)
+                if loaded:
+                    break
+                dot_count = dot_count + 1 if dot_count < 3 else 1
+                new_text = WAIT_A_SEC + (dot_count * JAP_DOT)
+                slack_client.api_call("chat.update",
+                                      ts=loading_message['ts'],
+                                      channel=channel,
+                                      text=new_text,
+                                      as_user=True)
+                cycle_count += 1
+
+        thread = Thread(target=continiously_update_loading_message)
+
+        if loading_message['ok']:
+            thread.start()
+            print(loading_message)
 
         G = pgv.AGraph(directed=True)
         color_index = 0
@@ -114,5 +150,12 @@ class AtGraphCommand(Command):
                               channels=message['channel'],
                               filename='graph.png',
                               file=open(image_path, 'rb'))
+
+        loaded = True
+        thread.join()
+        slack_client.api_call("chat.delete",
+                              ts=loading_message['ts'],
+                              channel=channel,
+                              as_user=True)
 
         return None
