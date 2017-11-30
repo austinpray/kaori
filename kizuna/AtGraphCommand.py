@@ -47,7 +47,6 @@ class AtGraphCommand(Command):
             cycle_count = 0
             dot_count = 1
             while not loaded and cycle_count < 20:
-                print('loading...')
                 sleep(1)
                 if loaded:
                     break
@@ -64,7 +63,6 @@ class AtGraphCommand(Command):
 
         if loading_message['ok']:
             thread.start()
-            print(loading_message)
 
         G = pgv.AGraph(directed=True)
         color_index = 0
