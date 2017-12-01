@@ -28,7 +28,18 @@ class Kizuna:
     def register_command(self, command):
         self.registered_commands.append(command)
 
-    def handle_startup(self, dev_info_path, db_session):
+    @staticmethod
+    def read_dev_info(dev_info_path):
+        if not path.isfile(dev_info_path):
+            print('startup: no dev file at "{}"'.format(dev_info_path))
+            return {}
+
+        dev_info = json.load(open(dev_info_path))
+        print('startup: dev info loaded from "{}"'.format(dev_info_path))
+        pprint(dev_info)
+        return dev_info
+
+    def handle_startup(self, dev_info, db_session):
         def send(text,
                  title=None,
                  footer=None,
@@ -45,15 +56,7 @@ class Kizuna:
                                     attachments=[attachment],
                                     as_user=True)
 
-        if not path.isfile(dev_info_path):
-            print('startup: no dev file at "{}"'.format(dev_info_path))
-            return
-
-        dev_info = json.load(open(dev_info_path))
-        print('startup: dev info loaded from "{}"'.format(dev_info_path))
-        pprint(dev_info)
-
-        new_revision = dev_info['revision'] if 'revision' in dev_info else None
+        new_revision = dev_info.get('revision')
         if not new_revision:
             return
 
