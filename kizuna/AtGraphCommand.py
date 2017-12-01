@@ -4,12 +4,12 @@ from kizuna.Command import Command
 import pygraphviz as pgv
 from palettable import tableau
 
-from .strings import WAIT_A_SEC, JAP_DOT
+from .strings import WAIT_A_SEC, JAP_DOT, random_insult
 
 from threading import Thread
 from time import sleep
 
-from .SlackArgumentParser import SlackArgumentParser
+from .SlackArgumentParser import SlackArgumentParser, SlackArgumentParserException
 
 
 class AtGraphCommand(Command):
@@ -41,9 +41,14 @@ class AtGraphCommand(Command):
 
     def respond(self, slack_client, message, matches):
         channel = message['channel']
+        send = self.send_factory(slack_client, message['channel'])
 
         user_args = matches[0].split(' ') if matches[0] else []
-        args = self.parser.parse_args(user_args)
+        try:
+            args = self.parser.parse_args(user_args)
+        except SlackArgumentParserException as err:
+            return send(str(err))
+
         layout = args.layout
 
         def send_message(text):
