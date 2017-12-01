@@ -108,16 +108,14 @@ class Kizuna:
     def get_revision_range_github_url(old_revision, new_revision):
         return 'https://github.com/austinpray/kizuna/compare/{}...{}'.format(old_revision, new_revision)
 
-
     def handle_message(self, message):
         if 'user' in message and message['user'] == self.bot_id:
             return
 
-        if 'text' in message and message['text']:
-            message['text'] = message['text'].strip()
-        else:
+        if 'text' not in message or not message['text']:
             return
 
+        message['text'] = message['text'].strip()
         text = message['text']
         channel = message['channel']
         if self.is_at(text):
