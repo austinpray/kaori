@@ -40,7 +40,7 @@ class Kizuna:
             at, command_text = parts
             message['text'] = command_text
 
-            if command_text.lower() == 'help':
+            if command_text.lower() in ['-h', '--help', 'help']:
                 help_header = HAI_DOMO
                 help_text_list = list(map(lambda c: c.help(self.respond_tokens[0]), self.registered_commands))
 
