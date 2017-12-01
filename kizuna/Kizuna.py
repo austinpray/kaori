@@ -63,10 +63,6 @@ class Kizuna:
         if not previous_revision:
             previous_revision = Meta(key='previous_revision', value=current_revision.value)
             db_session.add(previous_revision)
-            current_revision.value = new_revision
-            db_session.commit()
-            out = YOSHI + JAP_DOT + VERSION_UPDATE_TEMPLATE.replace('{{VERSION}}', LQUO + current_revision.value + RQUO)
-            return send(out)
 
         previous_revision.value = current_revision.value
         current_revision.value = new_revision
