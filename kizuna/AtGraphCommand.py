@@ -9,14 +9,39 @@ from .strings import WAIT_A_SEC, JAP_DOT
 from threading import Thread
 from time import sleep
 
+from argparse import ArgumentParser
+from io import StringIO
+import sys
+
 
 class AtGraphCommand(Command):
     def __init__(self, db_session) -> None:
-        help_text = "{bot} mentions <layout=dot> - show the mention graph. Available formats are" \
-                    "dot, neato, fdp, sfdp, twopi, circo, raw\n "
         self.db_session = db_session
 
-        pattern = "mentions(?: (dot|neato|fdp|sfdp|twopi|circo|raw))?$"
+        self.available_layouts = ['dot', 'neato', 'fdp', 'sfdp', 'twopi', 'circo', 'raw']
+
+        parser = ArgumentParser(prog='kizuna mentions', description='Generate a mentions graph', add_help=False)
+        parser.add_argument('-h',
+                            '--help',
+                            action='store_true',
+                            dest='help',
+                            help='show this help message and exit')
+
+        markdown_available_layouts = list(map(lambda s: '`{}`'.format(s), self.available_layouts))
+        parser.add_argument('--layout',
+                            dest='layout',
+                            default='dot',
+                            help='Defaults to `dot`. Can be any of ' + ', '.join(markdown_available_layouts))
+
+        help_text_capture = StringIO()
+        parser.print_help(file=help_text_capture)
+        help_text = help_text_capture.getvalue()
+        help_text = help_text.replace('usage: ', '')
+        self.help_text = help_text
+
+        self.parser = parser
+
+        pattern = "mentions(?: (.*))?$"
         super().__init__('mention-graph', pattern, help_text, True)
 
     @staticmethod
@@ -26,16 +51,35 @@ class AtGraphCommand(Command):
         return (((value - old_min) * new_range) / old_range) + new_min
 
     def respond(self, slack_client, message, matches):
+        channel = message['channel']
+
+        user_args = matches[0].split(' ') if matches[0] else []
+        args = self.parser.parse_args(user_args)
+        layout = args.layout
+
+        def send_message(text):
+            return slack_client.api_call("chat.postMessage",
+                                         channel=channel,
+                                         text=text,
+                                         as_user=True)
+
+        if layout not in self.available_layouts:
+            layout_error_message = ("Oops! --layout needs to be one of '{}'. "
+                                    "You gave me '{}'").format(', '.join(self.available_layouts), layout)
+            return send_message(layout_error_message)
+
+        if args.help:
+            return send_message(self.help_text)
+
         session = self.db_session()
 
         edges = session.query(AtGraphEdge).order_by(AtGraphEdge.weight.asc()).all()
         users = session.query(User).order_by(User.name.asc()).all()
-        layout = 'dot' if not matches[0] else matches[0]
 
         if not edges or len(edges) < 1:
+            send_message("Uhh...Could not find any edges in the db. Something is probably wrong.")
             return
 
-        channel = message['channel']
         loading_message = slack_client.api_call("chat.postMessage",
                                                 channel=channel,
                                                 text=WAIT_A_SEC + JAP_DOT,

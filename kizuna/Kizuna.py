@@ -41,11 +41,23 @@ class Kizuna:
             message['text'] = command_text
 
             if command_text.lower() == 'help':
-                help_header = '{}\n'.format(HAI_DOMO)
-                help_commands = '\n'.join(map(lambda c: c.help(self.respond_tokens[0]), self.registered_commands))
+                help_header = HAI_DOMO
+                help_text_list = list(map(lambda c: c.help(self.respond_tokens[0]), self.registered_commands))
+
+                # next level attention to detail
+                longest_line = 0
+                for help_text in help_text_list:
+                    local_longest_line = len(sorted(help_text.split('\n'), key=len, reverse=True)[0])
+                    if local_longest_line > longest_line:
+                        longest_line = local_longest_line
+
+                emoji_to_char_width_constant = 0.29
+                separator = '\n' + (':wavy_dash:' * round(longest_line * emoji_to_char_width_constant)) + '\n'
+
+                help_commands = help_header + separator + separator.join(help_text_list[:-1]) + help_text_list[-1]
                 return self.sc.api_call("chat.postMessage",
                                         channel=channel,
-                                        text=help_header + help_commands,
+                                        text=help_commands,
                                         as_user=True)
 
             registered_at_commands = filter(lambda c: c.is_at, self.registered_commands)
