@@ -23,6 +23,7 @@ class AtGraphCommand(Command):
 
         markdown_available_layouts = list(map(lambda s: '`{}`'.format(s), self.available_layouts))
         parser.add_argument('--layout',
+                            '-l',
                             dest='layout',
                             default='dot',
                             help='Defaults to `dot`. Can be any of ' + ', '.join(markdown_available_layouts))
