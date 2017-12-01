@@ -31,11 +31,7 @@ class AtGraphDataCollector(Command):
             print(err)
             return
 
-        #session.commit()
-
         for mentioned_user in mentioned_users:
             AtGraphEdge.increment_edge(from_user, mentioned_user, session)
 
         session.commit()
-
-

@@ -1,4 +1,5 @@
-from kizuna.strings import JAP_DOT, LQUO, RQUO, YOSHI, HAI_DOMO, KIZUNA, VERSION_TRANSITION_TEMPLATE, VERSION_UPDATE_TEMPLATE, VERSION_UP
+from kizuna.strings import \
+    JAP_DOT, LQUO, RQUO, YOSHI, HAI_DOMO, KIZUNA, VERSION_TRANSITION_TEMPLATE, VERSION_UPDATE_TEMPLATE, VERSION_UP
 
 from os import path
 import json
@@ -97,7 +98,6 @@ class Kizuna:
                                        self.get_revision_range_github_url(previous_revision.value,
                                                                           current_revision.value))
         return send(out, title=VERSION_UP, footer=compare_link)
-
 
     @staticmethod
     def slack_link(text, url):

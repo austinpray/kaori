@@ -16,6 +16,7 @@ from kizuna.strings import HAI_DOMO
 
 from raven import Client
 
+
 def signal_handler(signal, frame):
     print("\nprogram exiting gracefully")
     sys.exit(0)
@@ -39,7 +40,6 @@ if __name__ == "__main__":
 
     db_engine = create_engine(os.environ.get('DATABASE_URL'))
     Session = sessionmaker(bind=db_engine)
-
 
     if sc.rtm_connect():
         auth = sc.api_call('auth.test')
