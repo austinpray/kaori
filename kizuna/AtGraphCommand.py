@@ -11,7 +11,6 @@ from time import sleep
 
 from argparse import ArgumentParser
 from io import StringIO
-import sys
 
 
 class AtGraphCommand(Command):
