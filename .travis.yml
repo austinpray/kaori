@@ -1,12 +1,14 @@
 sudo: required
 
 language: python
+python: "3.6"
 
 services:
   - docker
 
 before_install:
   # Load cached docker images
+  - ./bin/generate-dev-info.py --revision "$TRAVIS_COMMIT" > .dev-info.json
   - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
   - docker pull registry.heroku.com/kizunaai/kizuna_bot
   - docker build --cache-from registry.heroku.com/kizunaai/kizuna_bot -t registry.heroku.com/kizunaai/kizuna_bot .

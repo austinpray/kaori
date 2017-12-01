@@ -32,7 +32,10 @@ if __name__ == "__main__":
         auth = sc.api_call('auth.test')
         bot_id = auth['user_id']
 
-        k = Kizuna(bot_id, sc)
+        k = Kizuna(bot_id, sc, os.environ.get('MAIN_CHANNEL'))
+        print("{} BOT_ID {}".format(HAI_DOMO, bot_id))
+
+        k.handle_startup('./.dev-info.json', Session())
 
         pc = PingCommand()
         k.register_command(pc)
@@ -46,7 +49,6 @@ if __name__ == "__main__":
         at_graph_data_collector = AtGraphDataCollector(Session, sc)
         k.register_command(at_graph_data_collector)
 
-        print("{} BOT_ID {}".format(HAI_DOMO, bot_id))
         while True:
             read = sc.rtm_read()
             if read:

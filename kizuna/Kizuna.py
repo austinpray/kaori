@@ -1,8 +1,14 @@
-from kizuna.strings import HAI_DOMO, KIZUNA
+from kizuna.strings import JAP_DOT, LQUO, RQUO, YOSHI, HAI_DOMO, KIZUNA, VERSION_TRANSITION_TEMPLATE, VERSION_UPDATE_TEMPLATE
+
+from os import path
+import json
+from pprint import pprint
+
+from .Meta import Meta
 
 
 class Kizuna:
-    def __init__(self, bot_id, slack_client) -> None:
+    def __init__(self, bot_id, slack_client, main_channel='#banter') -> None:
         self.bot_id = bot_id
         self.sc = slack_client
         self.respond_tokens = (
@@ -13,6 +19,7 @@ class Kizuna:
             '<@{}>'.format(bot_id),
             KIZUNA
         )
+        self.main_channel = main_channel
         self.registered_commands = []
 
     def is_at(self, text):
@@ -20,6 +27,59 @@ class Kizuna:
 
     def register_command(self, command):
         self.registered_commands.append(command)
+
+    def handle_startup(self, dev_info_path, db_session):
+        def send(text):
+            return self.sc.api_call("chat.postMessage",
+                                    channel=self.main_channel,
+                                    text=text,
+                                    as_user=True)
+
+        if not path.isfile(dev_info_path):
+            print('startup: no dev file at "{}"'.format(dev_info_path))
+            return
+
+        dev_info = json.load(open(dev_info_path))
+        print('startup: dev info loaded from "{}"'.format(dev_info_path))
+        pprint(dev_info)
+
+        new_revision = dev_info['revision'] if 'revision' in dev_info else None
+        if not new_revision:
+            return
+
+        current_revision = db_session.query(Meta).filter(Meta.key == 'current_revision').first()
+        previous_revision = db_session.query(Meta).filter(Meta.key == 'previous_revision').first()
+
+        if not current_revision:
+            current_revision = Meta(key='current_revision', value=new_revision)
+            db_session.add(current_revision)
+            db_session.commit()
+            out = YOSHI + JAP_DOT + VERSION_UPDATE_TEMPLATE.replace('{{VERSION}}', LQUO + current_revision.value + RQUO)
+            return send(out)
+
+        if new_revision == current_revision.value:
+            return
+
+        if not previous_revision:
+            previous_revision = Meta(key='previous_revision', value=current_revision.value)
+            db_session.add(previous_revision)
+            current_revision.value = new_revision
+            db_session.commit()
+            out = YOSHI + JAP_DOT + VERSION_UPDATE_TEMPLATE.replace('{{VERSION}}', LQUO + current_revision.value + RQUO)
+            return send(out)
+
+        previous_revision.value = current_revision.value
+        current_revision.value = new_revision
+        db_session.commit()
+
+        out = YOSHI + JAP_DOT
+        out += VERSION_TRANSITION_TEMPLATE
+        out = out \
+            .replace('{{FROM_VERSION}}', LQUO + previous_revision.value + RQUO) \
+            .replace('{{TO_VERSION}}', LQUO + current_revision.value + RQUO)
+        return send(out)
+
+
 
     def handle_message(self, message):
         if 'user' in message and message['user'] == self.bot_id:
