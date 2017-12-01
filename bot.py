@@ -7,6 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from slackclient import SlackClient
 
+from kizuna.ClapCommand import ClapCommand
 from kizuna.Kizuna import Kizuna
 from kizuna.PingCommand import PingCommand
 from kizuna.AtGraphCommand import AtGraphCommand
@@ -35,6 +36,9 @@ if __name__ == "__main__":
 
         pc = PingCommand()
         k.register_command(pc)
+
+        clap = ClapCommand()
+        k.register_command(clap)
 
         at_graph_command = AtGraphCommand(Session)
         k.register_command(at_graph_command)

@@ -9,8 +9,7 @@ from .strings import WAIT_A_SEC, JAP_DOT
 from threading import Thread
 from time import sleep
 
-from argparse import ArgumentParser
-from io import StringIO
+from .SlackArgumentParser import SlackArgumentParser
 
 
 class AtGraphCommand(Command):
@@ -19,12 +18,8 @@ class AtGraphCommand(Command):
 
         self.available_layouts = ['dot', 'neato', 'fdp', 'sfdp', 'twopi', 'circo', 'raw']
 
-        parser = ArgumentParser(prog='kizuna mentions', description='Generate a mentions graph', add_help=False)
-        parser.add_argument('-h',
-                            '--help',
-                            action='store_true',
-                            dest='help',
-                            help='show this help message and exit')
+        parser = SlackArgumentParser(prog='kizuna mentions', description='Generate a mentions graph', add_help=False)
+        self.add_help_command(parser)
 
         markdown_available_layouts = list(map(lambda s: '`{}`'.format(s), self.available_layouts))
         parser.add_argument('--layout',
@@ -32,16 +27,11 @@ class AtGraphCommand(Command):
                             default='dot',
                             help='Defaults to `dot`. Can be any of ' + ', '.join(markdown_available_layouts))
 
-        help_text_capture = StringIO()
-        parser.print_help(file=help_text_capture)
-        help_text = help_text_capture.getvalue()
-        help_text = help_text.replace('usage: ', '')
-        self.help_text = help_text
-
+        self.set_help_text(parser)
         self.parser = parser
 
         pattern = "mentions(?: (.*))?$"
-        super().__init__('mention-graph', pattern, help_text, True)
+        super().__init__('mention-graph', pattern, self.help_text, True)
 
     @staticmethod
     def linear_scale(old_max, old_min, new_max, new_min, value):
