@@ -1,4 +1,4 @@
-from kizuna.strings import JAP_DOT, LQUO, RQUO, YOSHI, HAI_DOMO, KIZUNA, VERSION_TRANSITION_TEMPLATE, VERSION_UPDATE_TEMPLATE
+from kizuna.strings import JAP_DOT, LQUO, RQUO, YOSHI, HAI_DOMO, KIZUNA, VERSION_TRANSITION_TEMPLATE, VERSION_UPDATE_TEMPLATE, VERSION_UP
 
 from os import path
 import json
@@ -29,10 +29,20 @@ class Kizuna:
         self.registered_commands.append(command)
 
     def handle_startup(self, dev_info_path, db_session):
-        def send(text):
+        def send(text,
+                 title=None,
+                 footer=None,
+                 footer_icon=None):
+            attachment = {
+                'title': title,
+                'color': 'good',
+                'text': text,
+                'footer': footer,
+                'footer_icon': footer_icon
+            }
             return self.sc.api_call("chat.postMessage",
                                     channel=self.main_channel,
-                                    text=text,
+                                    attachments=[attachment],
                                     as_user=True)
 
         if not path.isfile(dev_info_path):
@@ -54,8 +64,11 @@ class Kizuna:
             current_revision = Meta(key='current_revision', value=new_revision)
             db_session.add(current_revision)
             db_session.commit()
-            out = YOSHI + JAP_DOT + VERSION_UPDATE_TEMPLATE.replace('{{VERSION}}', LQUO + current_revision.value + RQUO)
-            return send(out)
+            out = YOSHI + JAP_DOT
+            revision_link = self.slack_link(current_revision.value,
+                                            self.get_revision_github_url(current_revision.value))
+            out += VERSION_UPDATE_TEMPLATE.replace('{{VERSION}}', LQUO + revision_link + RQUO)
+            return send(out, title=VERSION_UP)
 
         if new_revision == current_revision.value:
             return
@@ -70,11 +83,30 @@ class Kizuna:
 
         out = YOSHI + JAP_DOT
         out += VERSION_TRANSITION_TEMPLATE
+        previous_revision_link = self.slack_link(previous_revision.value,
+                                                 self.get_revision_github_url(previous_revision.value))
+        current_revision_link = self.slack_link(current_revision.value,
+                                                self.get_revision_github_url(current_revision.value))
         out = out \
-            .replace('{{FROM_VERSION}}', LQUO + previous_revision.value + RQUO) \
-            .replace('{{TO_VERSION}}', LQUO + current_revision.value + RQUO)
-        return send(out)
+            .replace('{{FROM_VERSION}}', LQUO + previous_revision_link + RQUO) \
+            .replace('{{TO_VERSION}}', LQUO + current_revision_link + RQUO)
+        compare_link = self.slack_link('Compare Changes on GitHub',
+                                       self.get_revision_range_github_url(previous_revision.value,
+                                                                          current_revision.value))
+        return send(out, title=VERSION_UP, footer=compare_link)
 
+
+    @staticmethod
+    def slack_link(text, url):
+        return '<{}|{}>'.format(url, text)
+
+    @staticmethod
+    def get_revision_github_url(revision):
+        return 'https://github.com/austinpray/kizuna/commit/{}'.format(revision)
+
+    @staticmethod
+    def get_revision_range_github_url(old_revision, new_revision):
+        return 'https://github.com/austinpray/kizuna/compare/{}...{}'.format(old_revision, new_revision)
 
 
     def handle_message(self, message):
