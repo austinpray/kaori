@@ -5,26 +5,16 @@ language: python
 services:
   - docker
 
-cache:
-  directories:
-    - $HOME/docker
-
-before_cache:
-  # Save tagged docker images
-  - >
-    mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}'
-    | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
-
 before_install:
   # Load cached docker images
-  - if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
-  - docker build -t registry.heroku.com/kizunaai/kizuna_bot .
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
+  - docker pull registry.heroku.com/kizunaai/kizuna_bot
+  - docker build --cache-from registry.heroku.com/kizunaai/kizuna_bot -t registry.heroku.com/kizunaai/kizuna_bot .
 
 script:
   - echo ':^)'
 
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
     docker push registry.heroku.com/kizunaai/kizuna_bot;
     fi
