@@ -65,7 +65,7 @@ class Kizuna:
             db_session.add(current_revision)
             db_session.commit()
             out = YOSHI + JAP_DOT
-            revision_link = self.slack_link(current_revision.value,
+            revision_link = self.slack_link(current_revision.value[:7],
                                             self.get_revision_github_url(current_revision.value))
             out += VERSION_UPDATE_TEMPLATE.replace('{{VERSION}}', LQUO + revision_link + RQUO)
             return send(out, title=VERSION_UP)
@@ -83,9 +83,9 @@ class Kizuna:
 
         out = YOSHI + JAP_DOT
         out += VERSION_TRANSITION_TEMPLATE
-        previous_revision_link = self.slack_link(previous_revision.value,
+        previous_revision_link = self.slack_link(previous_revision.value[:7],
                                                  self.get_revision_github_url(previous_revision.value))
-        current_revision_link = self.slack_link(current_revision.value,
+        current_revision_link = self.slack_link(current_revision.value[:7],
                                                 self.get_revision_github_url(current_revision.value))
         out = out \
             .replace('{{FROM_VERSION}}', LQUO + previous_revision_link + RQUO) \
