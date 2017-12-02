@@ -13,14 +13,14 @@ from kizuna.Kizuna import Kizuna
 from kizuna.PingCommand import PingCommand
 from kizuna.AtGraphCommand import AtGraphCommand
 from kizuna.AtGraphDataCollector import AtGraphDataCollector
-from kizuna.strings import HAI_DOMO
+from kizuna.strings import HAI_DOMO, GOODBYE
 
 from raven import Client
 import config
 
 
 def signal_handler(signal, frame):
-    print("\nprogram exiting gracefully")
+    print("\n{}".format(GOODBYE))
     sys.exit(0)
 
 
