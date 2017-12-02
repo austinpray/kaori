@@ -171,7 +171,6 @@ class AtGraphCommand(Command):
                 "dot": dot,
                 "neato": neato,
                 "fdp": fdp,
-                "sfdp": sfdp,
                 "twopi": twopi,
                 "circo": circo
             }.get(layout, dot)
