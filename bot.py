@@ -2,6 +2,7 @@ import os
 import signal
 import sys
 import time
+import traceback
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -69,8 +70,11 @@ if __name__ == "__main__":
                     for output in read:
                         if output['type'] == 'message':
                             k.handle_message(output)
-            except Exception:
-                sentry.captureException()
+            except Exception as e:
+                if sentry:
+                    sentry.captureException()
+                else:
+                    print(traceback.format_exc())
 
             time.sleep(READ_WEBSOCKET_DELAY)
     else:
