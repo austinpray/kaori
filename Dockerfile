@@ -5,12 +5,14 @@ ENV workdir /kizuna
 WORKDIR ${workdir}
 ENV PYTHONPATH="${PYTHONPATH}:${workdir}"
 
-CMD ["python", "-u", "./bot.py"]
-
 RUN apt-get update \
     && apt-get install -y vim graphviz
 
 COPY requirements.txt ${workdir}/requirements.txt
 RUN pip install -r requirements.txt
+
+ARG entry="python -u ./bot.py"
+ENV entry=$entry
+CMD $entry
 
 COPY . ${workdir}

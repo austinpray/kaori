@@ -8,10 +8,10 @@ services:
 
 before_install:
   # Load cached docker images
-  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
-  - docker pull registry.heroku.com/kizunaai/kizuna_bot
   - ./bin/generate-dev-info.py --revision "$TRAVIS_COMMIT" > .dev-info.json
-  - docker build --cache-from registry.heroku.com/kizunaai/kizuna_bot -t registry.heroku.com/kizunaai/kizuna_bot .
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
+  - make pull
+  - make build
 
 install: echo ':^)'
 
@@ -22,6 +22,6 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  script: docker push registry.heroku.com/kizunaai/kizuna_bot
+  script: make heroku_push
   on:
     branch: master
