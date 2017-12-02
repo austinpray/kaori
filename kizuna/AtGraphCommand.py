@@ -16,7 +16,7 @@ class AtGraphCommand(Command):
     def __init__(self, db_session) -> None:
         self.db_session = db_session
 
-        self.available_layouts = ['dot', 'neato', 'fdp', 'sfdp', 'twopi', 'circo', 'raw']
+        self.available_layouts = ['dot', 'neato', 'fdp', 'twopi', 'circo', 'raw']
 
         parser = SlackArgumentParser(prog='kizuna mentions', description='Generate a mentions graph', add_help=False)
         self.add_help_command(parser)
@@ -159,9 +159,6 @@ class AtGraphCommand(Command):
 
         def fdp():
             G.layout(prog='fdp')
-
-        def sfdp():
-            G.layout(prog='sfdp')
 
         def twopi():
             G.layout(prog='twopi')
