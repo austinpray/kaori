@@ -73,7 +73,7 @@ if __name__ == "__main__":
                     for output in read:
                         if output['type'] == 'message':
                             k.handle_message(output)
-            except Exception as e:
+            except Exception:
                 if sentry:
                     sentry.captureException()
                 else:
