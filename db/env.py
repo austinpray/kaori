@@ -2,7 +2,7 @@ from __future__ import with_statement
 from alembic import context
 from sqlalchemy import create_engine
 from logging.config import fileConfig
-import os
+import config as kizuna_config
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -36,7 +36,7 @@ def run_migrations_offline():
     script output.
 
     """
-    url = os.environ.get('DATABASE_URL')
+    url = kizuna_config.DATABASE_URL
     context.configure(
         url=url, target_metadata=target_metadata, literal_binds=True)
 
@@ -51,7 +51,7 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    connectable = create_engine(os.environ.get('DATABASE_URL'))
+    connectable = create_engine(kizuna_config.DATABASE_URL)
 
     with connectable.connect() as connection:
         context.configure(

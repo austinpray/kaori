@@ -3,6 +3,7 @@ FROM python:3.6-stretch
 ENV workdir /kizuna
 
 WORKDIR ${workdir}
+ENV PYTHONPATH="${PYTHONPATH}:${workdir}"
 
 CMD ["python", "-u", "./bot.py"]
 

@@ -16,6 +16,7 @@ from kizuna.AtGraphDataCollector import AtGraphDataCollector
 from kizuna.strings import HAI_DOMO
 
 from raven import Client
+import config
 
 
 def signal_handler(signal, frame):
@@ -29,17 +30,19 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
 
-    ENVIRONMENT = os.environ.get('KIZUNA_ENV', 'development')
     DEV_INFO = Kizuna.read_dev_info('./.dev-info.json')
 
-    sentry_url = os.environ.get('SENTRY_URL')
-    sentry = Client(sentry_url,
+    sentry = Client(config.SENTRY_URL,
                     release=DEV_INFO.get('revision'),
-                    environment=ENVIRONMENT) if sentry_url else None
+                    environment=config.KIZUNA_ENV) if config.SENTRY_URL else None
 
-    sc = SlackClient(os.environ.get('SLACK_API_TOKEN'))
+    if not config.SLACK_API_TOKEN:
+        raise ValueError('You are missing a slack token! Please set the SLACK_API_TOKEN environment variable in your '
+                         '.env file or in the system environment')
 
-    db_engine = create_engine(os.environ.get('DATABASE_URL', 'postgresql://kizuna:kizuna@db:5432/kizuna'))
+    sc = SlackClient(config.SLACK_API_TOKEN)
+
+    db_engine = create_engine(config.DATABASE_URL)
     Session = sessionmaker(bind=db_engine)
 
     if sc.rtm_connect():
