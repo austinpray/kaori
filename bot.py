@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     sc = SlackClient(os.environ.get('SLACK_API_TOKEN'))
 
-    db_engine = create_engine(os.environ.get('DATABASE_URL'))
+    db_engine = create_engine(os.environ.get('DATABASE_URL', 'postgresql://kizuna:kizuna@db:5432/kizuna'))
     Session = sessionmaker(bind=db_engine)
 
     if sc.rtm_connect():
