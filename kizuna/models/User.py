@@ -8,6 +8,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     slack_id = Column(String, index=True, unique=True)
+    api_key = Column(String(), unique=True, index=True, nullable=False)
 
     def __repr__(self):
         return "<User(id='{}', name='{}', slack_id='{}')>".format(self.id, self.name, self.slack_id)
