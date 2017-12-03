@@ -1,6 +1,6 @@
-from .Command import Command
-from .strings import random_insult
-from .SlackArgumentParser import SlackArgumentParser, SlackArgumentParserException
+from kizuna.commands.Command import Command
+from kizuna.strings import random_insult
+from kizuna.SlackArgumentParser import SlackArgumentParser, SlackArgumentParserException
 
 from argparse import REMAINDER
 

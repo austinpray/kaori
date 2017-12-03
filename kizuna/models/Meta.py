@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String
-from kizuna.Models import Base
+from kizuna.models.Models import Base
 
 
 class Meta(Base):

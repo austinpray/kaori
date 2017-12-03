@@ -1,8 +1,8 @@
 from kizuna.AtGraph import extract_ats
-from kizuna.AtGraphEdge import AtGraphEdge
-from kizuna.Command import Command
+from kizuna.models.AtGraphEdge import AtGraphEdge
+from kizuna.commands.Command import Command
 
-from kizuna.User import User
+from kizuna.models.User import User
 
 
 class AtGraphDataCollector(Command):

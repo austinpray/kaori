@@ -5,7 +5,7 @@ from os import path
 import json
 from pprint import pprint
 
-from .Meta import Meta
+from kizuna.models.Meta import Meta
 
 
 class Kizuna:

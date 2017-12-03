@@ -1,15 +1,15 @@
-from kizuna.AtGraphEdge import AtGraphEdge
-from kizuna.User import User
-from kizuna.Command import Command
+from kizuna.models.AtGraphEdge import AtGraphEdge
+from kizuna.models.User import User
+from kizuna.commands.Command import Command
 import pygraphviz as pgv
 from palettable import tableau
 
-from .strings import WAIT_A_SEC, JAP_DOT, random_insult
+from kizuna.strings import WAIT_A_SEC, JAP_DOT
 
 from threading import Thread
 from time import sleep
 
-from .SlackArgumentParser import SlackArgumentParser, SlackArgumentParserException
+from kizuna.SlackArgumentParser import SlackArgumentParser, SlackArgumentParserException
 
 
 class AtGraphCommand(Command):

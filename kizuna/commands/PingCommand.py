@@ -1,4 +1,4 @@
-from kizuna.Command import Command
+from kizuna.commands.Command import Command
 
 
 class PingCommand(Command):

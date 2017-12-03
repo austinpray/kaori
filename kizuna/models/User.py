@@ -1,7 +1,5 @@
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
-from kizuna.Models import Base
+from kizuna.models.Models import Base
 
 
 class User(Base):

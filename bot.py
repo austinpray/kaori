@@ -8,11 +8,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from slackclient import SlackClient
 
-from kizuna.ClapCommand import ClapCommand
 from kizuna.Kizuna import Kizuna
-from kizuna.PingCommand import PingCommand
-from kizuna.AtGraphCommand import AtGraphCommand
-from kizuna.AtGraphDataCollector import AtGraphDataCollector
+from kizuna.commands.AtGraphCommand import AtGraphCommand
+from kizuna.commands.AtGraphDataCollector import AtGraphDataCollector
+from kizuna.commands.ClapCommand import ClapCommand
+from kizuna.commands.PingCommand import PingCommand
 from kizuna.strings import HAI_DOMO, GOODBYE
 
 from raven import Client

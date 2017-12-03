@@ -1,6 +1,6 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
-from kizuna.Models import Base
+from kizuna.models.Models import Base
 
 
 class AtGraphEdge(Base):
