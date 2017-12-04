@@ -1,0 +1,42 @@
+.react-dropzone:hover {
+    cursor: pointer;
+}
+
+.react-autosuggest__suggestions-list {
+    margin: 0;
+    padding: 0;
+}
+
+.react-autosuggest__suggestion {
+    color: dimgray;
+    background: #ccc;
+    border-color: dimgray;
+}
+.react-autosuggest__suggestion:hover {
+    cursor: pointer;
+}
+
+.react-tagsinput .react-autosuggest__suggestions-container {
+    display: none;
+}
+
+.react-tagsinput--focused .react-autosuggest__suggestions-container {
+    animation: grow 300ms ease-out;
+    display: block;
+}
+
+@keyframes grow {
+    0% {
+        display: none;
+        opacity: 0;
+    }
+    1% {
+        display: block;
+        opacity: 0;
+        transform: scaleY(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleY(1);
+    }
+}

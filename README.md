@@ -10,11 +10,11 @@ I am a slack bot with functionality that ranges from "useless" to "pretty neat".
 
 I can draw a directed graph of the mentions between all the people in your slack. The vertices are people and the edges are the the mentions between two people. The weight a particular edge represents how many times the head vertex has mentioned the tail vertex.
 
-![mentions demo](./static/kizuna_mentions_demo.gif)
+![mentions demo](static/images/kizuna_mentions_demo.gif)
 
 Example graph:
 
-![mentions example](./static/graph_example.png)
+![mentions example](static/images/graph_example.png)
 
 
 <!-- begin kizuna mentions help -->

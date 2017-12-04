@@ -131,11 +131,12 @@ class Kizuna:
 
             if command_text.lower() in ['-h', '--help', 'help']:
                 help_header = HAI_DOMO
-                help_text_list = list(map(lambda c: c.help(self.respond_tokens[0]), self.registered_commands))
+                help_text_list = map(lambda c: c.help(self.respond_tokens[0]), self.registered_commands)
+                help_text_list = list(text for text in help_text_list if text)
 
                 separator = '\n' + ':sparkles:' * 5 + '\n'
 
-                help_commands = help_header + '\n\n' + separator.join(help_text_list[:-1]) + help_text_list[-1]
+                help_commands = help_header + '\n\n' + separator.join(help_text_list)
                 return self.sc.api_call("chat.postMessage",
                                         channel=channel,
                                         text=help_commands,

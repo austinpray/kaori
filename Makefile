@@ -1,4 +1,4 @@
-.PHONY: pep8 heroku_push web bot build pull
+.PHONY: pep8 heroku_push web bot build pull perm
 
 registry_base = registry.heroku.com/kizunaai
 bot_tag = $(registry_base)/bot
@@ -16,6 +16,7 @@ pull:
 	docker pull $(web_tag)
 
 web:
+	docker-compose run --rm -e NODE_ENV=production js npm run build
 	docker build \
 		--cache-from $(web_tag) \
 		-t $(web_tag) \
@@ -30,3 +31,6 @@ bot:
 		.
 
 build: bot web
+
+perm:
+	sudo chown -R $(shell whoami):$(shell whoami) .

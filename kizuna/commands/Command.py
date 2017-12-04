@@ -4,6 +4,8 @@ from io import StringIO
 
 from functools import partial
 
+from kizuna.models.User import User
+
 
 class Command:
     def __init__(self, name, pattern, help_text='', is_at=True) -> None:
@@ -41,6 +43,22 @@ class Command:
     @staticmethod
     def send_factory(slack_client, channel):
         return partial(Command.send, slack_client, channel)
+
+
+    @staticmethod
+    def send_ephemeral(slack_client, channel, user, text):
+        if isinstance(user, User):
+            user = user.slack_id
+
+        return slack_client.api_call("chat.postEphemeral",
+                                     channel=channel,
+                                     user=user,
+                                     text=text,
+                                     as_user=True)
+
+    @staticmethod
+    def send_ephemeral_factory(slack_client, channel, user):
+        return partial(Command.send_ephemeral, slack_client, channel, user)
 
     def respond(self, slack_client, message, matches):
         return None

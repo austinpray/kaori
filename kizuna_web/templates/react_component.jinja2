@@ -1,0 +1,9 @@
+{% extends "parents/base.jinja2" %}
+{% block content %}
+    <noscript>this shit won't work if you don't have javascript enabled u fucking dummy</noscript>
+    <div class="react-component-entry" id="{{ component_entry }}">
+        <div id="default-loading-indicator" style="text-align: center; margin-top: 1em;">
+            Loading<span class="loading">&hellip;</span>
+        </div>
+    </div>
+{% endblock %}

@@ -13,6 +13,7 @@ from kizuna.commands.AtGraphCommand import AtGraphCommand
 from kizuna.commands.AtGraphDataCollector import AtGraphDataCollector
 from kizuna.commands.ClapCommand import ClapCommand
 from kizuna.commands.PingCommand import PingCommand
+from kizuna.commands.ReactCommand import ReactCommand
 from kizuna.commands.UserRefreshCommand import UserRefreshCommand
 from kizuna.strings import HAI_DOMO, GOODBYE
 
@@ -69,6 +70,9 @@ if __name__ == "__main__":
 
         user_refresh_command = UserRefreshCommand(db_session=Session)
         k.register_command(user_refresh_command)
+
+        react_command = ReactCommand()
+        k.register_command(react_command)
 
         while True:
             try:
