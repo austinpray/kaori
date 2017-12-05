@@ -24,7 +24,7 @@ services:
     build:
       context: .
       args:
-        entry: 'gunicorn -w 4 -b 0.0.0.0:8000 web:app'
+        entry: 'gunicorn -w 4 -b 0.0.0.0:8000 --access-logfile - web:app'
     env_file: .env
     volumes:
       - .:/kizuna
@@ -32,3 +32,11 @@ services:
       - db
     ports:
       - 8000:8000
+  js:
+    image: "node:9"
+    working_dir: /kizuna
+    volumes:
+      - ./:/kizuna
+      - /kizuna/node_modules
+    command: npm run watch
+    restart: always
