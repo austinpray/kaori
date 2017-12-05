@@ -8,7 +8,7 @@ from werkzeug.utils import secure_filename
 import json
 import boto3
 from kizuna.Kizuna import Kizuna
-from raven import Client
+from raven.contrib.flask import Sentry
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from kizuna.models.ReactionImage import ReactionImage
@@ -26,11 +26,15 @@ from config import \
 
 DEV_INFO = Kizuna.read_dev_info('./.dev-info.json')
 
-sentry = Client(SENTRY_URL,
-                release=DEV_INFO.get('revision'),
-                environment=KIZUNA_ENV) if SENTRY_URL else None
-
 app = Flask(__name__, static_folder='../static')
+
+app.config['SENTRY_CONFIG'] = {
+    'dsn': SENTRY_URL,
+    'release': DEV_INFO.get('revision'),
+    'environment': KIZUNA_ENV
+}
+
+sentry = Sentry(app) if SENTRY_URL else None
 
 db_engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=db_engine)
