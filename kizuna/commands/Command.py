@@ -44,7 +44,6 @@ class Command:
     def send_factory(slack_client, channel):
         return partial(Command.send, slack_client, channel)
 
-
     @staticmethod
     def send_ephemeral(slack_client, channel, user, text):
         if isinstance(user, User):
