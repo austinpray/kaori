@@ -20,7 +20,7 @@ web:
 	docker build \
 		--cache-from $(web_tag) \
 		-t $(web_tag) \
-		--build-arg entry='gunicorn -w 4 -b 0.0.0.0:$$PORT web:app' \
+		--build-arg entry='gunicorn -w 4 web:app' \
 		.
 
 bot:
