@@ -60,8 +60,10 @@ def allowed_image_file(type):
 
 @app.route("/react")
 def gallery():
+    session = Session()
+    images = session.query(ReactionImage).all()
     return render_template('gallery.jinja2',
-                           images=Session().query(ReactionImage).all())
+                           images=images)
 
 
 @app.route("/api/react/images", methods=['POST'])
