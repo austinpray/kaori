@@ -16,7 +16,7 @@ pull:
 	docker pull $(web_tag)
 
 web:
-	docker-compose run --rm -e NODE_ENV=production js npm run build
+	docker run -it --rm --name build-web-assets -v $(shell pwd):/kizuna -w /kizuna node:9 npm run build
 	docker build \
 		--cache-from $(web_tag) \
 		-t $(web_tag) \

@@ -37,6 +37,5 @@ services:
     working_dir: /kizuna
     volumes:
       - ./:/kizuna
-      - /kizuna/node_modules
     command: npm run watch
     restart: always
