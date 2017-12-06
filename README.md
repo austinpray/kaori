@@ -37,7 +37,8 @@ I'm pretty easy to get running. Development and production deployment is all don
 
 1. You should probably create your own bot testbed slack if you don't already have one. [https://slack.com/create]()
 2. You need create a `.env` file that contains your `SLACK_API_TOKEN`. Easiest way to do this is to `cp .env.example .env` and then replace the bogus token with your real token you get from your bot's slack app config.
-3. `docker-compose run --rm bot alembic upgrade head` will create the database for you
-4. `docker-compose up` will start me up and connect me to slack!
+3. Run `make build` to build all the containers
+4. `docker-compose run --rm bot alembic upgrade head` will create the database for you
+5. `docker-compose up` will start me up and connect me to slack!
 
 That's it!

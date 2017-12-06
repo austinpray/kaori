@@ -1,0 +1,5 @@
+FROM austinpray/kizuna/base
+
+CMD ["python", "-u", "./bot.py"]
+
+COPY . ${workdir}

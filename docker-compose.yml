@@ -13,8 +13,7 @@ services:
   bot:
     build:
       context: .
-      args:
-        entry: 'python -u ./bot.py'
+      dockerfile: Dockerfile.bot
     env_file: .env
     volumes:
       - .:/kizuna
@@ -23,8 +22,7 @@ services:
   web:
     build:
       context: .
-      args:
-        entry: 'gunicorn -w 4 -b 0.0.0.0:8000 --access-logfile - web:app'
+      dockerfile: Dockerfile.web
     env_file: .env
     volumes:
       - .:/kizuna
