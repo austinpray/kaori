@@ -3,10 +3,14 @@ import signal
 import sys
 import time
 import traceback
+import backoff
+from sqlalchemy.exc import OperationalError as DatabaseOperationalError
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from slackclient import SlackClient
+from slackclient.server import SlackConnectionError
+from requests import ConnectionError
 
 from kizuna.Kizuna import Kizuna
 from kizuna.commands.AtGraphCommand import AtGraphCommand
@@ -42,54 +46,75 @@ if __name__ == "__main__":
         raise ValueError('You are missing a slack token! Please set the SLACK_API_TOKEN environment variable in your '
                          '.env file or in the system environment')
 
-    sc = SlackClient(config.SLACK_API_TOKEN)
+    main_loop_exceptions = (DatabaseOperationalError,
+                            ConnectionError,
+                            SlackConnectionError)
 
-    db_engine = create_engine(config.DATABASE_URL)
-    Session = sessionmaker(bind=db_engine)
+    def on_backoff(details):
+        print("Ran into trouble in the main_loop monkaS. "
+              "Backing off {wait:0.1f} seconds after {tries} tries ".format(**details))
 
-    if sc.rtm_connect():
-        auth = sc.api_call('auth.test')
-        bot_id = auth['user_id']
+        if sentry:
+            sentry.captureException()
+        else:
+            print(traceback.format_exc())
 
-        k = Kizuna(bot_id,
-                   slack_client=sc,
-                   main_channel=config.MAIN_CHANNEL,
-                   home_channel=config.KIZUNA_HOME_CHANNEL)
-        print("{} BOT_ID {}".format(HAI_DOMO, bot_id))
+    @backoff.on_exception(backoff.expo,
+                          main_loop_exceptions,
+                          max_tries=8,
+                          on_backoff=on_backoff)
+    def main_loop():
+        sc = SlackClient(config.SLACK_API_TOKEN)
 
-        k.handle_startup(DEV_INFO, Session())
+        db_engine = create_engine(config.DATABASE_URL)
+        Session = sessionmaker(bind=db_engine)
 
-        pc = PingCommand()
-        k.register_command(pc)
+        if sc.rtm_connect():
+            auth = sc.api_call('auth.test')
+            bot_id = auth['user_id']
 
-        clap = ClapCommand()
-        k.register_command(clap)
+            k = Kizuna(bot_id,
+                       slack_client=sc,
+                       main_channel=config.MAIN_CHANNEL,
+                       home_channel=config.KIZUNA_HOME_CHANNEL)
 
-        at_graph_command = AtGraphCommand(Session)
-        k.register_command(at_graph_command)
+            k.handle_startup(DEV_INFO, Session())
 
-        at_graph_data_collector = AtGraphDataCollector(Session, sc)
-        k.register_command(at_graph_data_collector)
+            pc = PingCommand()
+            k.register_command(pc)
 
-        user_refresh_command = UserRefreshCommand(db_session=Session)
-        k.register_command(user_refresh_command)
+            clap = ClapCommand()
+            k.register_command(clap)
 
-        react_command = ReactCommand()
-        k.register_command(react_command)
+            at_graph_command = AtGraphCommand(Session)
+            k.register_command(at_graph_command)
 
-        while True:
-            try:
+            at_graph_data_collector = AtGraphDataCollector(Session, sc)
+            k.register_command(at_graph_data_collector)
+
+            user_refresh_command = UserRefreshCommand(db_session=Session)
+            k.register_command(user_refresh_command)
+
+            react_command = ReactCommand()
+            k.register_command(react_command)
+
+            print("{} BOT_ID {}".format(HAI_DOMO, bot_id))
+
+            while True:
                 read = sc.rtm_read()
-                if read:
-                    for output in read:
-                        if output['type'] == 'message':
-                            k.handle_message(output)
-            except Exception:
-                if sentry:
-                    sentry.captureException()
-                else:
-                    print(traceback.format_exc())
+                try:
+                    if read:
+                        for output in read:
+                            if output['type'] == 'message':
+                                k.handle_message(output)
+                except Exception:
+                    if sentry:
+                        sentry.captureException()
+                    else:
+                        print(traceback.format_exc())
 
-            time.sleep(READ_WEBSOCKET_DELAY)
-    else:
-        print("Can't connect to slack.")
+                time.sleep(READ_WEBSOCKET_DELAY)
+        else:
+            print("Can't connect to slack.")
+
+    main_loop()
