@@ -13,6 +13,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from kizuna.models.ReactionImage import ReactionImage
 from kizuna.models.ReactionImageTag import ReactionImageTag
+from .middleware import requires_auth
 
 from config import \
     AWS_ACCESS_KEY_ID,\
@@ -55,6 +56,7 @@ def hello():
 
 
 @app.route("/react/images/new")
+@requires_auth
 def new_reaction_image():
     return render_template('react_component.jinja2',
                            title='Upload New Reaction Image',
@@ -74,6 +76,7 @@ def gallery():
 
 
 @app.route("/api/react/images", methods=['POST'])
+@requires_auth
 def handle_image_upload():
     session = Session()
     res = Response(json.dumps({'ok': True}), status=200, mimetype='application/json')

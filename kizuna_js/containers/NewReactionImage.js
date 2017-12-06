@@ -159,12 +159,14 @@ export class NewReactionImageContainer extends Component {
     }
 
     uploadImages(event) {
+        const {auth} = this.props;
         event.preventDefault();
         const {images} = this.state;
         this.setState({uploading: true});
         const requests = [];
         _forEach(_filter(images, {uploaded: false}), (image, id) => {
             const formData = new FormData();
+            formData.append('auth', auth);
             formData.append('file', image.file);
             formData.append('title', image.title);
             formData.append('tags', JSON.stringify(image.tags));

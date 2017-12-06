@@ -95,7 +95,7 @@ if __name__ == "__main__":
             user_refresh_command = UserRefreshCommand(db_session=Session)
             k.register_command(user_refresh_command)
 
-            react_command = ReactCommand()
+            react_command = ReactCommand(Session)
             k.register_command(react_command)
 
             print("{} BOT_ID {}".format(HAI_DOMO, bot_id))

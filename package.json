@@ -4,6 +4,7 @@
   "description": ":^)",
   "main": "kizuna_js/index.js",
   "dependencies": {
+    "localforage": "^1.5.5",
     "lodash": "^4.17.4",
     "react": "^16.2.0",
     "react-autosuggest": "^9.3.2",
@@ -12,6 +13,7 @@
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.1.2",
     "react-tagsinput": "^3.19.0",
+    "urijs": "^1.19.0",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

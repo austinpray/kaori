@@ -1,4 +1,5 @@
 import os
+from .constants import DAY_IN_SECONDS
 
 AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', None)
 AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', None)
@@ -12,3 +13,9 @@ S3_BUCKET = os.environ.get('S3_BUCKET', 'kizuna.guap.io')
 S3_BUCKET_URL = os.environ.get('S3_BUCKET_URL', 'https://s3-us-west-2.amazonaws.com/kizuna.guap.io')
 SENTRY_URL = os.environ.get('SENTRY_URL', None)
 SLACK_API_TOKEN = os.environ.get('SLACK_API_TOKEN', None)
+
+FERNET_KEY = os.environ.get('FERNET_KEY', None)
+if FERNET_KEY:
+    FERNET_KEY = FERNET_KEY.encode('ascii')
+
+FERNET_TTL = DAY_IN_SECONDS if KIZUNA_ENV != 'development' else 30*DAY_IN_SECONDS
