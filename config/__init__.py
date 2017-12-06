@@ -12,6 +12,3 @@ S3_BUCKET = os.environ.get('S3_BUCKET', 'kizuna.guap.io')
 S3_BUCKET_URL = os.environ.get('S3_BUCKET_URL', 'https://s3-us-west-2.amazonaws.com/kizuna.guap.io')
 SENTRY_URL = os.environ.get('SENTRY_URL', None)
 SLACK_API_TOKEN = os.environ.get('SLACK_API_TOKEN', None)
-
-if not AWS_ACCESS_KEY_ID or not AWS_SECRET_ACCESS_KEY:
-    raise Warning('You have not configured your AWS credentials. Reaction image feature will not work')

@@ -39,6 +39,9 @@ sentry = Sentry(app) if SENTRY_URL else None
 db_engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=db_engine)
 
+if not AWS_ACCESS_KEY_ID or not AWS_SECRET_ACCESS_KEY:
+    raise Warning('You have not configured your AWS credentials. Reaction image feature will not work')
+
 aws_client = boto3.client(
     's3',
     aws_access_key_id=AWS_ACCESS_KEY_ID,
