@@ -1,4 +1,4 @@
-.PHONY: pep8 heroku_push web bot build pull perm dev_info base
+.PHONY: pep8 heroku_push web bot build pull perm dev_info base migrate_dev
 
 base_tag = austinpray/kizuna/base
 bot_tag = austinpray/kizuna/bot
@@ -63,3 +63,6 @@ dev:
 	concurrently --kill-others --names "BOT,WEB" \
 		"nodemon -e 'py' --watch bot.py --watch kizuna/ --exec docker-compose restart bot" \
 		"nodemon -e 'py' --watch web.py --watch kizuna_web/ --exec docker-compose restart web"
+
+migrate_dev:
+	docker-compose run bot alembic upgrade head
