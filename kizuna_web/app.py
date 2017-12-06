@@ -91,7 +91,7 @@ def handle_image_upload():
         image_url = S3_BUCKET_URL + '/' + image_path
         image = ReactionImage(name=title, url=image_url)
         session.add(image)
-        tags = [ReactionImageTag.maybe_create_tag(session, tag) for tag in tags]
+        tags = [ReactionImageTag.maybe_create_tag(session, tag.lower()) for tag in tags]
         for tag in tags:
             image.tags.append(tag)
         session.commit()

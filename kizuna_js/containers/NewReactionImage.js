@@ -7,13 +7,14 @@ import _forEach from "lodash/forEach";
 import _filter from "lodash/filter";
 import _difference from "lodash/difference";
 import _map from "lodash/map";
+import _union from "lodash/union";
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
 
 import 'react-tagsinput/react-tagsinput.css'
 import "./NewReactionImage.css"
 
-import {GoCloudUpload} from 'react-icons/lib/go';
+import {GoCloudUpload, GoChevronLeft} from 'react-icons/lib/go';
 
 export class NewReactionImageContainer extends Component {
     static style = {
@@ -38,16 +39,23 @@ export class NewReactionImageContainer extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
+        this.defaultState = Object.freeze({
             images: {},
             suggestions: [],
             suggestionsLoading: true,
             suggestionsLoadingError: false,
             uploading: false
+        });
+
+        this.state = {
+            ...this.defaultState
         };
     }
 
-    componentWillMount() {
+    doSetup() {
+        this.setState({
+            ...this.defaultState
+        });
         fetch('/api/react/tags')
             .then(res => res.json())
             .then((json) => {
@@ -56,6 +64,10 @@ export class NewReactionImageContainer extends Component {
             .catch(() => {
                 this.setState({suggestionsLoading: false, suggestionsLoadingError: true})
             });
+    }
+
+    componentWillMount() {
+        this.doSetup();
     }
 
     autocompleteRenderInput ({alreadyUsedTags}, {addTag, ...props}) {
@@ -139,9 +151,11 @@ export class NewReactionImageContainer extends Component {
     }
 
     changeImageTags(id, tags) {
-        const images = this.state.images;
-        _set(images, [id, 'tags'], tags);
-        this.setState({images});
+        const {images, suggestions} = this.state;
+        const imageTags = _map(tags, tag => tag.toLowerCase());
+        _set(images, [id, 'tags'], imageTags);
+        const newSuggestions = _union(suggestions, imageTags);
+        this.setState({images, suggestions: newSuggestions});
     }
 
     uploadImages(event) {
@@ -226,6 +240,7 @@ export class NewReactionImageContainer extends Component {
                             <div>
                                 {images.map((image) => {
                                     return <img src={image.file.preview}
+                                                key={image.id}
                                                 className={image.uploaded ? '' : 'loading'}
                                                 style={{height: images.length > 10 ? '50px' : '100px'}} />
                                 })}
@@ -241,7 +256,7 @@ export class NewReactionImageContainer extends Component {
                                 <a style={{fontSize: '1.3em'}} href="/react">Image Gallery</a>
                             </p>
                             <p>
-                                <button style={{fontSize: '1.3em'}} onClick={() => this.setState({images: []})}>
+                                <button style={{fontSize: '1.3em'}} onClick={this.doSetup.bind(this)}>
                                     <GoCloudUpload /> Upload More Images
                                 </button>
                             </p>
@@ -249,16 +264,24 @@ export class NewReactionImageContainer extends Component {
                         <div>
                             {images.map((image) => {
                                 return <img src={image.file.preview}
+                                            key={image.id}
                                             style={{height: images.length > 10 ? '100px' : '150px'}} />
                             })}
                         </div>
                     </div>
                 }
                 return <form onSubmit={this.uploadImages.bind(this)}>
-                    <div style={{background: '#f1f1f1', padding: '5px'}}>
-                        <button onClick={() => this.setState({images: []})}>
-                            <GoCloudUpload /> Select Different Images
+                    <div className="kiz-upload-menu" style={{background: '#f1f1f1', padding: '5px'}}>
+                        <button className="kiz-upload-menu__reset pure-button" onClick={this.doSetup.bind(this)}>
+                            <GoChevronLeft/> Select Different Images
                         </button>
+                        {hasUnuploadedImages && (
+                            <button className="pure-button pure-button-primary"
+                                    type="submit"
+                                    disabled={this.state.uploading === true}>
+                                <GoCloudUpload /> Upload
+                            </button>
+                        )}
                     </div>
                     {_filter(images, {uploaded: false}).map((image) => {
                         const rowStyle = {
@@ -286,9 +309,6 @@ export class NewReactionImageContainer extends Component {
                             </div>
                         </div>
                     })}
-                    <div style={{textAlign: 'center', margin: '1em'}}>
-                        {hasUnuploadedImages && <input disabled={this.state.uploading === true} type="submit" name="upload" value="Upload" style={{fontSize: '1.5em'}} />}
-                    </div>
                 </form>
             }
 
@@ -313,7 +333,9 @@ export class NewReactionImageContainer extends Component {
                                 <GoCloudUpload height="100%" width="100%"/>
                             </div>
                         </div>
-                        <strong style={{marginTop: '1em', display: 'block'}}><button>browse</button> or drag images here.</strong>
+                        <strong style={{marginTop: '1em', display: 'block'}}>
+                            <button className="pure-button">browse</button> or drag images here.
+                        </strong>
                     </div>
                 </Dropzone>
             </div>;
