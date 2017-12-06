@@ -51,7 +51,10 @@ if __name__ == "__main__":
         auth = sc.api_call('auth.test')
         bot_id = auth['user_id']
 
-        k = Kizuna(bot_id, sc, os.environ.get('MAIN_CHANNEL'))
+        k = Kizuna(bot_id,
+                   slack_client=sc,
+                   main_channel=config.MAIN_CHANNEL,
+                   home_channel=config.KIZUNA_HOME_CHANNEL)
         print("{} BOT_ID {}".format(HAI_DOMO, bot_id))
 
         k.handle_startup(DEV_INFO, Session())

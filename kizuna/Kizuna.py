@@ -9,7 +9,7 @@ from kizuna.models.Meta import Meta
 
 
 class Kizuna:
-    def __init__(self, bot_id, slack_client, main_channel='#banter') -> None:
+    def __init__(self, bot_id, slack_client, main_channel, home_channel) -> None:
         self.bot_id = bot_id
         self.sc = slack_client
         self.respond_tokens = (
@@ -21,6 +21,7 @@ class Kizuna:
             KIZUNA
         )
         self.main_channel = main_channel
+        self.home_channel = home_channel
         self.registered_commands = []
 
     def is_at(self, text):
@@ -53,7 +54,7 @@ class Kizuna:
                 'footer_icon': footer_icon
             }
             return self.sc.api_call("chat.postMessage",
-                                    channel=self.main_channel,
+                                    channel=self.home_channel,
                                     attachments=[attachment],
                                     as_user=True)
 
