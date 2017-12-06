@@ -1,27 +1,22 @@
 sudo: required
-
 language: python
-python: "3.6"
-
+python: '3.6'
 services:
-  - docker
-
+- docker
 before_install:
-  # Load cached docker images
-  - ./bin/generate-dev-info.py --revision "$TRAVIS_COMMIT" > .dev-info.json
-  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
-  - make pull
-  - make build
-
+- ./bin/generate-dev-info.py --revision "$TRAVIS_COMMIT" > .dev-info.json
+- docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
+- make pull
+- make build
 install: echo ':^)'
-
 script:
-  # pep8
-  - make pep8
-
+- make pep8
 deploy:
   provider: script
   skip_cleanup: true
   script: make heroku_push
   on:
     branch: master
+notifications:
+  slack:
+    secure: A8obF+R/HUARTfvcpaEfHBY/wPd70tFfub/urblzBqMp1uncI5fQljk9udDAHj/T/iydmIH22ZrJK5lhAshGkg9vh/B4YhYCNCMfLjFavueyZqpxfgq/XuQFSEhnd1jc8FzcwrwUnD6jIUiP6A6Vh8R94AMg0/NDk1kh0mWWiXXC+odcJinjEM6NnyulKKmUb7IrJpMe942QF8ZvlxA0V0e0fSBW87e0eHwEPHvoEpUw2qXPylX81zIyqDBprjraV35Yo/BdrKTqE4xPkkoSDdmY0HlBjtCOmNvoMQRuTLHQGY0k1DBpq2IUkyaLjyK7AqI8zy7IDgGPXahMps6KYQlmspzEoJ+8ddGZfkgiILOZuOt1CnJB95aMNwsJG8cB9Ckam22+DSkdxSQFAeFVJ2uURBCrd0S7EwBEorLyXeqICs8I/2+obYIsm6YlglkdVXhjKzAr5bf576uyR/SFRA5woHSilJSK9c6j4uhxf2UpsOzNU25UVQ4d9DXAfXI6Rmaku7mvk9kr7lUyL/h6nbcM4c6r0RLv7gvENhXH9SMdJKvLooBaXc8xkwF1cigVV0eeTwd6pGW/SZxR3wKO1/Q4V2XNYWH1F4B2pitCSS6Kgm3EAR3txz3H3Lwf6oGCPDq6rPM1pxSMjXhGqpX0d37Zanh3//UGoj3w1XKQvGw=
