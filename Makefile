@@ -1,4 +1,4 @@
-.PHONY: pep8 heroku_push web bot build pull perm
+.PHONY: pep8 heroku_push web bot build pull perm dev_info
 
 registry_base = registry.heroku.com/kizunaai
 bot_tag = $(registry_base)/bot
@@ -34,3 +34,6 @@ build: bot web
 
 perm:
 	sudo chown -R $(shell whoami):$(shell whoami) .
+
+dev_info:
+	bin/generate-dev-info.py --revision $(shell git rev-parse HEAD) > .dev-info.json
