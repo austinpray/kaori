@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, Response, session
+from flask import request, Response, session, render_template
 from kizuna.models.User import User, InvalidToken
 
 
@@ -16,7 +16,7 @@ def check_auth(token):
 
 def authenticate():
     """Sends a 401 response that enables basic auth"""
-    return Response("<h1>Not Authorized</h1><p>Your token is expired or you didn't give me a token", status=401)
+    return render_template('not_authorized.jinja2'), 401
 
 
 def requires_auth_factory(app):

@@ -25,6 +25,12 @@ def hello():
     return render_template('index.jinja2', title='Welcome')
 
 
+@blueprint.route("/login")
+@requires_auth
+def login():
+    return render_template('login.jinja2')
+
+
 @blueprint.route("/react/images/new")
 @requires_auth
 def new_reaction_image():

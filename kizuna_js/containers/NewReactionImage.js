@@ -255,10 +255,9 @@ export class NewReactionImageContainer extends Component {
                         <h1>Got it! Thanks :^)</h1>
                         <div style={{marginBottom: '1em'}}>
                             <p>
-                                <a style={{fontSize: '1.3em'}} href="/react">Image Gallery</a>
-                            </p>
-                            <p>
-                                <button style={{fontSize: '1.3em'}} onClick={this.doSetup.bind(this)}>
+                                <a className="pure-button" href="/react">Image Gallery</a>
+                                <span> </span>
+                                <button className="pure-button" onClick={this.doSetup.bind(this)}>
                                     <GoCloudUpload /> Upload More Images
                                 </button>
                             </p>
