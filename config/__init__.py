@@ -11,6 +11,7 @@ KIZUNA_WEB_URL = os.environ.get('KIZUNA_WEB_URL', 'http://localhost:8000')
 MAIN_CHANNEL = os.environ.get('MAIN_CHANNEL', '#banter')
 S3_BUCKET = os.environ.get('S3_BUCKET', 'kizuna.guap.io')
 S3_BUCKET_URL = os.environ.get('S3_BUCKET_URL', 'https://s3-us-west-2.amazonaws.com/kizuna.guap.io')
+SECRET_KEY = os.environ.get('SECRET_KEY', None)
 SENTRY_URL = os.environ.get('SENTRY_URL', None)
 SLACK_API_TOKEN = os.environ.get('SLACK_API_TOKEN', None)
 

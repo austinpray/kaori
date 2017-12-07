@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, Response
+from flask import request, Response, session
 from kizuna.models.User import User, InvalidToken
 
 
@@ -19,11 +19,20 @@ def authenticate():
     return Response("<h1>Not Authorized</h1><p>Your token is expired or you didn't give me a token", status=401)
 
 
-def requires_auth(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        auth = request.values.get('auth')
-        if not auth or not check_auth(auth):
-            return authenticate()
-        return f(*args, **kwargs)
-    return decorated
+def requires_auth_factory(app):
+    def requires_auth(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            auth = request.values.get('auth')
+            if not auth or not check_auth(auth):
+                if 'auth' not in session:
+                    return authenticate()
+
+                if not check_auth(session['auth']):
+                    return authenticate()
+
+            if auth:
+                session['auth'] = auth
+            return f(*args, **kwargs)
+        return decorated
+    return requires_auth
