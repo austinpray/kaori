@@ -8,3 +8,7 @@ def build_url(baseurl, path, args_dict=None):
     if args_dict:
         url_parts[4] = urlencode(args_dict)
     return urlunparse(url_parts)
+
+
+def slack_link(text, url):
+    return '<{}|{}>'.format(url, text)
