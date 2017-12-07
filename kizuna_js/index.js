@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom';
 import React from 'react';
 import URI from 'urijs';
 import localforage from 'localforage';
+import _every from "lodash/every";
 
 const STORE_NAME = 'kizuna';
 
@@ -46,4 +47,13 @@ if (new_reaction_image_entry_el) {
             ReactDOM.render(<NewReactionImageContainer {...storage} />, new_reaction_image_entry_el);
         });
     })
+}
+
+// just a regular page with no react components
+// still grab the auth key from url and save it
+const entry_elements = [
+    new_reaction_image_entry_el
+];
+if (_every(entry_elements, element => !element)) {
+    initStorage();
 }
