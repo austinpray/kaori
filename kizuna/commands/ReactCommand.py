@@ -7,7 +7,8 @@ from kizuna.utils import build_url
 
 class ReactCommand(Command):
     def __init__(self, Session) -> None:
-        help_text = 'kizuna react - view available reaction images and tags\n'\
+        help_text = 'kizuna react - view available reaction images and tags\n' \
+                    'kizuna react add - upload some reaction images\n' \
                     'kizuna react <tag> - Send a reaction related to the tag'
         self.Session = Session
         super().__init__(name='react',

@@ -6,7 +6,7 @@ from kizuna.models.User import User
 
 class LoginCommand(Command):
     def __init__(self, make_session) -> None:
-        help_text = "login - login to the web interface"
+        help_text = "kizuna login - login to the web interface"
         self.make_session = make_session
 
         super().__init__('login', pattern='login', help_text=help_text, is_at=True)
