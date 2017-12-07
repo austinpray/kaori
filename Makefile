@@ -60,9 +60,7 @@ dev_info:
 	bin/generate-dev-info.py --revision $(shell git rev-parse HEAD) > .dev-info.json
 
 dev:
-	concurrently --kill-others --names "BOT,WEB" \
-		"nodemon -e 'py' --watch bot.py --watch kizuna/ --exec docker-compose restart bot" \
-		"nodemon -e 'py' --watch web.py --watch kizuna_web/ --exec docker-compose restart web"
+	nodemon -e 'py' --exec docker-compose restart bot web
 
 migrate_dev:
 	docker-compose run bot alembic upgrade head

@@ -1,3 +1,21 @@
+.kiz-upload-menu {
+    display: flex;
+    justify-content: space-between;
+}
+
+.kiz-upload-menu__reset {
+
+}
+
+.kiz-upload-menu__upload {
+
+}
+
+
+.react-tagsinput-input {
+    width: 100%;
+}
+
 .react-dropzone:hover {
     cursor: pointer;
 }

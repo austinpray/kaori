@@ -16,6 +16,7 @@ from kizuna.Kizuna import Kizuna
 from kizuna.commands.AtGraphCommand import AtGraphCommand
 from kizuna.commands.AtGraphDataCollector import AtGraphDataCollector
 from kizuna.commands.ClapCommand import ClapCommand
+from kizuna.commands.LoginCommand import LoginCommand
 from kizuna.commands.PingCommand import PingCommand
 from kizuna.commands.ReactCommand import ReactCommand
 from kizuna.commands.UserRefreshCommand import UserRefreshCommand
@@ -83,6 +84,9 @@ if __name__ == "__main__":
             pc = PingCommand()
             k.register_command(pc)
 
+            lc = LoginCommand(Session)
+            k.register_command(lc)
+
             clap = ClapCommand()
             k.register_command(clap)
 
@@ -95,7 +99,7 @@ if __name__ == "__main__":
             user_refresh_command = UserRefreshCommand(db_session=Session)
             k.register_command(user_refresh_command)
 
-            react_command = ReactCommand()
+            react_command = ReactCommand(Session)
             k.register_command(react_command)
 
             print("{} BOT_ID {}".format(HAI_DOMO, bot_id))

@@ -31,7 +31,25 @@
             text-decoration: none;
             color: initial;
         }
+
+        .announce {
+            text-align: center;
+        }
+
+        .announce ul {
+            display: inline-block;
+        }
+        .announce li {
+            text-align: left;
+        }
+
+        {% include 'inclues/buttons.css' %}
+
     </style>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure.css"
+          integrity="sha256-dfwvgA3BzMgzABXGXPOTXeInWAkSOmKPpSYqEoY8nqY="
+          crossorigin="anonymous" />
 </head>
 <body>
 {% block content %}{%  endblock %}

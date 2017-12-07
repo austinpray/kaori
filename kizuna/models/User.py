@@ -1,6 +1,9 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm.session import Session
 from kizuna.models.Models import Base
 from secrets import token_hex
+from cryptography.fernet import Fernet, InvalidToken
+from config import FERNET_KEY, FERNET_TTL
 
 
 def user_generate_api_key():
@@ -22,6 +25,22 @@ class User(Base):
 
     def __repr__(self):
         return "<User(id='{}', name='{}', slack_id='{}')>".format(self.id, self.name, self.slack_id)
+
+    @staticmethod
+    def get_by_slack_id(session, slack_id):
+        return session.query(User).filter(User.slack_id == slack_id).first()
+
+    @staticmethod
+    def decrypt_token(token):
+        if isinstance(token, str):
+            token = token.encode('ascii')
+
+        f = Fernet(FERNET_KEY)
+        return f.decrypt(token, ttl=FERNET_TTL).decode('ascii')
+
+    def get_token(self):
+        f = Fernet(FERNET_KEY)
+        return f.encrypt(self.api_key.encode('ascii'))
 
     @staticmethod
     def maybe_create_user_from_slack_id(slack_id, slack_client, session):
