@@ -40,7 +40,7 @@ def new_reaction_image():
 
 
 def allowed_image_file(type):
-    return type in ['image/png', 'image/jpg', 'image/jpeg']
+    return type in ['image/png', 'image/jpg', 'image/jpeg', 'image/gif']
 
 
 @blueprint.route("/react")
