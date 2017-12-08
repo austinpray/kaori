@@ -7,6 +7,7 @@ from kizuna.models import ReactionImageTag
 from random import choice
 from kizuna.nlp import extract_possible_tags
 import itertools
+import sqlalchemy.orm as orm
 
 
 class ReactCommand(Command):
@@ -58,13 +59,21 @@ class ReactCommand(Command):
 
         possible_tags = [token.text for token in extract_possible_tags(self.nlp, query)]
 
-        print(possible_tags)
-        tags = session.query(ReactionImageTag).filter(ReactionImageTag.name.in_(possible_tags)).all()
-        print(tags)
+        tags = session\
+            .query(ReactionImageTag)\
+            .options(orm.joinedload("images"))\
+            .filter(ReactionImageTag.name.in_(possible_tags))\
+            .all()
         if tags:
             images = list(itertools.chain.from_iterable([tag.images for tag in tags]))
+
             if len(images) > 0:
-                return send_public(choice(images).url)
+                for image in images:
+                    image.tags_text = [tag.name for tag in image.tags if tag.name in possible_tags]
+                images.sort(key=lambda t: len(t.tags_text), reverse=True)
+                best_match_length = len(images[0].tags_text)
+                best_matches = [image for image in images if len(image.tags_text) == best_match_length]
+                return send_public(choice(best_matches).url)
 
             send_public('I don\'t have any images for "{}" :^('.format(query))
             return add_images_nag()
