@@ -5,14 +5,17 @@ from kizuna.models.User import User
 from kizuna.utils import build_url, slack_link
 from kizuna.models import ReactionImageTag
 from random import choice
+from kizuna.nlp import extract_possible_tags
+import itertools
 
 
 class ReactCommand(Command):
-    def __init__(self, Session) -> None:
+    def __init__(self, Session, nlp) -> None:
         help_text = 'kizuna react - view available reaction images and tags\n' \
                     'kizuna react add - upload some reaction images\n' \
-                    'kizuna tfw <tag> - Send a reaction related to the tag'
+                    'kizuna tfw <text> - Send a reaction related to the text'
         self.Session = Session
+        self.nlp = nlp
         super().__init__(name='react',
                          pattern='(react(?:ion)?|tfw)(?: (.*))?$',
                          help_text=help_text,
@@ -51,15 +54,20 @@ class ReactCommand(Command):
         def add_images_nag():
             add_images = slack_link('(Add Images)', react_add_image_url)
             view_images = slack_link('(View Images)', react_homepage_url)
-            send("You can add some images with that tag though! {} {}".format(add_images, view_images))
+            send("You can add some images though! {} {}".format(add_images, view_images))
 
-        tag = session.query(ReactionImageTag).filter(ReactionImageTag.name == query).first()
-        if tag:
-            if len(tag.images) > 0:
-                return send_public(choice(tag.images).url)
+        possible_tags = [token.text for token in extract_possible_tags(self.nlp, query)]
 
-            send_public('I don\'t have any images with the tag "{}" :^('.format(query))
+        print(possible_tags)
+        tags = session.query(ReactionImageTag).filter(ReactionImageTag.name.in_(possible_tags)).all()
+        print(tags)
+        if tags:
+            images = list(itertools.chain.from_iterable([tag.images for tag in tags]))
+            if len(images) > 0:
+                return send_public(choice(images).url)
+
+            send_public('I don\'t have any images for "{}" :^('.format(query))
             return add_images_nag()
 
-        send_public('I don\'t have that "{}" as a tag :^('.format(query))
+        send_public('I don\'t have anything for "{}" :^('.format(query))
         return add_images_nag()

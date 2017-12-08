@@ -22,6 +22,8 @@ from kizuna.commands.ReactCommand import ReactCommand
 from kizuna.commands.UserRefreshCommand import UserRefreshCommand
 from kizuna.strings import HAI_DOMO, GOODBYE
 
+import spacy
+
 from raven import Client
 import config
 
@@ -32,6 +34,8 @@ def signal_handler(signal, frame):
 
 
 READ_WEBSOCKET_DELAY = 0.01
+
+nlp = spacy.load('en')
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
@@ -99,7 +103,7 @@ if __name__ == "__main__":
             user_refresh_command = UserRefreshCommand(db_session=Session)
             k.register_command(user_refresh_command)
 
-            react_command = ReactCommand(Session)
+            react_command = ReactCommand(Session, nlp=nlp)
             k.register_command(react_command)
 
             print("{} BOT_ID {}".format(HAI_DOMO, bot_id))

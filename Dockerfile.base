@@ -11,3 +11,5 @@ RUN apt-get update \
 COPY requirements.txt ${workdir}/requirements.txt
 
 RUN pip install -r requirements.txt
+
+RUN python -m spacy download en
