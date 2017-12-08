@@ -11,10 +11,10 @@ class ReactCommand(Command):
     def __init__(self, Session) -> None:
         help_text = 'kizuna react - view available reaction images and tags\n' \
                     'kizuna react add - upload some reaction images\n' \
-                    'kizuna react <tag> - Send a reaction related to the tag'
+                    'kizuna tfw <tag> - Send a reaction related to the tag'
         self.Session = Session
         super().__init__(name='react',
-                         pattern='react(?:ion)?(?: (.*))?$',
+                         pattern='(react(?:ion)?|tfw)(?: (.*))?$',
                          help_text=help_text,
                          is_at=True)
 
@@ -24,7 +24,8 @@ class ReactCommand(Command):
 
         session = self.Session()
         user = User.get_by_slack_id(session, message['user'])
-        query = matches[0]
+        command = matches[0]
+        query = matches[1]
         if query:
             query = query.strip()
 
