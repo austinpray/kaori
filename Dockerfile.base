@@ -12,6 +12,4 @@ COPY requirements.txt ${workdir}/requirements.txt
 
 RUN pip --no-cache-dir install -r requirements.txt
 
-RUN pip uninstall spacy && pip --no-cache-dir install spacy
-
 RUN python -m spacy download en
