@@ -5,6 +5,7 @@ from uuid import uuid4
 from flask import render_template
 from flask import request, Response, Blueprint
 from werkzeug.utils import secure_filename
+from kizuna_web.utils import image_path_to_content_type
 
 from config import \
     IMAGE_UPLOAD_DIR, \
@@ -65,8 +66,14 @@ def handle_image_upload():
     if file and allowed_image_file(type=file.content_type):
         ext = os.path.splitext(file.filename)[1]
         filename = secure_filename(uuid4().hex + ext)
+        content_type = image_path_to_content_type(filename)
         image_path = os.path.join(IMAGE_UPLOAD_DIR, filename)
-        aws_client.put_object(Body=file, Key=image_path, Bucket=S3_BUCKET)
+        aws_client.put_object(Bucket=S3_BUCKET,
+                              Key=image_path,
+                              ACL='public-read',
+                              ContentType=content_type,
+                              StorageClass='REDUCED_REDUNDANCY',
+                              Body=file)
         image_url = S3_BUCKET_URL + '/' + image_path
         image = ReactionImage(name=title, url=image_url)
         session.add(image)
