@@ -10,6 +10,7 @@ import _map from "lodash/map";
 import _union from "lodash/union";
 import TagsInput from 'react-tagsinput';
 import Autosuggest from 'react-autosuggest';
+import Sticky from 'react-stickynode';
 
 import 'react-tagsinput/react-tagsinput.css'
 import "./NewReactionImage.css"
@@ -272,18 +273,20 @@ export class NewReactionImageContainer extends Component {
                     </div>
                 }
                 return <form onSubmit={this.uploadImages.bind(this)}>
-                    <div className="kiz-upload-menu" style={{background: '#f1f1f1', padding: '5px'}}>
-                        <button className="kiz-upload-menu__reset pure-button" onClick={this.doSetup.bind(this)}>
-                            <GoChevronLeft/> Select Different Images
-                        </button>
-                        {hasUnuploadedImages && (
-                            <button className="pure-button pure-button-primary"
-                                    type="submit"
-                                    disabled={this.state.uploading === true}>
-                                <GoCloudUpload /> Upload
+                    <Sticky enabled={true}>
+                        <div className="kiz-upload-menu" style={{background: '#f1f1f1', padding: '5px'}}>
+                            <button className="kiz-upload-menu__reset pure-button" onClick={this.doSetup.bind(this)}>
+                                <GoChevronLeft/> Cancel
                             </button>
-                        )}
-                    </div>
+                            {hasUnuploadedImages && (
+                                <button className="pure-button pure-button-primary"
+                                        type="submit"
+                                        disabled={this.state.uploading === true}>
+                                    Upload <GoCloudUpload />
+                                </button>
+                            )}
+                        </div>
+                    </Sticky>
                     {_filter(images, {uploaded: false}).map((image) => {
                         const rowStyle = {
                             ...self.imageRowStyle,

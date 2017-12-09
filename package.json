@@ -12,6 +12,7 @@
     "react-dropzone": "^4.2.3",
     "react-icons": "^2.2.7",
     "react-input-autosize": "^2.1.2",
+    "react-stickynode": "^1.4.0",
     "react-tagsinput": "^3.19.0",
     "urijs": "^1.19.0",
     "whatwg-fetch": "^2.0.3"
