@@ -1,10 +1,11 @@
-.PHONY: pep8 heroku_push web bot build pull perm dev_info base migrate_dev
+.PHONY: pep8 registry_push web bot build pull perm dev_info base migrate_dev
 
 base_tag = austinpray/kizuna/base
 bot_tag = austinpray/kizuna/bot
 web_tag = austinpray/kizuna/web
 
 registry_base_url = registry.heroku.com/kizunaai
+registry_base_url = us.gcr.io/kizuna-188702
 
 registry_base_tag = $(registry_base_url)/base
 registry_bot_tag = $(registry_base_url)/bot
@@ -15,13 +16,13 @@ build: bot web
 pep8:
 	docker run --rm -v $(shell pwd):/code omercnet/pycodestyle --show-source /code
 
-heroku_push:
+registry_push:
 	docker tag $(base_tag) $(registry_base_tag)
 	docker tag $(bot_tag) $(registry_bot_tag)
 	docker tag $(web_tag) $(registry_web_tag)
-	docker push $(registry_base_tag)
-	docker push $(registry_bot_tag)
-	docker push $(registry_web_tag)
+	gcloud docker -- push $(registry_base_tag)
+	gcloud docker -- push $(registry_bot_tag)
+	gcloud docker -- push $(registry_web_tag)
 
 pull:
 	docker pull $(registry_base_tag)

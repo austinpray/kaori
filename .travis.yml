@@ -3,18 +3,29 @@ language: python
 python: '3.6'
 services:
 - docker
+cache:
+  directories:
+  - "$HOME/google-cloud-sdk/"
+env:
+- PATH=$PATH:${HOME}/google-cloud-sdk/bin CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
-- ./bin/generate-dev-info.py --revision "$TRAVIS_COMMIT" > .dev-info.json
+- openssl aes-256-cbc -K $encrypted_9225afaa1e04_key -iv $encrypted_9225afaa1e04_iv
+  -in gcloud-secret.json.enc -out gcloud-secret.json -d
+- if [ ! -d ${HOME}/google-cloud-sdk ]; then curl https://sdk.cloud.google.com | bash; fi
+- gcloud auth activate-service-account --key-file gcloud-secret.json
 - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
+- gcloud config set project kizuna-188702
+- gcloud -q components update
+- ./bin/generate-dev-info.py --revision "$TRAVIS_COMMIT" > .dev-info.json
+install:
 - make pull
 - make build
-install: echo ':^)'
 script:
 - make pep8
 deploy:
   provider: script
   skip_cleanup: true
-  script: make heroku_push
+  script: make registry_push
   on:
     branch: master
 notifications:
