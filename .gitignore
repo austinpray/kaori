@@ -1,5 +1,7 @@
 # kizuna specific
 
+/gcloud-secret.json
+
 /.env
 /.dev-info.json
 /node_modules

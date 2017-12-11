@@ -3,18 +3,34 @@ language: python
 python: '3.6'
 services:
 - docker
+cache:
+  directories:
+  - "$HOME/google-cloud-sdk/"
+
+env:
+- CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
 before_install:
-- ./bin/generate-dev-info.py --revision "$TRAVIS_COMMIT" > .dev-info.json
-- docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD" registry.heroku.com;
+- openssl aes-256-cbc -K $encrypted_9225afaa1e04_key -iv $encrypted_9225afaa1e04_iv
+  -in gcloud-secret.json.enc -out gcloud-secret.json -d
+- if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; curl https://sdk.cloud.google.com | bash; fi
+- source $HOME/google-cloud-sdk/path.bash.inc
+- gcloud components install kubectl
+- which gcloud
+- which kubectl
+- gcloud auth activate-service-account --key-file gcloud-secret.json
+- gcloud config set project kizuna-188702
+- gcloud container clusters get-credentials kizuna-prod-cluster --zone us-central1-a --project kizuna-188702
+- make dev_info
+install:
 - make pull
 - make build
-install: echo ':^)'
 script:
 - make pep8
 deploy:
   provider: script
   skip_cleanup: true
-  script: make heroku_push
+  script: make kube_deploy
   on:
     branch: master
 notifications:
