@@ -8,8 +8,10 @@ ENV PYTHONPATH="${PYTHONPATH}:${workdir}"
 RUN apt-get update \
     && apt-get install -y vim graphviz
 
-COPY requirements.txt ${workdir}/requirements.txt
-
-RUN pip --no-cache-dir install -r requirements.txt
-
+# heavy deps
+RUN pip install spacy
 RUN python -m spacy download en
+
+# regular deps
+COPY requirements.txt ${workdir}/requirements.txt
+RUN pip install -r requirements.txt

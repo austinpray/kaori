@@ -14,9 +14,10 @@ S3_BUCKET_URL = os.environ.get('S3_BUCKET_URL', 'https://img.kizuna.guap.io')
 SECRET_KEY = os.environ.get('SECRET_KEY', None)
 SENTRY_URL = os.environ.get('SENTRY_URL', None)
 SLACK_API_TOKEN = os.environ.get('SLACK_API_TOKEN', None)
+SLACK_VERIFICATION_TOKEN = os.environ.get('SLACK_VERIFICATION_TOKEN', None)
 
 FERNET_KEY = os.environ.get('FERNET_KEY', None)
 if FERNET_KEY:
     FERNET_KEY = FERNET_KEY.encode('ascii')
 
-FERNET_TTL = DAY_IN_SECONDS if KIZUNA_ENV != 'development' else 30*DAY_IN_SECONDS
+FERNET_TTL = DAY_IN_SECONDS if KIZUNA_ENV != 'development' else 30 * DAY_IN_SECONDS

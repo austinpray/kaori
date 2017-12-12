@@ -4,7 +4,7 @@ from raven.contrib.flask import Sentry
 import config
 
 from kizuna.Kizuna import Kizuna
-from .views import blueprint as views_blueprint
+from kizuna_web.views import blueprint as views_blueprint
 
 DEV_INFO = Kizuna.read_dev_info('./.dev-info.json')
 

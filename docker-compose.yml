@@ -10,15 +10,30 @@ services:
       POSTGRES_DB: kizuna
       POSTGRES_PASSWORD: kizuna
       POSTGRES_USER: kizuna
-  bot:
+  rabbitmq:
+    image: rabbitmq
+  worker:
     build:
       context: .
-      dockerfile: Dockerfile.bot
+      dockerfile: Dockerfile.worker
     env_file: .env
     volumes:
       - .:/kizuna
     depends_on:
       - db
+      - rabbitmq
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    env_file: .env
+    volumes:
+      - .:/kizuna
+    depends_on:
+      - db
+      - rabbitmq
+    ports:
+      - 8001:8001
   web:
     build:
       context: .
