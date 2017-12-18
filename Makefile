@@ -1,4 +1,7 @@
-.PHONY: kub_deploy pep8 registry_push web api build pull perm dev_info base migrate_dev
+.PHONY: kub_deploy registry_push web api build pull perm dev_info base migrate_dev
+.PHONY: test ngrok repl
+.PHONY: dev dev_worker
+.PHONY: pep8 autopep8
 
 # simulate CI environment
 TRAVIS_COMMIT ?= $(shell git rev-parse HEAD)
@@ -40,6 +43,18 @@ build: dev_info api worker web
 # check the project for pep8 compliance
 pep8:
 	docker run --rm -v $(shell pwd):/code omercnet/pycodestyle --show-source /code
+
+autopep8:
+	find . -name '*.py' | xargs autopep8 --in-place --aggressive --aggressive
+
+test:
+	docker run --rm -v $(shell pwd):/kizuna $(base_tag) pytest
+
+repl:
+	docker run --rm -it -v $(shell pwd):/kizuna $(base_tag) python
+
+ngrok:
+	ngrok http -subdomain=kizuna 8001
 
 # make a dev-info file so kizuna knows what commit she's on
 dev_info:
@@ -118,7 +133,10 @@ perm:
 # dev commands
 ## watch for file changes and restart accordingly
 dev:
-	nodemon -e 'py' --exec docker-compose restart api web
+	nodemon -e 'py' --exec docker-compose restart api web worker
+
+dev_worker:
+	nodemon -e 'py' --exec docker-compose restart worker
 
 ## run dev migrations
 migrate_dev:

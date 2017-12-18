@@ -5,15 +5,17 @@ from io import StringIO
 from functools import partial
 
 from kizuna.models.User import User
+from kizuna.slack import format_slack_at
 
 
 class Command:
-    def __init__(self, name, pattern, help_text='', is_at=True) -> None:
+    def __init__(self, name, pattern, help_text='', is_at=True, always=False) -> None:
         self.name = name
         self.is_at = is_at
         self.pattern = pattern
         self.help_text = help_text
-        self.pattern = re.compile(pattern, re.IGNORECASE) if type(pattern) is str else pattern
+        self.pattern = re.compile(pattern, re.IGNORECASE) if isinstance(pattern, str) else pattern
+        self.always = always
 
     def help(self, bot_name):
         return self.help_text.replace("{bot}", bot_name)
@@ -38,6 +40,13 @@ class Command:
         return slack_client.api_call("chat.postMessage",
                                      channel=channel,
                                      text=text,
+                                     as_user=True)
+
+    @staticmethod
+    def reply(slack_client, message, text):
+        return slack_client.api_call("chat.postMessage",
+                                     channel=message['channel'],
+                                     text=f"{format_slack_at(message['user'])} {text}",
                                      as_user=True)
 
     @staticmethod

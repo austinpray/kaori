@@ -1,9 +1,10 @@
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm.session import Session
+from sqlalchemy import Column, Integer, String, func
 from kizuna.models.Models import Base
 from secrets import token_hex
 from cryptography.fernet import Fernet, InvalidToken
 from config import FERNET_KEY, FERNET_TTL
+from decimal import Decimal
+from kizuna.models.KKredsTransaction import KKredsTransaction
 
 
 def user_generate_api_key():
@@ -27,7 +28,7 @@ class User(Base):
         return "<User(id='{}', name='{}', slack_id='{}')>".format(self.id, self.name, self.slack_id)
 
     @staticmethod
-    def get_by_slack_id(session, slack_id):
+    def get_by_slack_id(session, slack_id) -> 'User':
         return session.query(User).filter(User.slack_id == slack_id).first()
 
     @staticmethod
@@ -41,6 +42,25 @@ class User(Base):
     def get_token(self):
         f = Fernet(FERNET_KEY)
         return f.encrypt(self.api_key.encode('ascii'))
+
+    def get_kkred_balance(self, session) -> Decimal:
+        kkred_debits = session \
+            .query(func.sum(KKredsTransaction.amount)) \
+            .filter(KKredsTransaction.from_user_id == self.id) \
+            .first()[0]
+
+        if kkred_debits is None:
+            kkred_debits = Decimal(0)
+
+        kkred_credits = session \
+            .query(func.sum(KKredsTransaction.amount)) \
+            .filter(KKredsTransaction.to_user_id == self.id) \
+            .first()[0]
+
+        if kkred_credits is None:
+            kkred_credits = Decimal(0)
+
+        return kkred_credits - kkred_debits
 
     @staticmethod
     def maybe_create_user_from_slack_id(slack_id, slack_client, session):

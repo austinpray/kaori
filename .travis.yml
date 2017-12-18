@@ -27,6 +27,7 @@ install:
 - make build
 script:
 - make pep8
+- make test
 deploy:
   provider: script
   skip_cleanup: true
