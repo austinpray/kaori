@@ -1,19 +1,33 @@
-Flask
-SQLAlchemy
-alembic
-arrow
-backoff
-boto3
-cryptography
-gunicorn
-palettable
-psycopg2
-pygraphviz
-raven[flask]
-slackclient
+# global
+slackclient # for slack obviously
+gunicorn # wsgi server
+raven[flask] # sentry error reporting
+backoff # retryable functions
+cryptography # for auth tokens
+boto3 # aws s3 client
+arrow # dates and time
 
+# testing
+pytest
+
+# web related
+Flask
+
+# worker related
 dramatiq[rabbitmq, watch]
 
-# falcon related
+# db related
+SQLAlchemy
+alembic
+psycopg2
+
+# distributed locks
+kazoo
+
+# falcon api related
 falcon
 ujson
+
+# at graph related
+pygraphviz
+palettable

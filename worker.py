@@ -16,11 +16,14 @@ from kizuna.Kizuna import Kizuna
 from kizuna.commands.AtGraphCommand import AtGraphCommand
 from kizuna.commands.AtGraphDataCollector import AtGraphDataCollector
 from kizuna.commands.ClapCommand import ClapCommand
+from kizuna.commands.KKredsMiningCommand import KKredsMiningCommand
+from kizuna.commands.KKredsBalanceCommand import KKredsBalanceCommand
 from kizuna.commands.LoginCommand import LoginCommand
 from kizuna.commands.PingCommand import PingCommand
 from kizuna.commands.ReactCommand import ReactCommand
 from kizuna.commands.UserRefreshCommand import UserRefreshCommand
 from kizuna.strings import HAI_DOMO, GOODBYE
+from kazoo.client import KazooClient
 
 import spacy
 
@@ -33,8 +36,8 @@ from dramatiq.brokers.rabbitmq import RabbitmqBroker
 rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
 dramatiq.set_broker(rabbitmq_broker)
 
-
-READ_WEBSOCKET_DELAY = 0.01
+zk = KazooClient(hosts='zookeeper:2181')
+zk.start()
 
 nlp = spacy.load('en')
 
@@ -82,6 +85,12 @@ k.register_command(user_refresh_command)
 
 react_command = ReactCommand(make_session, nlp=nlp)
 k.register_command(react_command)
+
+kkreds_command = KKredsMiningCommand(make_session, kizuna=k, zk=zk)
+k.register_command(kkreds_command)
+
+kkreds_balance_command = KKredsBalanceCommand(make_session, kizuna=k)
+k.register_command(kkreds_balance_command)
 
 
 @dramatiq.actor
