@@ -1,7 +1,13 @@
-.PHONY: kub_deploy registry_push web api build pull perm dev_info base migrate_dev
+.PHONY: kub_deploy web api build pull perm dev_info base migrate_dev
 .PHONY: test ngrok repl
 .PHONY: dev dev_worker
 .PHONY: pep8 autopep8
+.PHONY: \
+	registry_push \
+	registry_push_base \
+	registry_push_api \
+	registry_push_web \
+	registry_push_worker
 
 # simulate CI environment
 TRAVIS_COMMIT ?= $(shell git rev-parse HEAD)
@@ -61,23 +67,36 @@ dev_info:
 	bin/generate-dev-info.py --revision $(TRAVIS_COMMIT) > .dev-info.json
 
 # push all the images to gcloud registry
-registry_push:
+registry_push_base:
 	docker tag $(base_tag) $(registry_base_tag_commit)
-	docker tag $(api_tag) $(registry_api_tag_commit)
-	docker tag $(web_tag) $(registry_web_tag_commit)
-	docker tag $(worker_tag) $(registry_worker_tag_commit)
-	gcloud docker -- push $(registry_base_tag_commit)
-	gcloud docker -- push $(registry_api_tag_commit)
-	gcloud docker -- push $(registry_web_tag_commit)
-	gcloud docker -- push $(registry_worker_tag_commit)
 	docker tag $(base_tag) $(registry_base_tag_latest)
-	docker tag $(api_tag) $(registry_api_tag_latest)
-	docker tag $(web_tag) $(registry_web_tag_latest)
-	docker tag $(worker_tag) $(registry_worker_tag_latest)
+	gcloud docker -- push $(registry_base_tag_commit)
 	gcloud docker -- push $(registry_base_tag_latest)
+
+registry_push_api:
+	docker tag $(api_tag) $(registry_api_tag_commit)
+	docker tag $(api_tag) $(registry_api_tag_latest)
+	gcloud docker -- push $(registry_api_tag_commit)
 	gcloud docker -- push $(registry_api_tag_latest)
+
+registry_push_web:
+	docker tag $(web_tag) $(registry_web_tag_commit)
+	docker tag $(web_tag) $(registry_web_tag_latest)
+	gcloud docker -- push $(registry_web_tag_commit)
 	gcloud docker -- push $(registry_web_tag_latest)
+
+registry_push_worker:
+	docker tag $(worker_tag) $(registry_worker_tag_commit)
+	docker tag $(worker_tag) $(registry_worker_tag_latest)
+	gcloud docker -- push $(registry_worker_tag_commit)
 	gcloud docker -- push $(registry_worker_tag_latest)
+
+
+registry_push: \
+	registry_push_base \
+	registry_push_api \
+	registry_push_web \
+	registry_push_worker
 
 # release the current commit to kube
 kube_deploy: registry_push
