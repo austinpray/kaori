@@ -2,6 +2,7 @@ from kizuna.commands.Command import Command
 from kizuna.models.User import User
 from kizuna.Kizuna import Kizuna
 
+
 class KKredsBalanceCommand(Command):
     def __init__(self, make_session, kizuna: Kizuna) -> None:
         self.make_session = make_session
@@ -28,4 +29,3 @@ class KKredsBalanceCommand(Command):
 
         pluralized_kkreds = 'kkred' if balance == 1 else 'kkreds'
         return self.reply(slack_client, message, f'your balance is {balance} {pluralized_kkreds}')
-

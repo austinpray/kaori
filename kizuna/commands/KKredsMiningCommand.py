@@ -9,6 +9,7 @@ import arrow
 from kazoo.client import KazooClient
 from kizuna.Kizuna import Kizuna
 
+
 class KKredsMiningCommand(Command):
     def __init__(self, make_session, kizuna: Kizuna, zk: KazooClient) -> None:
         self.make_session = make_session
@@ -49,7 +50,7 @@ class KKredsMiningCommand(Command):
             latest_mine = session\
                 .query(KKredsTransaction)\
                 .filter(KKredsTransaction.to_user_id == user.id)\
-                .filter(KKredsTransaction.is_mined == True)\
+                .filter(KKredsTransaction.is_mined)\
                 .order_by(KKredsTransaction.created_at.desc())\
                 .first()
 
@@ -74,5 +75,3 @@ class KKredsMiningCommand(Command):
             self.reply(slack_client, message, 'payable')
         finally:
             lock.release()
-
-

@@ -92,6 +92,7 @@ k.register_command(kkreds_command)
 kkreds_balance_command = KKredsBalanceCommand(make_session, kizuna=k)
 k.register_command(kkreds_balance_command)
 
+
 @dramatiq.actor
 def worker(payload):
     if payload['type'] == 'message':

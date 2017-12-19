@@ -29,6 +29,7 @@ def give_free_kkred(make_session: sessionmaker, kizuna: User, user: User):
 
     pass
 
+
 def strip_date(target_date):
     return arrow.get(datetime(year=target_date.year,
                               month=target_date.month,

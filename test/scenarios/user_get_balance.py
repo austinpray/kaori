@@ -68,9 +68,7 @@ if __name__ == "__main__":
     print(f'third balance {third_balance}')
     assert third_balance == Decimal('0.0001') - Decimal('100000')
 
-
     # session.delete(from_user)
     # session.delete(to_user)
     # session.delete(trans)
     # session.commit()
-
