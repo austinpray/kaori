@@ -58,7 +58,6 @@ class KKredsMiningCommand(Command):
                 message_ts_stripped = strip_date(message_ts)
                 latest_mine_time_stripped = strip_date(latest_mine.created_at)
                 if latest_mine_time_stripped >= message_ts_stripped:
-                    self.reply(slack_client, message, 'not payable')
                     lock.release()
                     return
 
@@ -72,6 +71,6 @@ class KKredsMiningCommand(Command):
             session.add(mined_kkred)
             session.commit()
 
-            self.reply(slack_client, message, 'payable')
+            self.reply(slack_client, message, 'successfully mined 1 kkred')
         finally:
             lock.release()
