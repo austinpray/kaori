@@ -51,7 +51,7 @@ class KKredsTransactionCommand(Command):
         amount_raw = matches[1]
 
         try:
-            amount  = Decimal(amount_raw)
+            amount = Decimal(amount_raw)
         except InvalidOperation:
             return self.reply(slack_client,
                               message,
@@ -71,7 +71,6 @@ class KKredsTransactionCommand(Command):
                                         to_user=receiving_user,
                                         amount=amount,
                                         created_at=message_ts.datetime)
-
 
         session.add(transaction)
         session.commit()
