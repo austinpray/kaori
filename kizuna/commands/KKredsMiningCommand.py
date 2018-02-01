@@ -1,13 +1,11 @@
-from kizuna.commands.Command import Command
-from kizuna.models.User import User
-from kizuna.models.KKredsTransaction import KKredsTransaction
-from datetime import datetime
-from kizuna.kkreds import strip_date
-
-from kizuna.kkreds import is_payable
-import arrow
 from kazoo.client import KazooClient
 from kizuna.Kizuna import Kizuna
+from kizuna.commands.Command import Command
+from kizuna.kkreds import is_payable
+from kizuna.kkreds import strip_date
+from kizuna.models.KKredsTransaction import KKredsTransaction
+from kizuna.models.User import User
+import arrow
 
 
 class KKredsMiningCommand(Command):
@@ -26,7 +24,7 @@ class KKredsMiningCommand(Command):
         ]
 
         pattern = "|".join(triggers)
-        super().__init__('ping$', pattern, help_text, is_at=False, always=True)
+        super().__init__('mine_kkred', pattern, help_text, is_at=False, always=True)
 
     def respond(self, slack_client, message, matches):
         message_ts = arrow.get(message['event_ts'])

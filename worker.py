@@ -1,16 +1,6 @@
-import os
-import signal
-import sys
-import time
-import traceback
-import backoff
-from sqlalchemy.exc import OperationalError as DatabaseOperationalError
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from slackclient import SlackClient
-from slackclient.server import SlackConnectionError
-from requests import ConnectionError
 
 from kizuna.Kizuna import Kizuna
 from kizuna.commands.AtGraphCommand import AtGraphCommand
@@ -22,7 +12,7 @@ from kizuna.commands.LoginCommand import LoginCommand
 from kizuna.commands.PingCommand import PingCommand
 from kizuna.commands.ReactCommand import ReactCommand
 from kizuna.commands.UserRefreshCommand import UserRefreshCommand
-from kizuna.strings import HAI_DOMO, GOODBYE
+from kizuna.commands.KKredsTransactionCommand import KKredsTransactionCommand
 from kazoo.client import KazooClient
 
 import spacy
@@ -91,6 +81,9 @@ k.register_command(kkreds_command)
 
 kkreds_balance_command = KKredsBalanceCommand(make_session, kizuna=k)
 k.register_command(kkreds_balance_command)
+
+kkreds_transaction_command = KKredsTransactionCommand(make_session, kizuna=k)
+k.register_command(kkreds_transaction_command)
 
 
 @dramatiq.actor

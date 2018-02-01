@@ -22,14 +22,6 @@ def is_payable(utc: Arrow) -> bool:
     return True
 
 
-def give_free_kkred(make_session: sessionmaker, kizuna: User, user: User):
-    with decimal_localcontext() as ctx:
-        ctx.prec = 28
-        free_kkred = Decimal(1)
-
-    pass
-
-
 def strip_date(target_date):
     return arrow.get(datetime(year=target_date.year,
                               month=target_date.month,
