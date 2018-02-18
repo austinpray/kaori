@@ -91,13 +91,6 @@ class SlashCommandsResource(object):
         trigger_id = req.get_param('trigger_id', required=True)
         user_id = req.get_param('user_id', required=True)
         user_name = req.get_param('user_name', required=True)
-        try:
-            for t in [text, team_id, trigger_id, user_id, user_name]:
-                t.encode('ascii')
-        except UnicodeEncodeError:
-            resp.status = falcon.HTTP_200
-            resp.body = 'you can only send ASCII characters to austin’s fax.'
-            return
 
         session = make_session()
 
