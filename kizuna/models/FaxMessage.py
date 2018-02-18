@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Text, Integer, DateTime, func
 from kizuna.models.Models import Base
+import arrow
 
 
 class FaxMessage(Base):
@@ -28,5 +29,7 @@ class FaxMessage(Base):
             'user_name': self.user_name,
             'user_id': self.user_id,
             'team_id': self.team_id,
-            'text': self.text
+            'text': self.text,
+            'created_at': arrow.get(self.created_at).timestamp,
+            'printed_at': arrow.get(self.printed_at).timestamp
         }
