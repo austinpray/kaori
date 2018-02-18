@@ -82,6 +82,11 @@ class SlashCommandsResource(object):
             resp.status = falcon.HTTP_200
             resp.body = 'blank fax, you gotta type some text :^('
             return
+        if len(text) > 280:
+            resp.status = falcon.HTTP_200
+            resp.body = 'faxes have to be 280 chars or less'
+            return
+
         team_id = req.get_param('team_id', required=True)
         trigger_id = req.get_param('trigger_id', required=True)
         user_id = req.get_param('user_id', required=True)
