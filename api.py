@@ -13,6 +13,7 @@ from kizuna.models.FaxMessage import FaxMessage
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)
 
+
 class HealthCheckResource(object):
     def on_get(self, req, resp):
         resp.body = '{"ok": true}'
@@ -51,6 +52,7 @@ class EventsResource(object):
                 worker.send(event)
 
         resp.body = 'thanks!'
+
 
 class SlashCommandsResource(object):
 
@@ -104,6 +106,7 @@ class SlashCommandsResource(object):
         session.commit()
         resp.body = 'sent fax to austin :^)'
 
+
 def valid_auth_header(auth_header) -> bool:
     if not auth_header:
         return False
@@ -114,6 +117,7 @@ def valid_auth_header(auth_header) -> bool:
         return False
 
     return True
+
 
 class FaxMessagesResource(object):
     def __init__(self):
@@ -129,11 +133,12 @@ class FaxMessagesResource(object):
 
         messages = session\
             .query(FaxMessage)\
-            .filter(FaxMessage.printed_at == None)\
+            .filter(FaxMessage.printed_at is None)\
             .order_by(asc(FaxMessage.created_at))\
             .all()
 
         resp.body = json.dumps({'messages': [m.to_json_serializable() for m in messages]})
+
 
 class FaxMessageResource(object):
     def on_put(self, req, resp, message_id):
@@ -164,6 +169,7 @@ class FaxMessageResource(object):
         session.add(message)
         session.commit()
         resp.body = '{"ayy": "lmao"}'
+
 
 app = falcon.API()
 

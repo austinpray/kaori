@@ -17,6 +17,7 @@ depends_on = None
 
 FAX_MESSAGES = 'fax_messages'
 
+
 def upgrade():
     op.create_table(
         FAX_MESSAGES,

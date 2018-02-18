@@ -5,14 +5,17 @@ import json
 from pprint import pprint
 import requests
 
+
 def send_to_printer(message):
     p = Usb(0x0416, 0x5011, 0, profile="POS-5890")
     p.text(message)
     p.cut('PART')
 
+
 @click.group()
 def cli():
     pass
+
 
 @cli.command()
 @click.argument('text', nargs=-1)
@@ -22,8 +25,10 @@ def send(text):
     click.echo(output_string)
     send_to_printer(f'{output_string}\n')
 
+
 dev_api_base = 'http://localhost:8001'
 prod_api_base = 'https://api.kizuna.guap.io'
+
 
 @cli.command()
 @click.option('--auth', required=True)
@@ -49,8 +54,7 @@ def fetch(auth, dev, do_print):
         message_id = m['id']
         return requests.put(f'{messages_url}/{message_id}',
                             headers=headers,
-                        data=json.dumps({'printed': printed}))
-
+                            data=json.dumps({'printed': printed}))
 
     output = []
     for message in messages:
@@ -69,8 +73,8 @@ def fetch(auth, dev, do_print):
             for message in messages:
                 mark_message_printed(message, printed=False)
 
-
     click.echo(output_string)
+
 
 if __name__ == '__main__':
     cli()

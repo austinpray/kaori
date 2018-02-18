@@ -20,6 +20,7 @@ class FaxMessage(Base):
         return "<FaxMessage(id='{}', user_name='{}', text='{}')>".format(self.id,
                                                                          self.user_name,
                                                                          self.text)
+
     def to_json_serializable(self):
         return {
             'id': self.id,
