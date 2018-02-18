@@ -1,5 +1,7 @@
 from escpos.printer import Usb
 from escpos.exceptions import Error as PrinterError
+from usb.core import USBError
+
 import click
 import json
 import requests
@@ -67,8 +69,8 @@ def fetch(auth, dev, do_print):
     if do_print:
         try:
             return send_to_printer(f'{output_string}\n')
-        except PrinterError:
-            click.echo(f'printer error: {PrinterError}')
+        except (PrinterError, USBError) as e:
+            click.echo(f'printer error: {e}')
             for message in messages:
                 mark_message_printed(message, printed=False)
 
