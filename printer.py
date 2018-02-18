@@ -8,6 +8,7 @@ import click
 import json
 import requests
 
+
 class FaxMessage(object):
 
     def __init__(self, user_name, created_at, text) -> None:
@@ -32,14 +33,15 @@ class FaxMessage(object):
                           target_dict['text'])
 
 
-
 def get_printer():
     return Usb(0x0416, 0x5011, 0, profile="POS-5890")
+
 
 def send_text_to_printer(text):
     p = get_printer()
     p.text(text)
     p.cut()
+
 
 def format_printer_message(printer, message: FaxMessage):
     printer.set(bold=True)
@@ -48,6 +50,7 @@ def format_printer_message(printer, message: FaxMessage):
     printer.textln(message.get_human_timestamp())
     printer.set()
     printer.textln(message.text)
+
 
 @click.group()
 def cli():
@@ -62,6 +65,7 @@ def send_text(text):
     click.echo(output_string)
     send_text_to_printer(f'{output_string}\n')
 
+
 @cli.command()
 @click.argument('json_message')
 def send_message(json_message):
@@ -70,12 +74,14 @@ def send_message(json_message):
     format_printer_message(p, m)
     p.cut()
 
+
 @cli.command()
 @click.argument('path')
 def send_image(path):
     p = get_printer()
     p.image(path, impl='bitImageColumn')
     p.cut()
+
 
 dev_api_base = 'http://localhost:8001'
 prod_api_base = 'https://api.kizuna.guap.io'
