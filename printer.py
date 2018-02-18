@@ -2,7 +2,6 @@ from escpos.printer import Usb
 from escpos.exceptions import Error as PrinterError
 import click
 import json
-from pprint import pprint
 import requests
 
 

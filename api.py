@@ -133,7 +133,7 @@ class FaxMessagesResource(object):
 
         messages = session\
             .query(FaxMessage)\
-            .filter(FaxMessage.printed_at is None)\
+            .filter(FaxMessage.printed_at.is_(None))\
             .order_by(asc(FaxMessage.created_at))\
             .all()
 
