@@ -114,8 +114,8 @@ def fetch(auth, dev, do_print):
 
     output = []
     for message_dict in messages:
-        update_req = mark_message_printed(message_dict, printed=True)
         message = FaxMessage.from_dict(message_dict)
+        update_req = mark_message_printed(message_dict, printed=True)
         if update_req.status_code == 200:
             output.append(message)
 
