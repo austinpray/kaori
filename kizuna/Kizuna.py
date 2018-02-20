@@ -13,6 +13,8 @@ class Kizuna:
         self.bot_id = bot_id
         self.sc = slack_client
         self.respond_tokens = (
+            'kiz',
+            'Kiz',
             'kizuna',
             'Kizuna',
             '@kizuna',
