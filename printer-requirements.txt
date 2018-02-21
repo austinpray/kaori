@@ -1,5 +1,0 @@
-# printer
-click
-python-escpos==3.0a3
-requests
-arrow
