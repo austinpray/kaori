@@ -2,8 +2,10 @@
 # https://spacy.io/api/annotation
 taggable_pos = [
     'ADJ',
+    'ADV',
     'INTJ',
     'NOUN',
+    'NUM',
     'PROPN',
     'VERB',
     'X'
