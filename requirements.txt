@@ -21,9 +21,6 @@ SQLAlchemy
 alembic
 psycopg2
 
-# distributed locks
-kazoo
-
 # falcon api related
 falcon
 ujson

@@ -12,8 +12,6 @@ services:
       POSTGRES_USER: kizuna
   rabbitmq:
     image: rabbitmq
-  zookeeper:
-    image: zookeeper
   worker:
     build:
       context: .
