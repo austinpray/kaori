@@ -31,8 +31,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "npm i --quiet && webpack --watch",
-    "build": "npm i --quiet && webpack --p"
+    "watch": "npm ci && webpack --watch",
+    "build": "npm ci && webpack -p"
   },
   "repository": {
     "type": "git",

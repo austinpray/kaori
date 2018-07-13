@@ -5,3 +5,5 @@ if KIZUNA_ENV == 'development':
     loglevel = 'debug'
 
 workers = 4
+
+worker_class = 'gevent'

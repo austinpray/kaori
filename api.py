@@ -3,8 +3,9 @@ import json
 import config
 import logging
 import arrow
+from dramatiq.brokers.rabbitmq import RabbitmqBroker
+from dramatiq.message import Message
 
-from worker import worker
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 
@@ -12,6 +13,8 @@ from kizuna.models.FaxMessage import FaxMessage
 
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)
+
+rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
 
 
 class HealthCheckResource(object):
@@ -22,7 +25,7 @@ class HealthCheckResource(object):
 class EventsResource(object):
 
     def __init__(self):
-        self.logger = logging.getLogger('thingsapp.' + __name__)
+        self.logger = logging.getLogger('kizuna_api.' + __name__)
 
     def on_post(self, req, resp):
         if not req.content_length:
@@ -49,7 +52,11 @@ class EventsResource(object):
             event_type = event['type']
             if event_type == 'message':
                 self.logger.debug(event)
-                worker.send(event)
+                rabbitmq_broker.enqueue(Message(queue_name='default',
+                                                actor_name='worker',
+                                                args=(event,),
+                                                options={},
+                                                kwargs={}))
 
         resp.body = 'thanks!'
 
@@ -57,7 +64,7 @@ class EventsResource(object):
 class SlashCommandsResource(object):
 
     def __init__(self):
-        self.logger = logging.getLogger('thingsapp.' + __name__)
+        self.logger = logging.getLogger('kizuna_api.' + __name__)
 
     def on_post(self, req, resp):
         if not req.content_length:
@@ -119,7 +126,7 @@ def valid_auth_header(auth_header) -> bool:
 
 class FaxMessagesResource(object):
     def __init__(self):
-        self.logger = logging.getLogger('thingsapp.' + __name__)
+        self.logger = logging.getLogger('kizuna_api.' + __name__)
 
     # todo: put me in a middleware
     def on_get(self, req, resp):
