@@ -4,6 +4,8 @@
 
 I am a slack bot with functionality that ranges from "useless" to "pretty neat".
 
+[GitHub](https://github.com/austinpray/kizuna) / [GitLab](https://gitlab.com/austinpray/kizuna)
+
 ## Features
 
 ### Mentions Graph
