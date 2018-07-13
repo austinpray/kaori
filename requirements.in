@@ -1,0 +1,35 @@
+# web related
+Flask
+
+# global
+slackclient # for slack obviously
+
+gevent
+watchdog-gevent
+
+gunicorn # wsgi server
+raven[flask] # sentry error reporting
+backoff # retryable functions
+cryptography # for auth tokens
+boto3 # aws s3 client
+arrow # dates and time
+
+# testing
+pytest
+
+# worker related
+dramatiq[rabbitmq, watch]
+requests
+
+# db related
+SQLAlchemy
+alembic
+psycopg2
+
+# falcon api related
+falcon
+ujson
+
+# mention graph related
+pygraphviz
+palettable
