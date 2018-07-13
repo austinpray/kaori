@@ -37,6 +37,8 @@ class AtGraphCommand(Command):
     @staticmethod
     def linear_scale(old_max, old_min, new_max, new_min, value):
         old_range = (old_max - old_min)
+        if old_range == 0:
+            return value
         new_range = (new_max - new_min)
         return (((value - old_min) * new_range) / old_range) + new_min
 
