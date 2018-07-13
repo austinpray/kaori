@@ -51,4 +51,3 @@ services:
     volumes:
       - ./:/kizuna
     command: npm run watch
-    restart: always
