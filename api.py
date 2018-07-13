@@ -22,7 +22,7 @@ class HealthCheckResource(object):
 class EventsResource(object):
 
     def __init__(self):
-        self.logger = logging.getLogger('thingsapp.' + __name__)
+        self.logger = logging.getLogger('kizuna_api.' + __name__)
 
     def on_post(self, req, resp):
         if not req.content_length:
@@ -57,7 +57,7 @@ class EventsResource(object):
 class SlashCommandsResource(object):
 
     def __init__(self):
-        self.logger = logging.getLogger('thingsapp.' + __name__)
+        self.logger = logging.getLogger('kizuna_api.' + __name__)
 
     def on_post(self, req, resp):
         if not req.content_length:
@@ -119,7 +119,7 @@ def valid_auth_header(auth_header) -> bool:
 
 class FaxMessagesResource(object):
     def __init__(self):
-        self.logger = logging.getLogger('thingsapp.' + __name__)
+        self.logger = logging.getLogger('kizuna_api.' + __name__)
 
     # todo: put me in a middleware
     def on_get(self, req, resp):
