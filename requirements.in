@@ -3,7 +3,10 @@ Flask
 
 # global
 slackclient # for slack obviously
+
 gevent
+watchdog-gevent
+
 gunicorn # wsgi server
 raven[flask] # sentry error reporting
 backoff # retryable functions

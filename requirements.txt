@@ -55,7 +55,7 @@ slackclient==1.2.1
 sqlalchemy==1.2.9
 ujson==1.35
 urllib3==1.23             # via requests
-watchdog-gevent==0.1      # via dramatiq
+watchdog-gevent==0.1
 watchdog==0.8.3           # via dramatiq, watchdog-gevent
 websocket-client==0.48.0  # via slackclient
 werkzeug==0.14.1          # via flask
