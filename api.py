@@ -3,8 +3,9 @@ import json
 import config
 import logging
 import arrow
+from dramatiq.brokers.rabbitmq import RabbitmqBroker
+from dramatiq.message import Message
 
-from worker import worker
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 
@@ -12,6 +13,8 @@ from kizuna.models.FaxMessage import FaxMessage
 
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)
+
+rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
 
 
 class HealthCheckResource(object):
@@ -49,7 +52,11 @@ class EventsResource(object):
             event_type = event['type']
             if event_type == 'message':
                 self.logger.debug(event)
-                worker.send(event)
+                rabbitmq_broker.enqueue(Message(queue_name='default',
+                                                actor_name='worker',
+                                                args=(event,),
+                                                options={},
+                                                kwargs={}))
 
         resp.body = 'thanks!'
 
