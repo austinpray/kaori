@@ -22,7 +22,7 @@ import dramatiq
 
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 
-rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
+rabbitmq_broker = RabbitmqBroker(url=config.RABBITMQ_URL)
 dramatiq.set_broker(rabbitmq_broker)
 
 nlp = spacy.load('en')

@@ -14,7 +14,7 @@ from kizuna.models.FaxMessage import FaxMessage
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)
 
-rabbitmq_broker = RabbitmqBroker(host="rabbitmq")
+rabbitmq_broker = RabbitmqBroker(url=config.RABBITMQ_URL)
 
 
 class HealthCheckResource(object):
