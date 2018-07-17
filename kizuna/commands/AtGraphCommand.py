@@ -14,6 +14,7 @@ from time import sleep
 
 from kizuna.SlackArgumentParser import SlackArgumentParser, SlackArgumentParserException
 
+
 class AtGraphCommand(Command):
     def __init__(self, db_session) -> None:
         self.db_session = db_session
