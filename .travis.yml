@@ -17,7 +17,8 @@ before_install:
 - gcloud components install kubectl
 - which gcloud
 - which kubectl
-- gcloud auth activate-service-account --key-file gcloud-secret.json
+- gcloud auth activate-service-account austin@kizuna-188702.iam.gserviceaccount.com
+  --key-file gcloud-secret.json
 - gcloud config set project kizuna-188702
 - gcloud container clusters get-credentials kizuna-prod-cluster --zone us-central1-a
   --project kizuna-188702
