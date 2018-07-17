@@ -31,5 +31,5 @@ falcon
 ujson
 
 # mention graph related
-pygraphviz
+graphviz
 palettable

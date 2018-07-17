@@ -1,8 +1,11 @@
 from kizuna.models.AtGraphEdge import AtGraphEdge
 from kizuna.models.User import User
 from kizuna.commands.Command import Command
-import pygraphviz as pgv
 from palettable import tableau
+
+from subprocess import CalledProcessError
+
+from graphviz import Digraph
 
 from kizuna.strings import WAIT_A_SEC, JAP_DOT
 
@@ -11,12 +14,11 @@ from time import sleep
 
 from kizuna.SlackArgumentParser import SlackArgumentParser, SlackArgumentParserException
 
-
 class AtGraphCommand(Command):
     def __init__(self, db_session) -> None:
         self.db_session = db_session
 
-        self.available_layouts = ['dot', 'neato', 'fdp', 'twopi', 'circo', 'raw']
+        self.available_layouts = ['dot', 'neato', 'fdp', 'twopi', 'circo']
 
         parser = SlackArgumentParser(prog='kizuna mentions', description='Generate a mentions graph', add_help=False)
         self.add_help_command(parser)
@@ -27,6 +29,12 @@ class AtGraphCommand(Command):
                             dest='layout',
                             default='dot',
                             help='Defaults to `dot`. Can be any of ' + ', '.join(markdown_available_layouts))
+
+        parser.add_argument('--raster',
+                            '-r',
+                            dest='raster',
+                            action='store_true',
+                            help='Set to render a png instead of a pdf')
 
         self.set_help_text(parser)
         self.parser = parser
@@ -52,7 +60,8 @@ class AtGraphCommand(Command):
         except SlackArgumentParserException as err:
             return send(str(err))
 
-        layout = args.layout
+        user_layout = args.layout
+        output_format = 'png' if args.raster else 'pdf'
 
         def send_message(text):
             return slack_client.api_call("chat.postMessage",
@@ -60,9 +69,9 @@ class AtGraphCommand(Command):
                                          text=text,
                                          as_user=True)
 
-        if layout not in self.available_layouts:
-            layout_error_message = ("Oops! --layout needs to be one of '{}'. "
-                                    "You gave me '{}'").format(', '.join(self.available_layouts), layout)
+        if user_layout not in self.available_layouts:
+            layout_error_message = ("Oops! --user_layout needs to be one of '{}'. "
+                                    "You gave me '{}'").format(', '.join(self.available_layouts), user_layout)
             return send_message(layout_error_message)
 
         if args.help:
@@ -105,7 +114,7 @@ class AtGraphCommand(Command):
         if loading_message['ok']:
             thread.start()
 
-        G = pgv.AGraph(directed=True)
+        graph = Digraph(comment='Mentions', format=output_format)
         color_index = 0
         user_color_map = {}
         colors = tableau.get_map('Tableau_20').hex_colors
@@ -114,7 +123,7 @@ class AtGraphCommand(Command):
             color = colors[color_index]
             color_index = color_index + 1 if color_index < (len(colors) - 1) else 0
             user_color_map[user.name] = color
-            G.add_node(user.name, color=color)
+            graph.node(user.name, color=color)
 
         max_weight = edges[len(edges) - 1].weight
         min_weight = edges[0].weight
@@ -132,41 +141,39 @@ class AtGraphCommand(Command):
             return self.linear_scale(max_weight, min_weight, max_fontsize, min_fontsize, value)
 
         for edge in edges:
-            G.add_edge(edge.head_user.name,
+            graph.edge(edge.head_user.name,
                        edge.tail_user.name,
-                       penwidth=scale_penwidth_by(edge.weight),
-                       label=edge.weight,
-                       weight=edge.weight,
-                       fontsize=scale_fontsize_by(edge.weight),
-                       fontcolor=user_color_map[edge.head_user.name],
+                       penwidth=str(scale_penwidth_by(edge.weight)),
+                       label=str(edge.weight),
+                       weight=str(edge.weight),
+                       fontsize=str(scale_fontsize_by(edge.weight)),
+                       fontcolor=str(user_color_map[edge.head_user.name]),
                        color=user_color_map[edge.head_user.name])
 
-        if layout == 'raw':
-            return slack_client.api_call('files.upload',
-                                         as_user=True,
-                                         channels=message['channel'],
-                                         filename='graph.dot',
-                                         file=G.string())
-
-        image_path = '/tmp/graph.png'
+        # if user_layout == 'raw':
+        #     return slack_client.api_call('files.upload',
+        #                                  as_user=True,
+        #                                  channels=message['channel'],
+        #                                  filename='graph.dot',
+        #                                  file=graph.do)
 
         def dot():
-            G.layout(prog='dot')
+            graph.engine = 'dot'
 
         def neato():
-            G.graph_attr.update(overlap='scale')
-            G.graph_attr.update(splines=True)
-            G.graph_attr.update(sep=1)
-            G.layout(prog='neato')
+            # G.graph_attr.update(overlap='scale')
+            # G.graph_attr.update(splines=True)
+            # G.graph_attr.update(sep=1)
+            graph.engine = 'neato'
 
         def fdp():
-            G.layout(prog='fdp')
+            graph.engine = 'fdp'
 
         def twopi():
-            G.layout(prog='twopi')
+            graph.engine = 'twopi'
 
         def circo():
-            G.layout(prog='circo')
+            graph.engine = 'circo'
 
         def layout_graph(layout):
             return {
@@ -177,20 +184,26 @@ class AtGraphCommand(Command):
                 "circo": circo
             }.get(layout, dot)
 
-        layout_graph(layout)()
+        try:
+            layout_graph(user_layout)()
 
-        G.draw(image_path)
-        slack_client.api_call('files.upload',
-                              as_user=True,
-                              channels=message['channel'],
-                              filename='graph.png',
-                              file=open(image_path, 'rb'))
-
-        loaded = True
-        thread.join()
-        slack_client.api_call("chat.delete",
-                              ts=loading_message['ts'],
-                              channel=channel,
-                              as_user=True)
+            slack_client.api_call('files.upload',
+                                  as_user=True,
+                                  channels=message['channel'],
+                                  filename=f'graph.{output_format}',
+                                  file=graph.pipe())
+        except CalledProcessError as err:
+            send_message('Encountered a problem while rendering the graph :monkas:')
+            raise err
+        except TypeError as err:
+            send_message('Encountered a problem while trying to write the graph to the file system :monkas:')
+            raise err
+        finally:
+            loaded = True
+            thread.join()
+            slack_client.api_call("chat.delete",
+                                  ts=loading_message['ts'],
+                                  channel=channel,
+                                  as_user=True)
 
         return None
