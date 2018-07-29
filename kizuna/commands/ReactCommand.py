@@ -11,24 +11,24 @@ import sqlalchemy.orm as orm
 
 
 class ReactCommand(Command):
-    def __init__(self, Session, nlp) -> None:
+    def __init__(self, make_session, nlp) -> None:
         help_text = 'kizuna react - view available reaction images and tags\n' \
                     'kizuna react add - upload some reaction images\n' \
                     'kizuna tfw <text> - Send a reaction related to the text'
-        self.Session = Session
         self.nlp = nlp
         super().__init__(name='react',
                          pattern='(react(?:ion)?|tfw)(?: (.*))?$',
                          help_text=help_text,
-                         is_at=True)
+                         is_at=True,
+                         db_session_maker=make_session)
 
     def respond(self, slack_client, message, matches):
         send = self.send_ephemeral_factory(slack_client, message['channel'], message['user'])
         send_public = self.send_factory(slack_client, message['channel'])
 
-        session = self.Session()
-        user = User.get_by_slack_id(session, message['user'])
-        command = matches[0]
+        with self.db_session_scope() as session:
+            user = User.get_by_slack_id(session, message['user'])
+
         query = matches[1]
         if query:
             query = query.strip()
@@ -59,11 +59,13 @@ class ReactCommand(Command):
 
         possible_tags = [token.text for token in extract_possible_tags(self.nlp, query)]
 
-        tags = session\
-            .query(ReactionImageTag)\
-            .options(orm.joinedload("images"))\
-            .filter(ReactionImageTag.name.in_(possible_tags))\
-            .all()
+        with self.db_session_scope() as session:
+            tags = session\
+                .query(ReactionImageTag)\
+                .options(orm.joinedload("images"))\
+                .filter(ReactionImageTag.name.in_(possible_tags))\
+                .all()
+
         if tags:
             images = list(itertools.chain.from_iterable([tag.images for tag in tags]))
 
