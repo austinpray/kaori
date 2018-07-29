@@ -38,7 +38,7 @@ if not config.SLACK_API_TOKEN:
                      '.env file or in the system environment')
 
 sc = SlackClient(config.SLACK_API_TOKEN)
-db_engine = create_engine(config.DATABASE_URL)
+db_engine = create_engine(config.DATABASE_URL, pool_size=5)
 make_session = sessionmaker(bind=db_engine)
 
 auth = sc.api_call('auth.test')

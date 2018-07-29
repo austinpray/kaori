@@ -7,17 +7,35 @@ from functools import partial
 from kizuna.models.User import User
 from kizuna.slack import format_slack_mention
 
+from contextlib import contextmanager
+
 
 class Command:
-    def __init__(self, name, pattern, help_text='', is_at=True, always=False) -> None:
+    def __init__(self, name, pattern, help_text='', is_at=True, always=False, db_session_maker=None) -> None:
         self.name = name
         self.is_at = is_at
         self.help_text = help_text
         self.pattern = re.compile(pattern, re.IGNORECASE) if isinstance(pattern, str) else pattern
         self.always = always
+        self.db_session_maker = db_session_maker
 
     def help(self, bot_name):
         return self.help_text.replace("{bot}", bot_name)
+
+    @contextmanager
+    def db_session_scope(self):
+        if not self.db_session_maker:
+            raise RuntimeError('no db_session_maker specified for this command')
+
+        session = self.db_session_maker()
+        try:
+            yield session
+            session.commit()
+        except Exception:
+            session.rollback()
+            raise
+        finally:
+            session.close()
 
     @staticmethod
     def add_help_command(parser):
