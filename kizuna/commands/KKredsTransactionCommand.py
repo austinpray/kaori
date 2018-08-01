@@ -25,43 +25,41 @@ class KKredsTransactionCommand(Command):
         with self.db_session_scope() as session:
             sending_user = User.get_by_slack_id(session, sending_user_id)
 
-        if not sending_user:
-            return
+            if not sending_user:
+                return
 
-        receiving_user_raw = matches[0]
+            receiving_user_raw = matches[0]
 
-        if not is_user_mention(receiving_user_raw):
-            return self.reply(slack_client,
-                              message,
-                              'User has to be an `@` mention. Like it has to be a real blue `@` mention.')
+            if not is_user_mention(receiving_user_raw):
+                return self.reply(slack_client,
+                                  message,
+                                  'User has to be an `@` mention. Like it has to be a real blue `@` mention.')
 
-        with self.db_session_scope() as session:
             receiving_user = User.get_by_slack_id(session,
                                                   get_user_id_from_mention(receiving_user_raw))
 
-        if not receiving_user:
-            return self.reply(slack_client, message, 'Could not find that user')
+            if not receiving_user:
+                return self.reply(slack_client, message, 'Could not find that user')
 
-        if sending_user.id == receiving_user.id:
-            return self.reply(slack_client,
-                              message,
-                              'You can’t send money to yourself.')
+            if sending_user.id == receiving_user.id:
+                return self.reply(slack_client,
+                                  message,
+                                  'You can’t send money to yourself.')
 
-        amount_raw = matches[1]
+            amount_raw = matches[1]
 
-        try:
-            amount = Decimal(amount_raw)
-        except InvalidOperation:
-            return self.reply(slack_client,
-                              message,
-                              'That amount is invalid. Try a decimal or integer value')
+            try:
+                amount = Decimal(amount_raw)
+            except InvalidOperation:
+                return self.reply(slack_client,
+                                  message,
+                                  'That amount is invalid. Try a decimal or integer value')
 
-        if amount <= 0:
-            return self.reply(slack_client,
-                              message,
-                              'Amount has to be non-zero')
+            if amount <= 0:
+                return self.reply(slack_client,
+                                  message,
+                                  'Amount has to be non-zero')
 
-        with self.db_session_scope() as session:
             if amount > sending_user.get_kkred_balance(session):
                 return self.reply(slack_client,
                                   message,
