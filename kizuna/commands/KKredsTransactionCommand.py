@@ -72,4 +72,4 @@ class KKredsTransactionCommand(Command):
 
             session.add(transaction)
 
-        self.reply(slack_client, message, f'successfully sent {amount} to {receiving_user.name}')
+            self.reply(slack_client, message, f'successfully sent {amount} to {receiving_user.name}')
