@@ -14,6 +14,7 @@ def build_url(baseurl, path, args_dict=None):
 def slack_link(text, url):
     return '<{}|{}>'.format(url, text)
 
+
 @contextmanager
 def db_session_scope(session_maker):
     if not session_maker:

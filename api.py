@@ -5,18 +5,15 @@ import logging
 import arrow
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 from dramatiq.message import Message
-
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-
 from kizuna.models.FaxMessage import FaxMessage
+from kizuna.utils import db_session_scope
 
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)
 
 rabbitmq_broker = RabbitmqBroker(url=config.RABBITMQ_URL)
-
-from kizuna.utils import db_session_scope
 
 
 class HealthCheckResource(object):
