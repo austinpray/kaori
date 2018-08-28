@@ -1,4 +1,5 @@
 from urllib.parse import urlparse, urlencode, urlunparse
+from contextlib import contextmanager
 
 
 def build_url(baseurl, path, args_dict=None):
@@ -12,3 +13,18 @@ def build_url(baseurl, path, args_dict=None):
 
 def slack_link(text, url):
     return '<{}|{}>'.format(url, text)
+
+@contextmanager
+def db_session_scope(session_maker):
+    if not session_maker:
+        raise RuntimeError('no db_session_maker specified for this command')
+
+    session = session_maker()
+    try:
+        yield session
+        session.commit()
+    except Exception:
+        session.rollback()
+        raise
+    finally:
+        session.close()

@@ -16,6 +16,8 @@ make_session = sessionmaker(bind=db_engine)
 
 rabbitmq_broker = RabbitmqBroker(url=config.RABBITMQ_URL)
 
+from kizuna.utils import db_session_scope
+
 
 class HealthCheckResource(object):
     def on_get(self, req, resp):
@@ -99,16 +101,15 @@ class SlashCommandsResource(object):
         user_id = req.get_param('user_id', required=True)
         user_name = req.get_param('user_name', required=True)
 
-        session = make_session()
+        with db_session_scope(make_session) as session:
+            message = FaxMessage(team_id=team_id,
+                                 text=text,
+                                 trigger_id=trigger_id,
+                                 user_id=user_id,
+                                 user_name=user_name)
 
-        message = FaxMessage(team_id=team_id,
-                             text=text,
-                             trigger_id=trigger_id,
-                             user_id=user_id,
-                             user_name=user_name)
+            session.add(message)
 
-        session.add(message)
-        session.commit()
         resp.body = 'sent fax to austin :^)'
 
 
@@ -134,15 +135,14 @@ class FaxMessagesResource(object):
             resp.status = falcon.HTTP_401
             return
 
-        session = make_session()
+        with db_session_scope(make_session) as session:
+            messages = session\
+                .query(FaxMessage)\
+                .filter(FaxMessage.printed_at.is_(None))\
+                .order_by(asc(FaxMessage.created_at))\
+                .all()
 
-        messages = session\
-            .query(FaxMessage)\
-            .filter(FaxMessage.printed_at.is_(None))\
-            .order_by(asc(FaxMessage.created_at))\
-            .all()
-
-        resp.body = json.dumps({'messages': [m.to_json_serializable() for m in messages]})
+            resp.body = json.dumps({'messages': [m.to_json_serializable() for m in messages]})
 
 
 class FaxMessageResource(object):
@@ -156,23 +156,22 @@ class FaxMessageResource(object):
 
         data = json.load(req.stream)
 
-        session = make_session()
+        with db_session_scope(make_session) as session:
+            message = session.query(FaxMessage).filter(FaxMessage.id == message_id).first()
 
-        message = session.query(FaxMessage).filter(FaxMessage.id == message_id).first()
+            if not message:
+                resp.status = falcon.HTTP_404
+                return
 
-        if not message:
-            resp.status = falcon.HTTP_404
-            return
+            if 'printed' not in data:
+                resp.status = falcon.HTTP_400
+                return
 
-        if 'printed' not in data:
-            resp.status = falcon.HTTP_400
-            return
+            printed = data['printed']
+            message.printed_at = arrow.get().datetime if printed else None
 
-        printed = data['printed']
-        message.printed_at = arrow.get().datetime if printed else None
+            session.add(message)
 
-        session.add(message)
-        session.commit()
         resp.body = '{"ayy": "lmao"}'
 
 
