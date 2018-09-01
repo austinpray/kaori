@@ -12,6 +12,8 @@
 # simulate CI environment
 TRAVIS_COMMIT ?= $(shell git rev-parse HEAD)
 
+NODE = docker run -it --rm --name kizuna-node-$$(uuidgen) -v $(shell pwd):/kizuna -w /kizuna node:10
+
 # tags used locally
 base_tag = austinpray/kizuna/base
 
@@ -130,8 +132,24 @@ api: base
 		-t $(api_tag) \
 		.
 
+node_modules: package-lock.json
+	${NODE} npm ci
+
+assets: node_modules
+	${NODE} npm run build -- -p
+
+assets-watch: node_modules
+	${NODE} npm run build -- -d --watch
+
+assets-dev:
+	${NODE} bash
+
+assets-clean:
+	${NODE} rm -rf node_modules
+
+
 web: api
-	docker run -it --rm --name build-web-assets -v $(shell pwd):/kizuna -w /kizuna node:10 npm run build
+	${MAKE} assets
 	docker build \
 		--file Dockerfile.web \
 		--cache-from $(web_tag) \
