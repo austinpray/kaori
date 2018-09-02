@@ -10,7 +10,7 @@
 	registry_push_worker
 
 # simulate CI environment
-TRAVIS_COMMIT ?= $(shell git rev-parse HEAD)
+TRAVIS_COMMIT ?= $(shell git rev-parse HEAD)-ts$(date +"%T")
 
 NODE = docker run -it --rm --name kizuna-node-$$(uuidgen) -v $(shell pwd):/kizuna -w /kizuna node:10
 
