@@ -5,7 +5,7 @@ import arrow
 from .BaseCommand import BaseCommand
 from ..Kizuna import Kizuna
 from ..models import KKredsTransaction, User
-from ..slack import is_user_mention, get_user_id_from_mention
+from ..slack import is_user_mention, get_user_id_from_mention, reply
 
 
 class KKredsTransactionCommand(BaseCommand):
@@ -32,7 +32,7 @@ class KKredsTransactionCommand(BaseCommand):
             receiving_user_raw = matches[0]
 
             if not is_user_mention(receiving_user_raw):
-                return self.reply(slack_client,
+                return reply(slack_client,
                                   message,
                                   'User has to be an `@` mention. Like it has to be a real blue `@` mention.')
 
@@ -40,10 +40,10 @@ class KKredsTransactionCommand(BaseCommand):
                                                   get_user_id_from_mention(receiving_user_raw))
 
             if not receiving_user:
-                return self.reply(slack_client, message, 'Could not find that user')
+                return reply(slack_client, message, 'Could not find that user')
 
             if sending_user.id == receiving_user.id:
-                return self.reply(slack_client,
+                return reply(slack_client,
                                   message,
                                   'You can’t send money to yourself.')
 
@@ -52,17 +52,17 @@ class KKredsTransactionCommand(BaseCommand):
             try:
                 amount = Decimal(amount_raw)
             except InvalidOperation:
-                return self.reply(slack_client,
+                return reply(slack_client,
                                   message,
                                   'That amount is invalid. Try a decimal or integer value')
 
             if amount <= 0:
-                return self.reply(slack_client,
+                return reply(slack_client,
                                   message,
                                   'Amount has to be non-zero')
 
             if amount > sending_user.get_kkred_balance(session):
-                return self.reply(slack_client,
+                return reply(slack_client,
                                   message,
                                   'You don’t have enough kkreds')
 
@@ -73,4 +73,4 @@ class KKredsTransactionCommand(BaseCommand):
 
             session.add(transaction)
 
-            self.reply(slack_client, message, f'successfully sent {amount} to {receiving_user.name}')
+            reply(slack_client, message, f'successfully sent {amount} to {receiving_user.name}')
