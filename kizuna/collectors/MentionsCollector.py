@@ -1,7 +1,7 @@
-from .BaseCollector import BaseCollector
-from kizuna.utils import db_session_scope
-from kizuna.slack import extract_mentions
 from kizuna.models import User, AtGraphEdge
+from kizuna.slack import extract_mentions
+from kizuna.utils import db_session_scope
+from .BaseCollector import BaseCollector
 
 
 class MentionsCollector(BaseCollector):

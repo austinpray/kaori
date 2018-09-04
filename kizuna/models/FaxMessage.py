@@ -1,6 +1,7 @@
-from sqlalchemy import Column, String, Text, Integer, DateTime, func
-from kizuna.models.Models import Base
 import arrow
+from sqlalchemy import Column, String, Text, Integer, DateTime, func
+
+from kizuna.models.Models import Base
 
 
 class FaxMessage(Base):

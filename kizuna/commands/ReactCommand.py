@@ -1,13 +1,14 @@
-from . import BaseCommand
+import itertools
+from random import choice
+
+import sqlalchemy.orm as orm
+
 from config import KIZUNA_WEB_URL
 from kizuna.models import ReactionImageTag, User
 from kizuna.nlp import extract_possible_tags
-from kizuna.utils import build_url
 from kizuna.slack import slack_link
-from random import choice
-
-import itertools
-import sqlalchemy.orm as orm
+from kizuna.utils import build_url
+from . import BaseCommand
 
 
 class ReactCommand(BaseCommand):

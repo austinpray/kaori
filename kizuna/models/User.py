@@ -1,10 +1,12 @@
-from sqlalchemy import Column, Integer, String, func
-from kizuna.models.Models import Base
-from secrets import token_hex
-from cryptography.fernet import Fernet, InvalidToken
-from config import FERNET_KEY, FERNET_TTL
 from decimal import Decimal
+from secrets import token_hex
+
+from cryptography.fernet import Fernet
+from sqlalchemy import Column, Integer, String, func
+
+from config import FERNET_KEY, FERNET_TTL
 from kizuna.models.KKredsTransaction import KKredsTransaction
+from kizuna.models.Models import Base
 
 
 def user_generate_api_key():

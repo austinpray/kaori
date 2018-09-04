@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, func, DECIMAL, Boolean
 from sqlalchemy.orm import relationship
+
 from kizuna.models.Models import Base
 
 

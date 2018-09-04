@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
+
 from kizuna.models.Models import Base
 
 

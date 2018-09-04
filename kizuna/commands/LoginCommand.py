@@ -1,9 +1,8 @@
+import config
 from kizuna.commands import BaseCommand
 from kizuna.models.User import User
-from kizuna.utils import build_url
 from kizuna.slack import send_ephemeral_factory
-
-import config
+from kizuna.utils import build_url
 
 
 class LoginCommand(BaseCommand):

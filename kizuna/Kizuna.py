@@ -1,11 +1,10 @@
-from kizuna.strings import \
-    JAP_DOT, LQUO, RQUO, YOSHI, HAI_DOMO, KIZUNA, VERSION_TRANSITION_TEMPLATE, VERSION_UPDATE_TEMPLATE, VERSION_UP
-
-from os import path
 import json
+from os import path
 from pprint import pprint
 
 from kizuna.models.Meta import Meta
+from kizuna.strings import \
+    JAP_DOT, LQUO, RQUO, YOSHI, HAI_DOMO, KIZUNA, VERSION_TRANSITION_TEMPLATE, VERSION_UPDATE_TEMPLATE, VERSION_UP
 
 
 class Kizuna:

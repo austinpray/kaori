@@ -1,10 +1,11 @@
+import arrow
+
 from kizuna.Kizuna import Kizuna
 from kizuna.commands import BaseCommand
 from kizuna.kkreds import is_payable
 from kizuna.kkreds import strip_date
 from kizuna.models import User, KKredsTransaction
 from kizuna.slack import reply
-import arrow
 
 
 class KKredsMiningCommand(BaseCommand):

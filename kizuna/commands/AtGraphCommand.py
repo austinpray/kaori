@@ -1,12 +1,14 @@
+from subprocess import CalledProcessError
+from threading import Thread
+from time import sleep
+
 from graphviz import Digraph
+from palettable import tableau
+
 from kizuna.commands import BaseCommand
 from kizuna.models import AtGraphEdge, User
 from kizuna.slack import send_factory, SlackArgumentParserException, SlackArgumentParser
 from kizuna.strings import WAIT_A_SEC, JAP_DOT
-from palettable import tableau
-from subprocess import CalledProcessError
-from threading import Thread
-from time import sleep
 
 
 class AtGraphCommand(BaseCommand):

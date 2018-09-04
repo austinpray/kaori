@@ -1,7 +1,6 @@
 from kizuna.commands.BaseCommand import BaseCommand
-from kizuna.slack import send
-
 from kizuna.models.User import User
+from kizuna.slack import send
 
 
 class UserRefreshCommand(BaseCommand):
