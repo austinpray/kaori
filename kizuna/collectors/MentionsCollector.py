@@ -1,23 +1,18 @@
-from kizuna.AtGraph import extract_ats
-from kizuna.models.AtGraphEdge import AtGraphEdge
-from kizuna.commands.Command import Command
+from .BaseCollector import BaseCollector
+from kizuna.utils import db_session_scope
+from kizuna.slack import extract_mentions
+from kizuna.models import User, AtGraphEdge
 
-from kizuna.models.User import User
 
+class MentionsCollector(BaseCollector):
 
-class AtGraphDataCollector(Command):
-    def __init__(self, db_session, slack_client) -> None:
-        super().__init__('at-graph-data-collector', '.*', '', False, db_session_maker=db_session)
-        self.sc = slack_client
-
-    def maybe_respond(self, slack_client, message):
-        mentioned_user_ids = extract_ats(message['text'])
+    def collect(self, message):
+        mentioned_user_ids = extract_mentions(message['text'])
 
         if not mentioned_user_ids or len(mentioned_user_ids) < 1:
             return
 
-        with self.db_session_scope() as session:
-            # make sure all users exist in db before we do graph operations
+        with db_session_scope(self.db_session_maker) as session:
             try:
                 def id_to_user(mentioned_user_id):
                     return User.maybe_create_user_from_slack_id(mentioned_user_id, self.sc, session)

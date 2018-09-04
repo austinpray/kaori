@@ -1,4 +1,8 @@
 import re
+from argparse import ArgumentParser
+from functools import partial
+
+from kizuna.models import User
 
 
 def format_slack_mention(slack_id: str):
@@ -6,6 +10,10 @@ def format_slack_mention(slack_id: str):
 
 
 user_id_regex = '^<@(U[A-Za-z0-9]{8,})>$'
+
+
+def extract_mentions(text):
+    return set(re.findall(r"<@(\S+)>", text, re.DOTALL))
 
 
 def get_user_id_from_mention(m: str):
@@ -23,3 +31,49 @@ def is_user_mention(s: str) -> bool:
         return False
 
     return True
+
+
+def send(slack_client, channel, text):
+    return slack_client.api_call("chat.postMessage",
+                                 channel=channel,
+                                 text=text,
+                                 as_user=True)
+
+
+def reply(slack_client, message, text):
+    return slack_client.api_call("chat.postMessage",
+                                 channel=message['channel'],
+                                 text=f"{format_slack_mention(message['user'])} {text}",
+                                 as_user=True)
+
+
+def send_factory(slack_client, channel):
+    return partial(send, slack_client, channel)
+
+
+def send_ephemeral(slack_client, channel, user, text):
+    if isinstance(user, User):
+        user = user.slack_id
+
+    return slack_client.api_call("chat.postEphemeral",
+                                 channel=channel,
+                                 user=user,
+                                 text=text,
+                                 as_user=True)
+
+
+def send_ephemeral_factory(slack_client, channel, user):
+    return partial(send_ephemeral, slack_client, channel, user)
+
+
+class SlackArgumentParserException(Exception):
+    pass
+
+
+class SlackArgumentParser(ArgumentParser):
+    def error(self, message):
+        raise SlackArgumentParserException(message)
+
+
+def slack_link(text, url):
+    return '<{}|{}>'.format(url, text)

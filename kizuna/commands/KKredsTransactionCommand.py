@@ -1,13 +1,13 @@
-from kizuna.Kizuna import Kizuna
-from kizuna.commands.Command import Command
-from kizuna.models.KKredsTransaction import KKredsTransaction
-from kizuna.models.User import User
-import arrow
-from kizuna.slack import is_user_mention, get_user_id_from_mention
 from decimal import Decimal, InvalidOperation
+from kizuna.Kizuna import Kizuna
+from kizuna.commands import BaseCommand
+from kizuna.models import KKredsTransaction, User
+from kizuna.slack import is_user_mention, get_user_id_from_mention
+
+import arrow
 
 
-class KKredsTransactionCommand(Command):
+class KKredsTransactionCommand(BaseCommand):
     def __init__(self, make_session, kizuna: Kizuna) -> None:
         self.kizuna = kizuna
 

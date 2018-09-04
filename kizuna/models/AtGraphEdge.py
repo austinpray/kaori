@@ -29,7 +29,7 @@ class AtGraphEdge(Base):
         if not edge:
             edge = AtGraphEdge(head_user_id=head_user.id,
                                tail_user_id=tail_user.id,
-                               weight=1)
+                               weight=0)
             return session.add(edge)
 
         edge.weight = AtGraphEdge.weight + 1

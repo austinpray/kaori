@@ -1,13 +1,13 @@
 from kizuna.Kizuna import Kizuna
-from kizuna.commands.Command import Command
+from kizuna.commands import BaseCommand
 from kizuna.kkreds import is_payable
 from kizuna.kkreds import strip_date
-from kizuna.models.KKredsTransaction import KKredsTransaction
-from kizuna.models.User import User
+from kizuna.models import User, KKredsTransaction
+from kizuna.slack import reply
 import arrow
 
 
-class KKredsMiningCommand(Command):
+class KKredsMiningCommand(BaseCommand):
     def __init__(self, make_session, kizuna: Kizuna) -> None:
         self.kizuna = kizuna
 
@@ -21,7 +21,11 @@ class KKredsMiningCommand(Command):
         ]
 
         pattern = "|".join(triggers)
-        super().__init__('mine_kkred', pattern, help_text, is_at=False, always=True, db_session_maker=make_session)
+        super().__init__(name='mine_kkred',
+                         pattern=pattern,
+                         help_text=help_text,
+                         is_at=False,
+                         db_session_maker=make_session)
 
     def respond(self, slack_client, message, matches):
         message_ts = arrow.get(message['event_ts'])
@@ -37,11 +41,11 @@ class KKredsMiningCommand(Command):
             if not user:
                 return
 
-            latest_mine = session\
-                .query(KKredsTransaction)\
-                .filter(KKredsTransaction.to_user_id == user.id)\
-                .filter(KKredsTransaction.is_mined)\
-                .order_by(KKredsTransaction.created_at.desc())\
+            latest_mine = session \
+                .query(KKredsTransaction) \
+                .filter(KKredsTransaction.to_user_id == user.id) \
+                .filter(KKredsTransaction.is_mined) \
+                .order_by(KKredsTransaction.created_at.desc()) \
                 .first()
 
             if latest_mine and latest_mine.created_at:
@@ -59,4 +63,4 @@ class KKredsMiningCommand(Command):
 
             session.add(mined_kkred)
 
-        self.reply(slack_client, message, 'successfully mined 1 kkred')
+        reply(slack_client, message, 'successfully mined 1 kkred')

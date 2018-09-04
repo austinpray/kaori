@@ -1,9 +1,10 @@
-from kizuna.commands.Command import Command
+from kizuna.commands.BaseCommand import BaseCommand
+from kizuna.slack import send
 
 from kizuna.models.User import User
 
 
-class UserRefreshCommand(Command):
+class UserRefreshCommand(BaseCommand):
     def __init__(self, db_session) -> None:
         help_text = "kizuna refresh users - Make sure my users database is up-to-date with slack. You probably want " \
                     "to run this if someone has changed their name or a new user has joined slack."
@@ -38,4 +39,4 @@ class UserRefreshCommand(Command):
                 if member.name != el['name']:
                     member.name = el['name']
 
-        self.send(slack_client, message['channel'], 'Refreshed users. :^)')
+        send(slack_client, message['channel'], 'Refreshed users. :^)')

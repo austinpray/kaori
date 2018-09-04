@@ -114,6 +114,12 @@ class Kizuna:
     def get_revision_range_github_url(old_revision, new_revision):
         return 'https://github.com/austinpray/kizuna/compare/{}...{}'.format(old_revision, new_revision)
 
+    def handle_reaction(self, type, message):
+        if type == 'reaction_added':
+            pass
+        if type == 'reaction_removed':
+            pass
+
     def handle_message(self, message):
         if 'user' in message and message['user'] == self.bot_id:
             return
@@ -124,10 +130,6 @@ class Kizuna:
         message['text'] = message['text'].strip()
         text = message['text']
         channel = message['channel']
-
-        registered_always_commands = filter(lambda c: c.always, self.registered_commands)
-        for command in registered_always_commands:
-            command.maybe_respond(self.sc, message)
 
         if self.is_at(text):
             parts = text.split(' ', 1)
@@ -150,12 +152,12 @@ class Kizuna:
                                         text=help_commands,
                                         as_user=True)
 
-            registered_at_commands = filter(lambda c: c.is_at and not c.always, self.registered_commands)
+            registered_at_commands = filter(lambda c: c.is_at, self.registered_commands)
             for command in registered_at_commands:
                 command.maybe_respond(self.sc, message)
             return
 
-        registered_general_commands = filter(lambda c: not c.is_at and not c.always, self.registered_commands)
+        registered_general_commands = filter(lambda c: not c.is_at, self.registered_commands)
 
         for command in registered_general_commands:
             command.maybe_respond(self.sc, message)

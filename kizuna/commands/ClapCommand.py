@@ -1,11 +1,11 @@
-from kizuna.commands.Command import Command
+from kizuna.commands import BaseCommand
 from kizuna.strings import random_insult
-from kizuna.SlackArgumentParser import SlackArgumentParser, SlackArgumentParserException
+from kizuna.slack import SlackArgumentParserException, SlackArgumentParser, send_factory
 
 from argparse import REMAINDER
 
 
-class ClapCommand(Command):
+class ClapCommand(BaseCommand):
     def __init__(self) -> None:
         parser = SlackArgumentParser(prog='kizuna clap', description='obnoxiously clap', add_help=False)
         self.add_help_command(parser)
@@ -29,10 +29,13 @@ class ClapCommand(Command):
 
         self.set_help_text(parser)
         self.parser = parser
-        super().__init__('clap', 'clap (.*)', help_text=self.help_text, is_at=True)
+        super().__init__(name='clap',
+                         pattern='clap (.*)',
+                         help_text=self.help_text,
+                         is_at=True)
 
     def respond(self, slack_client, message, matches):
-        send = self.send_factory(slack_client, message['channel'])
+        send = send_factory(slack_client, message['channel'])
         try:
             args = self.parser.parse_args(matches[0].split(' '))
         except SlackArgumentParserException as err:

@@ -1,16 +1,16 @@
-from .Command import Command
-
+from . import BaseCommand
 from config import KIZUNA_WEB_URL
-from kizuna.models.User import User
-from kizuna.utils import build_url, slack_link
-from kizuna.models import ReactionImageTag
-from random import choice
+from kizuna.models import ReactionImageTag, User
 from kizuna.nlp import extract_possible_tags
+from kizuna.utils import build_url
+from kizuna.slack import slack_link
+from random import choice
+
 import itertools
 import sqlalchemy.orm as orm
 
 
-class ReactCommand(Command):
+class ReactCommand(BaseCommand):
     def __init__(self, make_session, nlp) -> None:
         help_text = 'kizuna react - view available reaction images and tags\n' \
                     'kizuna react add - upload some reaction images\n' \
@@ -59,10 +59,10 @@ class ReactCommand(Command):
 
             possible_tags = [token.text for token in extract_possible_tags(self.nlp, query)]
 
-            tags = session\
-                .query(ReactionImageTag)\
-                .options(orm.joinedload("images"))\
-                .filter(ReactionImageTag.name.in_(possible_tags))\
+            tags = session \
+                .query(ReactionImageTag) \
+                .options(orm.joinedload("images")) \
+                .filter(ReactionImageTag.name.in_(possible_tags)) \
                 .all()
 
             if tags:

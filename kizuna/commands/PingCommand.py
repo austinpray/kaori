@@ -1,11 +1,15 @@
-from kizuna.commands.Command import Command
+from kizuna.commands import BaseCommand
+from kizuna.slack import send
 
 
-class PingCommand(Command):
+class PingCommand(BaseCommand):
     def __init__(self) -> None:
         help_text = "{bot} ping - respond with pong"
 
-        super().__init__('ping$', "ping", help_text, True)
+        super().__init__(name='ping$',
+                         pattern="ping$",
+                         help_text=help_text,
+                         is_at=True)
 
     def respond(self, slack_client, message, matches):
-        self.send(slack_client, message['channel'], 'pong')
+        send(slack_client, message['channel'], 'pong')

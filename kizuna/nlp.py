@@ -1,4 +1,3 @@
-
 # https://spacy.io/api/annotation
 taggable_pos = [
     'ADJ',

@@ -1,20 +1,17 @@
-from kizuna.commands.Command import Command
-from kizuna.models.User import User
-from kizuna.Kizuna import Kizuna
+from kizuna.commands import BaseCommand
+from kizuna.models import User
+from kizuna.slack import reply
 
 
-class KKredsBalanceCommand(Command):
-    def __init__(self, make_session, kizuna: Kizuna) -> None:
+class KKredsBalanceCommand(BaseCommand):
+    def __init__(self, make_session) -> None:
         help_text = 'kizuna balance - show your kkreds balance'
 
-        kizuna_resp_token_regex = '|'.join(kizuna.respond_tokens)
-        triggers = [
-            "(?:(?:m|M)olly|<@U04EQPCC8>) ?balance$",
-            f"(?:{kizuna_resp_token_regex}) ?balance$"
-        ]
-
-        pattern = "|".join(triggers)
-        super().__init__('ping$', pattern, help_text, is_at=False, always=True, db_session_maker=make_session)
+        super().__init__(name='kkred-balance',
+                         pattern='balance$',
+                         help_text=help_text,
+                         is_at=True,
+                         db_session_maker=make_session)
 
     def respond(self, slack_client, message, matches):
         user_id = message['user']
@@ -24,4 +21,4 @@ class KKredsBalanceCommand(Command):
             balance = user.get_kkred_balance(session)
 
         pluralized_kkreds = 'kkred' if balance == 1 else 'kkreds'
-        return self.reply(slack_client, message, f'your balance is {balance} {pluralized_kkreds}')
+        return reply(slack_client, message, f'your balance is {balance} {pluralized_kkreds}')

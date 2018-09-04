@@ -3,16 +3,10 @@ from sqlalchemy.orm import sessionmaker
 from slackclient import SlackClient
 
 from kizuna.Kizuna import Kizuna
-from kizuna.commands.AtGraphCommand import AtGraphCommand
-from kizuna.commands.AtGraphDataCollector import AtGraphDataCollector
-from kizuna.commands.ClapCommand import ClapCommand
-from kizuna.commands.KKredsMiningCommand import KKredsMiningCommand
-from kizuna.commands.KKredsBalanceCommand import KKredsBalanceCommand
-from kizuna.commands.LoginCommand import LoginCommand
-from kizuna.commands.PingCommand import PingCommand
-from kizuna.commands.ReactCommand import ReactCommand
-from kizuna.commands.UserRefreshCommand import UserRefreshCommand
-from kizuna.commands.KKredsTransactionCommand import KKredsTransactionCommand
+from kizuna.commands import \
+    AtGraphCommand, ClapCommand, KKredsMiningCommand,\
+    KKredsBalanceCommand, LoginCommand, PingCommand,\
+    ReactCommand, UserRefreshCommand, KKredsTransactionCommand
 
 import spacy
 
@@ -63,9 +57,6 @@ k.register_command(clap)
 at_graph_command = AtGraphCommand(make_session)
 k.register_command(at_graph_command)
 
-at_graph_data_collector = AtGraphDataCollector(make_session, sc)
-k.register_command(at_graph_data_collector)
-
 user_refresh_command = UserRefreshCommand(db_session=make_session)
 k.register_command(user_refresh_command)
 
@@ -75,7 +66,7 @@ k.register_command(react_command)
 kkreds_command = KKredsMiningCommand(make_session, kizuna=k)
 k.register_command(kkreds_command)
 
-kkreds_balance_command = KKredsBalanceCommand(make_session, kizuna=k)
+kkreds_balance_command = KKredsBalanceCommand(make_session)
 k.register_command(kkreds_balance_command)
 
 kkreds_transaction_command = KKredsTransactionCommand(make_session, kizuna=k)

@@ -1,21 +1,15 @@
-from kizuna.models.AtGraphEdge import AtGraphEdge
-from kizuna.models.User import User
-from kizuna.commands.Command import Command
-from palettable import tableau
-
-from subprocess import CalledProcessError
-
 from graphviz import Digraph
-
+from kizuna.commands import BaseCommand
+from kizuna.models import AtGraphEdge, User
+from kizuna.slack import send_factory, SlackArgumentParserException, SlackArgumentParser
 from kizuna.strings import WAIT_A_SEC, JAP_DOT
-
+from palettable import tableau
+from subprocess import CalledProcessError
 from threading import Thread
 from time import sleep
 
-from kizuna.SlackArgumentParser import SlackArgumentParser, SlackArgumentParserException
 
-
-class AtGraphCommand(Command):
+class AtGraphCommand(BaseCommand):
     def __init__(self, db_session) -> None:
 
         self.available_layouts = ['dot', 'neato', 'fdp', 'twopi', 'circo']
@@ -40,7 +34,11 @@ class AtGraphCommand(Command):
         self.parser = parser
 
         pattern = "mentions(?: (.*))?$"
-        super().__init__('mention-graph', pattern, self.help_text, True, db_session_maker=db_session)
+        super().__init__(name='mention-graph',
+                         pattern=pattern,
+                         help_text=self.help_text,
+                         is_at=True,
+                         db_session_maker=db_session)
 
     @staticmethod
     def linear_scale(old_max, old_min, new_max, new_min, value):
@@ -52,7 +50,7 @@ class AtGraphCommand(Command):
 
     def respond(self, slack_client, message, matches):
         channel = message['channel']
-        send = self.send_factory(slack_client, message['channel'])
+        send = send_factory(slack_client, message['channel'])
 
         user_args = matches[0].split(' ') if matches[0] else []
         try:
