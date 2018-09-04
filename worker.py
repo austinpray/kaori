@@ -4,8 +4,8 @@ from slackclient import SlackClient
 
 from kizuna.Kizuna import Kizuna
 from kizuna.commands import \
-    AtGraphCommand, ClapCommand, KKredsMiningCommand,\
-    KKredsBalanceCommand, LoginCommand, PingCommand,\
+    AtGraphCommand, ClapCommand, KKredsMiningCommand, \
+    KKredsBalanceCommand, LoginCommand, PingCommand, \
     ReactCommand, UserRefreshCommand, KKredsTransactionCommand
 
 import spacy

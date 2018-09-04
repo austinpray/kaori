@@ -2,7 +2,7 @@ import re
 from abc import ABC, abstractmethod
 from io import StringIO
 
-from kizuna.utils import db_session_scope
+from ..utils import db_session_scope
 
 
 class BaseCommand(ABC):

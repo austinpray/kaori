@@ -1,8 +1,8 @@
 from argparse import REMAINDER
 
-from kizuna.commands import BaseCommand
-from kizuna.slack import SlackArgumentParserException, SlackArgumentParser, send_factory
-from kizuna.strings import random_insult
+from .BaseCommand import BaseCommand
+from ..slack import SlackArgumentParserException, SlackArgumentParser, send_factory
+from ..strings import random_insult
 
 
 class ClapCommand(BaseCommand):

@@ -4,11 +4,11 @@ from random import choice
 import sqlalchemy.orm as orm
 
 from config import KIZUNA_WEB_URL
-from kizuna.models import ReactionImageTag, User
-from kizuna.nlp import extract_possible_tags
-from kizuna.slack import slack_link
-from kizuna.utils import build_url
-from . import BaseCommand
+from .BaseCommand import BaseCommand
+from ..models import ReactionImageTag, User
+from ..nlp import extract_possible_tags
+from ..slack import slack_link, send_ephemeral_factory, send_factory
+from ..utils import build_url
 
 
 class ReactCommand(BaseCommand):
@@ -24,8 +24,8 @@ class ReactCommand(BaseCommand):
                          db_session_maker=make_session)
 
     def respond(self, slack_client, message, matches):
-        send = self.send_ephemeral_factory(slack_client, message['channel'], message['user'])
-        send_public = self.send_factory(slack_client, message['channel'])
+        send = send_ephemeral_factory(slack_client, message['channel'], message['user'])
+        send_public = send_factory(slack_client, message['channel'])
 
         query = matches[1]
         if query:

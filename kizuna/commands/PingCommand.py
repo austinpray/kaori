@@ -1,5 +1,5 @@
-from kizuna.commands import BaseCommand
-from kizuna.slack import send
+from .BaseCommand import BaseCommand
+from ..slack import send
 
 
 class PingCommand(BaseCommand):

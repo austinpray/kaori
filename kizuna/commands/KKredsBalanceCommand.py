@@ -1,6 +1,6 @@
-from kizuna.commands import BaseCommand
-from kizuna.models import User
-from kizuna.slack import reply
+from .BaseCommand import BaseCommand
+from ..models import User
+from ..slack import reply
 
 
 class KKredsBalanceCommand(BaseCommand):

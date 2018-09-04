@@ -5,10 +5,10 @@ from time import sleep
 from graphviz import Digraph
 from palettable import tableau
 
-from kizuna.commands import BaseCommand
-from kizuna.models import AtGraphEdge, User
-from kizuna.slack import send_factory, SlackArgumentParserException, SlackArgumentParser
-from kizuna.strings import WAIT_A_SEC, JAP_DOT
+from .BaseCommand import BaseCommand
+from ..models import AtGraphEdge, User
+from ..slack import send_factory, SlackArgumentParserException, SlackArgumentParser
+from ..strings import WAIT_A_SEC, JAP_DOT
 
 
 class AtGraphCommand(BaseCommand):

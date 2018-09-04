@@ -2,10 +2,10 @@ from decimal import Decimal, InvalidOperation
 
 import arrow
 
-from kizuna.Kizuna import Kizuna
-from kizuna.commands import BaseCommand
-from kizuna.models import KKredsTransaction, User
-from kizuna.slack import is_user_mention, get_user_id_from_mention
+from .BaseCommand import BaseCommand
+from ..Kizuna import Kizuna
+from ..models import KKredsTransaction, User
+from ..slack import is_user_mention, get_user_id_from_mention
 
 
 class KKredsTransactionCommand(BaseCommand):
