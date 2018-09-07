@@ -7,7 +7,7 @@ from config import KIZUNA_WEB_URL
 from .BaseCommand import BaseCommand
 from ..models import ReactionImageTag, User
 from ..nlp import extract_possible_tags
-from ..slack import slack_link, send_ephemeral_factory, send_factory
+from slack_tools.slack import slack_link, send_ephemeral_factory, send_factory
 from ..utils import build_url
 
 

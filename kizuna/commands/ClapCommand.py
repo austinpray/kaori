@@ -1,7 +1,7 @@
 from argparse import REMAINDER
 
 from .BaseCommand import BaseCommand
-from ..slack import SlackArgumentParserException, SlackArgumentParser, send_factory
+from slack_tools.slack import SlackArgumentParserException, SlackArgumentParser, send_factory
 from ..strings import random_insult
 
 

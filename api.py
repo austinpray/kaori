@@ -1,4 +1,5 @@
 import falcon
+from falcon import Request
 import json
 import config
 import logging
@@ -9,6 +10,7 @@ from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from kizuna.models.FaxMessage import FaxMessage
 from kizuna.utils import db_session_scope
+from slack_tools import verify_request
 
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)
@@ -26,21 +28,33 @@ class EventsResource(object):
     def __init__(self):
         self.logger = logging.getLogger('kizuna_api.' + __name__)
 
-    def on_post(self, req, resp):
+    def on_post(self, req: Request, resp):
+
+        go_away = json.dumps({'ok': False, 'msg': 'go away'})
+
         if not req.content_length:
             resp.status = falcon.HTTP_400
-            resp.body = 'go away'
+            resp.body = go_away
             return
 
-        doc = json.load(req.stream)
-        print(doc)
+        # defaults to utf8 but should probably look at http headers to get this value, charset and stuff
+        body = req.bounded_stream.read().decode('utf8')
 
+        try:
+            if not verify_request(config.SLACK_SIGNING_SECRET,
+                              int(req.get_header('X-Slack-Request-Timestamp')),
+                              body,
+                              req.get_header('X-Slack-Signature')):
+                resp.status = falcon.HTTP_401
+                resp.body = go_away
+                return
+        except ValueError as e:
+            resp.status = falcon.HTTP_400
+            resp.body = json.dumps({'ok': False, 'msg': str(e)})
+            return
+
+        doc = json.loads(body)
         callback_type = doc['type']
-
-        if doc['token'] != config.SLACK_VERIFICATION_TOKEN:
-            resp.status = falcon.HTTP_401
-            resp.body = 'go away'
-            return
 
         if callback_type == 'url_verification':
             resp.body = doc['challenge']
@@ -57,7 +71,7 @@ class EventsResource(object):
                                                 options={},
                                                 kwargs={}))
 
-        resp.body = 'thanks!'
+        resp.body = json.dumps({'ok': True, 'msg': 'thanks!'})
 
 
 class SlashCommandsResource(object):
@@ -169,7 +183,7 @@ class FaxMessageResource(object):
 
             session.add(message)
 
-        resp.body = '{"ayy": "lmao"}'
+        resp.body = json.dumps({'ok': True, 'msg': 'ayy lmao'})
 
 
 app = falcon.API()

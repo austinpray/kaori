@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import request, Response, session, render_template
-from kizuna.models.User import User, InvalidToken
+from kizuna.models.User import User
 
 
 def check_auth(token):

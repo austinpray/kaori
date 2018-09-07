@@ -45,9 +45,3 @@ services:
       - db
     ports:
       - 8000:8000
-  js:
-    image: "node:9"
-    working_dir: /kizuna
-    volumes:
-      - ./:/kizuna
-    command: npm run watch

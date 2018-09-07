@@ -1,6 +1,6 @@
 from . import BaseCollector
 from ..models import User, AtGraphEdge
-from ..slack import extract_mentions
+from slack_tools.slack import extract_mentions
 from ..utils import db_session_scope
 
 

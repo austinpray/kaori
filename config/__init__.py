@@ -16,6 +16,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', None)
 SENTRY_URL = os.environ.get('SENTRY_URL', None)
 SLACK_API_TOKEN = os.environ.get('SLACK_API_TOKEN', None)
 SLACK_VERIFICATION_TOKEN = os.environ.get('SLACK_VERIFICATION_TOKEN', None)
+SLACK_SIGNING_SECRET = os.environ.get('SLACK_SIGNING_SECRET', None)
 
 RABBITMQ_URL = os.environ.get('RABBITMQ_URL', 'amqp://guest:guest@rabbitmq:5672/%2F')
 

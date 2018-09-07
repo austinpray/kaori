@@ -5,7 +5,7 @@ import arrow
 from .BaseCommand import BaseCommand
 from ..Kizuna import Kizuna
 from ..models import KKredsTransaction, User
-from ..slack import is_user_mention, get_user_id_from_mention, reply
+from slack_tools.slack import is_user_mention, get_user_id_from_mention, reply
 
 
 class KKredsTransactionCommand(BaseCommand):
