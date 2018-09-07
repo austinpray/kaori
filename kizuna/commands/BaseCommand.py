@@ -15,7 +15,7 @@ class BaseCommand(ABC):
         self.db_session_maker = db_session_maker
 
     def db_session_scope(self):
-        return lambda: db_session_scope(self.db_session_maker)
+        return db_session_scope(self.db_session_maker)
 
     def help(self, bot_name):
         return self.help_text.replace("{bot}", bot_name)
