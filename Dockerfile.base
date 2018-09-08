@@ -3,7 +3,7 @@ FROM python:3.6-stretch
 ENV workdir /kizuna
 
 WORKDIR ${workdir}
-ENV PYTHONPATH="${PYTHONPATH}:${workdir}"
+ENV PYTHONPATH="${PYTHONPATH}:${workdir}:${workdir}/vendor/python-slacktools"
 
 RUN apt-get update \
     && apt-get install -y vim graphviz
