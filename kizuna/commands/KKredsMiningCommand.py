@@ -5,7 +5,7 @@ from .BaseCommand import BaseCommand
 from ..kkreds import is_payable
 from ..kkreds import strip_date
 from ..models import User, KKredsTransaction
-from slack_tools.slack import reply
+from slacktools.slack import reply
 
 
 class KKredsMiningCommand(BaseCommand):

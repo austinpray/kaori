@@ -1,7 +1,7 @@
 import config
 from .BaseCommand import BaseCommand
 from ..models.User import User
-from slack_tools.slack import send_ephemeral_factory
+from slacktools.slack import send_ephemeral_factory
 from ..utils import build_url
 
 

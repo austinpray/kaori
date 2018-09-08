@@ -1,6 +1,6 @@
 from .BaseCommand import BaseCommand
 from ..models import User
-from slack_tools.slack import send
+from slacktools.slack import send
 
 
 class UserRefreshCommand(BaseCommand):

@@ -10,7 +10,7 @@ from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from kizuna.models.FaxMessage import FaxMessage
 from kizuna.utils import db_session_scope
-from slack_tools import verify_request
+from slacktools import verify_request
 
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)

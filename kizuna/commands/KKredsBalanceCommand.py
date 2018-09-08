@@ -1,6 +1,6 @@
 from .BaseCommand import BaseCommand
 from ..models import User
-from slack_tools.slack import reply
+from slacktools.slack import reply
 
 
 class KKredsBalanceCommand(BaseCommand):

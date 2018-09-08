@@ -7,7 +7,7 @@ from palettable import tableau
 
 from .BaseCommand import BaseCommand
 from ..models import AtGraphEdge, User
-from slack_tools.slack import send_factory, SlackArgumentParserException, SlackArgumentParser
+from slacktools.slack import send_factory, SlackArgumentParserException, SlackArgumentParser
 from ..strings import WAIT_A_SEC, JAP_DOT
 
 

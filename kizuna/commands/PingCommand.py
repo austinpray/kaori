@@ -1,5 +1,5 @@
 from .BaseCommand import BaseCommand
-from slack_tools.slack import send
+from slacktools.slack import send
 
 
 class PingCommand(BaseCommand):
