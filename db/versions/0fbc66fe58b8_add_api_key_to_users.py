@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.sql import select
 
 
-from kizuna.models.User import user_generate_api_key
+from ...src.kizuna.models.User import user_generate_api_key
 
 # revision identifiers, used by Alembic.
 revision = '0fbc66fe58b8'

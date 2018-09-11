@@ -3,10 +3,12 @@ FROM python:3.6-stretch
 ENV workdir /kizuna
 
 WORKDIR ${workdir}
-ENV PYTHONPATH="${PYTHONPATH}:${workdir}:${workdir}/vendor/python-slacktools"
+ENV PYTHONPATH="${PYTHONPATH}:${workdir}/vendor/python-slacktools/src"
 
 RUN apt-get update \
     && apt-get install -y vim graphviz
+
+RUN pip install --upgrade pip
 
 # maint deps
 RUN pip install pip-tools

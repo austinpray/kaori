@@ -1,5 +1,5 @@
 FROM austinpray/kizuna/base
 
-CMD ["gunicorn", "--config", "python:config.gunicorn_api", "api:app"]
+CMD ["gunicorn", "--pythonpath", "src", "--config", "python:config.gunicorn_api", "api:app"]
 
 COPY . ${workdir}
