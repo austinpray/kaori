@@ -8,6 +8,7 @@
 	registry_push_api \
 	registry_push_web \
 	registry_push_worker
+.PHONY: pull-slacktools push-slacktools
 
 # simulate CI environment
 TRAVIS_COMMIT ?= $(shell git rev-parse HEAD)-ts$(date +"%T")
@@ -178,3 +179,10 @@ dev_worker:
 ## run dev migrations
 migrate_dev:
 	docker-compose run api alembic upgrade head
+
+## slacktools
+pull-slacktools:
+	git subtree pull --prefix vendor/python-slacktools python-slacktools dev --squash
+
+push-slacktools:
+	git subtree push --prefix vendor/python-slacktools python-slacktools dev
