@@ -3,8 +3,8 @@ from sqlalchemy.orm import sessionmaker
 import config
 import arrow
 
-from src.kizuna import User
-from src.kizuna.models.KKredsTransaction import KKredsTransaction
+from src.support import User
+from src.support.models.KKredsTransaction import KKredsTransaction
 
 
 if __name__ == "__main__":

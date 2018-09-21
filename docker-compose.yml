@@ -10,22 +10,21 @@ services:
       POSTGRES_DB: kizuna
       POSTGRES_PASSWORD: kizuna
       POSTGRES_USER: kizuna
+
   rabbitmq:
     image: rabbitmq
+
   worker:
-    build:
-      context: .
-      dockerfile: Dockerfile.worker
+    image: austinpray/kizuna/worker
     env_file: .env
     volumes:
       - .:/kizuna
     depends_on:
       - db
       - rabbitmq
+
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
+    image: austinpray/kizuna/api
     env_file: .env
     volumes:
       - .:/kizuna
@@ -34,10 +33,9 @@ services:
       - rabbitmq
     ports:
       - 8001:8001
+
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.web
+    image: austinpray/kizuna/web
     env_file: .env
     volumes:
       - .:/kizuna

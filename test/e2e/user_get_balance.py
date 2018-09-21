@@ -1,4 +1,4 @@
-from src.kizuna.models import User, KKredsTransaction
+from src.support.models import User, KKredsTransaction
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import arrow

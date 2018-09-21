@@ -1,5 +1,5 @@
 import arrow
-from src.kizuna.kkreds import is_payable
+from src.support.kkreds import is_payable
 
 
 def test_is_payable_time():

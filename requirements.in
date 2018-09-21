@@ -14,9 +14,6 @@ cryptography # for auth tokens
 boto3 # aws s3 client
 arrow # dates and time
 
-# testing
-pytest
-
 # worker related
 dramatiq[rabbitmq, watch]
 requests
