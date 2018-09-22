@@ -5,8 +5,8 @@ from cryptography.fernet import Fernet
 from sqlalchemy import Column, Integer, String, func
 
 from config import FERNET_KEY, FERNET_TTL
-from src.support.models.KKredsTransaction import KKredsTransaction
-from src.support.models.Models import Base
+from . import KKredsTransaction
+from . import Base
 
 
 def user_generate_api_key():

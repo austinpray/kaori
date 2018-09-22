@@ -11,8 +11,8 @@ from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 
 import config
-from src.support.models.FaxMessage import FaxMessage
-from src.support.utils import db_session_scope
+from kizuna.support.models.FaxMessage import FaxMessage
+from kizuna.support.utils import db_session_scope
 
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)

@@ -2,7 +2,7 @@ from functools import wraps
 
 from flask import request, session, render_template
 
-from src.support import User
+from kizuna.support.models import User
 
 
 def check_auth(token):

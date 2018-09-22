@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, ForeignKey, DateTime, func, DECIMAL, Boolean
 from sqlalchemy.orm import relationship
 
-from src.support.models.Models import Base
+from . import Base
 
 
 class KKredsTransaction(Base):

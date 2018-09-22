@@ -1,6 +1,6 @@
 FROM python:3.6
 
-ENV KIZ_DOCKER_VERSION 1.0.0
+ENV KIZ_DOCKER_VERSION 1
 WORKDIR /kizuna
 
 RUN apt-get update \
@@ -20,5 +20,5 @@ RUN python -m spacy download en
 COPY requirements.in requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY vendor ./
-RUN pip install -e vendor/python-slacktools
+COPY vendor ./vendor
+RUN pip install -e ./vendor/python-slacktools

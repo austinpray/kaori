@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String
 
-from src.support.models.Models import Base
+from . import Base
 
 
 class Meta(Base):

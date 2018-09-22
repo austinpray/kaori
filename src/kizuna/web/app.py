@@ -2,8 +2,8 @@ from flask import Flask
 from raven.contrib.flask import Sentry
 
 import config
-from src.support.Kizuna import Kizuna
-from src.web import blueprint as views_blueprint
+from kizuna.support import Kizuna
+from .views import blueprint as views_blueprint
 
 DEV_INFO = Kizuna.read_dev_info('./.dev-info.json')
 

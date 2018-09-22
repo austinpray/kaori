@@ -1,7 +1,7 @@
 import arrow
 from sqlalchemy import Column, String, Text, Integer, DateTime, func
 
-from src.support.models.Models import Base
+from . import Base
 
 
 class FaxMessage(Base):

@@ -2,7 +2,7 @@
   "name": "kizuna",
   "version": "1.0.0",
   "description": ":^)",
-  "main": "src/web/js/index.js",
+  "main": "src/kizuna/api/web/js/index.js",
   "dependencies": {
     "localforage": "^1.5.5",
     "lodash": "^4.17.4",

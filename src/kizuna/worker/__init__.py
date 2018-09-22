@@ -15,8 +15,8 @@ from config import \
     MAIN_CHANNEL,\
     KIZUNA_HOME_CHANNEL
 
-from src.support.Kizuna import Kizuna
-from src.support.commands import \
+from kizuna.support import Kizuna
+from kizuna.support.commands import \
     AtGraphCommand, ClapCommand, KKredsMiningCommand, \
     KKredsBalanceCommand, LoginCommand, PingCommand, \
     ReactCommand, UserRefreshCommand, KKredsTransactionCommand

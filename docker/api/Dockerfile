@@ -1,6 +1,6 @@
 FROM austinpray/kizuna/base
 
-CMD ["gunicorn", "--config", "python:config.gunicorn_api", "kizuna.api"]
+CMD ["gunicorn", "--config", "python:config.gunicorn_api", "kizuna.api:app"]
 
-COPY ./ ./
+COPY . ./
 RUN pip install -e .

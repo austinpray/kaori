@@ -15,7 +15,13 @@ with open('requirements.in') as requirements:
 setup(
     name='kizuna',
     python_requires='>=3.6.0',
-    packages=find_packages('src'),
+    package_dir={'': 'src'},
+    packages=[
+        'kizuna.api',
+        'kizuna.support',
+        'kizuna.web',
+        'kizuna.worker',
+    ],
     tests_require=[
         'pytest'
     ],
