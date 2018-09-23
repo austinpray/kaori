@@ -1,0 +1,17 @@
+{% extends "parents/base.jinja2" %}
+{% block content %}
+    <div style="padding: 5px">
+        <h1>here's what we have in our gallery so far.</h1>
+        {% for image in images %}
+            <h2>{{ image.name }}</h2>
+            <figure>
+                <img style="max-width: 100%" src="{{ image.url }}"/>
+            </figure>
+            <div>
+                <strong>Tags:</strong>
+                <ul>{% for tag in image.tags %}
+                    <li>{{ tag.name }}</li>{% endfor %}</ul>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

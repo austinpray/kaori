@@ -1,0 +1,28 @@
+# coding=utf-8
+import random
+
+HAI_DOMO = 'はいども！キズナです！'
+KIZUNA = '\u30AD\u30BA\u30CA'
+WAIT_A_SEC = '\u3061\u3087\u3063\u3068\u5F85\u3063\u3066\u304F\u3060\u3055\u3044'
+JAP_DOT = '\u3002'
+
+AHO = '\u3042\u307B'
+BAKA = '\u3070\u304B'
+INSULTS = [AHO, BAKA]
+
+
+def random_insult():
+    return random.choice(INSULTS)
+
+
+YOSHI = '\u3088\u3057'
+
+VERSION_UPDATE_TEMPLATE = '\u79C1\u306F{{VERSION}}\u306B\u66F4\u65B0\u3057\u307E\u3057\u305F'
+VERSION_TRANSITION_TEMPLATE = '{{FROM_VERSION}}から{{TO_VERSION}}にバージョンアップしました。'
+
+LQUO = '\u300C'
+RQUO = '\u300D'
+
+VERSION_UP = '\u30D0\u30FC\u30B8\u30E7\u30F3\u30A2\u30C3\u30D7'
+
+GOODBYE = '\u3055\u3088\u306A\u3089'
