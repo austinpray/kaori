@@ -7,7 +7,7 @@ from .views import blueprint as views_blueprint
 
 DEV_INFO = Kizuna.read_dev_info('./.dev-info.json')
 
-app = Flask(__name__, static_folder='../static')
+app = Flask(__name__, static_folder=config.STATIC_DIR)
 
 app.secret_key = config.SECRET_KEY
 

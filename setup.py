@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup, find_packages
+from setuptools import setup
+import glob
 
-# What packages are required for this module to be executed?
-with open('requirements.in') as requirements:
-    REQUIRED = []
-    for raw_line in requirements:
-        line = raw_line.strip()
-        if line:
-            REQUIRED.append(line)
+gevent_deps = [
+    'gevent',
+    'watchdog-gevent',
+]
+
+gunicorn_deps = [
+    *gevent_deps,
+    'gunicorn',
+]
 
 # Where the magic happens:
 setup(
@@ -22,8 +25,40 @@ setup(
         'kizuna.web',
         'kizuna.worker',
     ],
+    data_files=[('kizuna_static', glob.glob('static/**/*'))],
     tests_require=[
         'pytest'
     ],
-    install_requires=REQUIRED
+    install_requires=[
+        'SQLAlchemy',
+        'alembic',
+        'arrow',
+        'backoff',
+        'boto3',
+        'cryptography',
+        'psycopg2',
+        'raven[flask]',
+        'requests',
+        'slackclient',
+        'slacktools',
+    ],
+    extras_require={
+        'web': [
+            'Flask',
+            *gunicorn_deps,
+        ],
+        'api': [
+            'dramatiq[rabbitmq]',
+            'falcon',
+            'ujson',
+            *gunicorn_deps,
+        ],
+        'worker': [
+            'dramatiq[rabbitmq, watch]',
+            'graphviz',
+            'palettable',
+            'spacy',
+            *gevent_deps,
+        ]
+    }
 )

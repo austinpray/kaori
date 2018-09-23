@@ -1,4 +1,5 @@
 import os
+from os import path
 
 from .constants import DAY_IN_SECONDS
 
@@ -18,6 +19,7 @@ SENTRY_URL = os.environ.get('SENTRY_URL', None)
 SLACK_API_TOKEN = os.environ.get('SLACK_API_TOKEN', None)
 SLACK_VERIFICATION_TOKEN = os.environ.get('SLACK_VERIFICATION_TOKEN', None)
 SLACK_SIGNING_SECRET = os.environ.get('SLACK_SIGNING_SECRET', None)
+STATIC_DIR = os.environ.get('STATIC_DIR', path.abspath(path.join(path.dirname(__file__), '../static')))
 
 RABBITMQ_URL = os.environ.get('RABBITMQ_URL', 'amqp://guest:guest@rabbitmq:5672/%2F')
 
