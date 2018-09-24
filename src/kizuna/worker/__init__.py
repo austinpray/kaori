@@ -1,43 +1,35 @@
 import dramatiq
 import spacy
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
-from raven import Client
-from slackclient import SlackClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from config import \
-    RABBITMQ_URL,\
-    SENTRY_URL,\
-    KIZUNA_ENV,\
-    SLACK_API_TOKEN,\
-    DATABASE_URL,\
-    MAIN_CHANNEL,\
-    KIZUNA_HOME_CHANNEL
-
 from kizuna.support import Kizuna
 from kizuna.support.commands import \
     AtGraphCommand, ClapCommand, KKredsMiningCommand, \
     KKredsBalanceCommand, LoginCommand, PingCommand, \
     ReactCommand, UserRefreshCommand, KKredsTransactionCommand
+from raven import Client
+from slackclient import SlackClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-rabbitmq_broker = RabbitmqBroker(url=RABBITMQ_URL)
+import config
+
+rabbitmq_broker = RabbitmqBroker(url=config.RABBITMQ_URL)
 dramatiq.set_broker(rabbitmq_broker)
 
 nlp = spacy.load('en')
 
 DEV_INFO = Kizuna.read_dev_info('./.dev-info.json')
 
-sentry = Client(SENTRY_URL,
+sentry = Client(config.SENTRY_URL,
                 release=DEV_INFO.get('revision'),
-                environment=KIZUNA_ENV) if SENTRY_URL else None
+                environment=config.KIZUNA_ENV) if config.SENTRY_URL else None
 
-if not SLACK_API_TOKEN:
+if not config.SLACK_API_TOKEN:
     raise ValueError('You are missing a slack token! Please set the SLACK_API_TOKEN environment variable in your '
                      '.env file or in the system environment')
 
-sc = SlackClient(SLACK_API_TOKEN)
-db_engine = create_engine(DATABASE_URL)
+sc = SlackClient(config.SLACK_API_TOKEN)
+db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)
 
 auth = sc.api_call('auth.test')
@@ -45,8 +37,8 @@ bot_id = auth['user_id']
 
 k = Kizuna(bot_id,
            slack_client=sc,
-           main_channel=MAIN_CHANNEL,
-           home_channel=KIZUNA_HOME_CHANNEL)
+           main_channel=config.MAIN_CHANNEL,
+           home_channel=config.KIZUNA_HOME_CHANNEL)
 
 # k.handle_startup(DEV_INFO, make_session())
 
