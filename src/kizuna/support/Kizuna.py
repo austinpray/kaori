@@ -1,6 +1,9 @@
 import json
+import re
 from os import path
 from pprint import pprint
+
+from slacktools.message import format_slack_mention
 
 from .models import Meta
 from .strings import \
@@ -12,13 +15,8 @@ class Kizuna:
         self.bot_id = bot_id
         self.sc = slack_client
         self.respond_tokens = (
-            'kiz',
-            'Kiz',
-            'kizuna',
-            'Kizuna',
-            '@kizuna',
-            '@Kizuna',
-            '<@{}>'.format(bot_id),
+            re.compile('@?kiz(?:una)?', re.IGNORECASE),
+            format_slack_mention(bot_id),
             KIZUNA
         )
         self.main_channel = main_channel
@@ -26,7 +24,20 @@ class Kizuna:
         self.registered_commands = []
 
     def is_at(self, text):
-        return text.startswith(self.respond_tokens)
+        parts = text.split()
+        if len(parts) < 1:
+            return False
+
+        first = parts[0]
+
+        for token in self.respond_tokens:
+            if isinstance(token, type(re.compile(''))):
+                return token.match(first)
+
+            if first == token:
+                return True
+
+        return False
 
     def register_command(self, command):
         self.registered_commands.append(command)
