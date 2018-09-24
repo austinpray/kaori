@@ -41,6 +41,7 @@ setup(
         'requests',
         'slackclient',
         'slacktools',
+        'ujson',
     ],
     extras_require={
         'web': [
@@ -50,7 +51,6 @@ setup(
         'api': [
             'dramatiq[rabbitmq]',
             'falcon',
-            'ujson',
             *gunicorn_deps,
         ],
         'worker': [

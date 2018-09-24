@@ -1,9 +1,9 @@
-import json
+import ujson as json
 import logging
 
 import falcon
 from dramatiq.message import Message
-from falcon import Request
+from falcon import Request, Response
 from slacktools.authorization import verify_signature
 
 import config
