@@ -1,7 +1,6 @@
-from datetime import datetime
-
 import arrow
 from arrow import Arrow
+from datetime import datetime
 
 
 def is_payable(utc: Arrow) -> bool:

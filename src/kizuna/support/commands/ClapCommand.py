@@ -1,13 +1,12 @@
 from argparse import REMAINDER
-
 from slacktools.arguments import SlackArgumentParserException, SlackArgumentParser
 from slacktools.chat import send_factory
 
-from .BaseCommand import BaseCommand
+from .slack_command import SlackCommand
 from ..strings import random_insult
 
 
-class ClapCommand(BaseCommand):
+class ClapCommand(SlackCommand):
     def __init__(self) -> None:
         parser = SlackArgumentParser(prog='kizuna clap', description='obnoxiously clap', add_help=False)
         self.add_help_command(parser)

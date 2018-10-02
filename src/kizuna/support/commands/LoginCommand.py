@@ -1,12 +1,12 @@
 from slacktools.chat import send_ephemeral_factory
 
-from .BaseCommand import BaseCommand
+from config import KIZUNA_WEB_URL
+from .slack_command import SlackCommand
 from ..models.User import User
 from ..utils import build_url
-from config import KIZUNA_WEB_URL
 
 
-class LoginCommand(BaseCommand):
+class LoginCommand(SlackCommand):
     def __init__(self, make_session) -> None:
         help_text = "kizuna login - login to the web interface"
 

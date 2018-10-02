@@ -11,4 +11,4 @@ RUN python -m spacy download en
 
 # heavy deps
 COPY . .
-RUN pip install -e .[worker]
+RUN pip install -e '.[worker]'

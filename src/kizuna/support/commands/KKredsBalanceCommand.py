@@ -1,10 +1,10 @@
 from slacktools.chat import reply
 
-from .BaseCommand import BaseCommand
+from .slack_command import SlackCommand
 from ..models import User
 
 
-class KKredsBalanceCommand(BaseCommand):
+class KKredsBalanceCommand(SlackCommand):
     def __init__(self, make_session) -> None:
         help_text = 'kizuna balance - show your kkreds balance'
 

@@ -21,6 +21,8 @@ setup(
     package_dir={'': 'src'},
     packages=[
         'kizuna.api',
+        'kizuna.plugins',
+        'kizuna.skills',
         'kizuna.support',
         'kizuna.web',
         'kizuna.worker',
@@ -55,6 +57,7 @@ setup(
         ],
         'worker': [
             'dramatiq[rabbitmq, watch]',
+            'rx>=1.6.1<2',
             'graphviz',
             'palettable',
             'spacy',

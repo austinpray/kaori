@@ -11,7 +11,6 @@
 
 }
 
-
 .react-tagsinput-input {
     width: 100%;
 }
@@ -30,6 +29,7 @@
     background: #ccc;
     border-color: dimgray;
 }
+
 .react-autosuggest__suggestion:hover {
     cursor: pointer;
 }

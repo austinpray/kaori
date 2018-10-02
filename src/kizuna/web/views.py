@@ -1,9 +1,9 @@
 import json
 import os
-from uuid import uuid4
 
 from flask import render_template
 from flask import request, Response, Blueprint
+from uuid import uuid4
 from werkzeug.utils import secure_filename
 
 from config import \
@@ -12,9 +12,9 @@ from config import \
     S3_BUCKET_URL
 from kizuna.support.models.ReactionImage import ReactionImage
 from kizuna.support.models.ReactionImageTag import ReactionImageTag
-from .utils import image_path_to_content_type
 from .extentions import aws_client, make_db_session
 from .middleware import requires_auth_factory
+from .utils import image_path_to_content_type
 
 blueprint = Blueprint('views', __name__)
 

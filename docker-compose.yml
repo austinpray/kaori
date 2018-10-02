@@ -17,6 +17,7 @@ services:
   worker:
     image: austinpray/kizuna/worker
     env_file: .env
+    command: ["dramatiq-gevent", "kizuna.worker", "-p", "2", "-t", "8", "--watch", "./src"]
     volumes:
       - .:/kizuna
     depends_on:

@@ -4,12 +4,12 @@ import arrow
 from slacktools.chat import reply
 from slacktools.message import is_user_mention, extract_user_id_from_mention
 
-from .BaseCommand import BaseCommand
+from .slack_command import SlackCommand
 from .. import Kizuna
 from ..models import KKredsTransaction, User
 
 
-class KKredsTransactionCommand(BaseCommand):
+class KKredsTransactionCommand(SlackCommand):
     def __init__(self, make_session, kizuna: Kizuna) -> None:
         self.kizuna = kizuna
 

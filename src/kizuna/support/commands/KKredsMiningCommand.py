@@ -1,14 +1,14 @@
 import arrow
 from slacktools.chat import reply
 
-from .BaseCommand import BaseCommand
+from .slack_command import SlackCommand
 from .. import Kizuna
 from ..kkreds import is_payable
 from ..kkreds import strip_date
 from ..models import User, KKredsTransaction
 
 
-class KKredsMiningCommand(BaseCommand):
+class KKredsMiningCommand(SlackCommand):
     def __init__(self, make_session, kizuna: Kizuna) -> None:
         self.kizuna = kizuna
 

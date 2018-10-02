@@ -1,9 +1,9 @@
-import ujson as json
 import logging
+import ujson as json
 
 import falcon
 from dramatiq.message import Message
-from falcon import Request, Response
+from falcon import Request
 from slacktools.authorization import verify_signature
 
 import config
@@ -48,14 +48,11 @@ class EventsResource(object):
             return
 
         if callback_type == 'event_callback':
-            event = doc['event']
-            event_type = event['type']
-            if event_type == 'message':
-                self.logger.debug(event)
-                self.rabbitmq_broker.enqueue(Message(queue_name='default',
-                                                     actor_name='worker',
-                                                     args=(event,),
-                                                     options={},
-                                                     kwargs={}))
+            self.logger.debug(doc)
+            self.rabbitmq_broker.enqueue(Message(queue_name='default',
+                                                 actor_name='worker',
+                                                 args=(doc,),
+                                                 options={},
+                                                 kwargs={}))
 
         resp.body = json.dumps({'ok': True, 'msg': 'thanks!'})

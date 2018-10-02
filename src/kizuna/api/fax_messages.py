@@ -3,16 +3,16 @@ import logging
 
 import arrow
 import falcon
+from sqlalchemy import asc
+from sqlalchemy.orm import sessionmaker
+
 from kizuna.support.models.FaxMessage import FaxMessage
 from kizuna.support.utils import db_session_scope
-from sqlalchemy import asc
-from sqlalchemy.orm import Session
-
 from .utils import valid_auth_header
 
 
 class FaxMessagesResource(object):
-    def __init__(self, make_session: Session):
+    def __init__(self, make_session: sessionmaker):
         self.logger = logging.getLogger('kizuna_api.' + __name__)
         self.make_session = make_session
 
@@ -33,7 +33,7 @@ class FaxMessagesResource(object):
 
 
 class FaxMessageResource(object):
-    def __init__(self, make_session: Session):
+    def __init__(self, make_session: sessionmaker):
         self.make_session = make_session
 
     def on_put(self, req, resp, message_id):

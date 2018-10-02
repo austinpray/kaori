@@ -1,16 +1,16 @@
 import logging
 
 import falcon
-from kizuna.support.models.FaxMessage import FaxMessage
-from kizuna.support.utils import db_session_scope
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
 
 import config
+from kizuna.support.models.FaxMessage import FaxMessage
+from kizuna.support.utils import db_session_scope
 
 
 class SlashCommandsResource(object):
 
-    def __init__(self, make_session: Session):
+    def __init__(self, make_session: sessionmaker):
         self.logger = logging.getLogger('kizuna_api.' + __name__)
         self.make_session = make_session
 

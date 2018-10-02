@@ -1,10 +1,10 @@
 from slacktools.chat import send
 
-from .BaseCommand import BaseCommand
+from .slack_command import SlackCommand
 from ..models import User
 
 
-class UserRefreshCommand(BaseCommand):
+class UserRefreshCommand(SlackCommand):
     def __init__(self, db_session) -> None:
         help_text = "kizuna refresh users - Make sure my users database is up-to-date with slack. You probably want " \
                     "to run this if someone has changed their name or a new user has joined slack."

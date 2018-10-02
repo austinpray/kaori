@@ -1,18 +1,17 @@
+from graphviz import Digraph
+from palettable import tableau
+from slacktools.arguments import SlackArgumentParserException, SlackArgumentParser
+from slacktools.chat import send_factory
 from subprocess import CalledProcessError
 from threading import Thread
 from time import sleep
 
-from graphviz import Digraph
-from palettable import tableau
-from slacktools.chat import send_factory
-from slacktools.arguments import SlackArgumentParserException, SlackArgumentParser
-
-from .BaseCommand import BaseCommand
+from .slack_command import SlackCommand
 from ..models import AtGraphEdge, User
 from ..strings import WAIT_A_SEC, JAP_DOT
 
 
-class AtGraphCommand(BaseCommand):
+class AtGraphCommand(SlackCommand):
     def __init__(self, db_session) -> None:
 
         self.available_layouts = ['dot', 'neato', 'fdp', 'twopi', 'circo']

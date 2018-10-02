@@ -1,18 +1,18 @@
-import itertools
 from random import choice
 
+import itertools
 import sqlalchemy.orm as orm
 from slacktools.chat import send_ephemeral_factory, send_factory
 from slacktools.message import format_url
 
-from .BaseCommand import BaseCommand
+from config import KIZUNA_WEB_URL
+from .slack_command import SlackCommand
 from ..models import ReactionImageTag, User
 from ..nlp import extract_possible_tags
 from ..utils import build_url
-from config import KIZUNA_WEB_URL
 
 
-class ReactCommand(BaseCommand):
+class ReactCommand(SlackCommand):
     def __init__(self, make_session, nlp) -> None:
         help_text = 'kizuna react - view available reaction images and tags\n' \
                     'kizuna react add - upload some reaction images\n' \
