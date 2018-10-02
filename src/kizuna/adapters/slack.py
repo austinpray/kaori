@@ -4,7 +4,7 @@ import re
 from slackclient import SlackClient
 from slacktools.chat import send
 from slacktools.message import format_slack_mention
-from typing import Match, Pattern
+from typing import Pattern, Tuple
 
 from kizuna.support.strings import KIZUNA
 from . import Adapter
@@ -21,7 +21,12 @@ class SlackEvent:
         self.item = event.get('item')
 
     @staticmethod
-    def convert(payload):
+    def create_from(payload):
+        type = payload.get('event', {}).get('type')
+        if type == 'message':
+            return SlackMessage(payload)
+
+        return SlackEvent(payload)
 
 
 class SlackMessage(SlackEvent):
@@ -29,14 +34,14 @@ class SlackMessage(SlackEvent):
         super().__init__(payload)
         event = payload.get('event')
         self.channel = event.get('channel')
-        self.text = event.get('text')
+        self.text: str = event.get('text')
 
 
 class SlackCommand(ABC):
 
     @staticmethod
     @abstractmethod
-    def handle(*args, **kwargs):
+    async def handle(*args, **kwargs):
         raise NotImplementedError
 
 
@@ -50,8 +55,8 @@ class SlackAdapter(Adapter):
     provides = {SlackMessage}
 
     @staticmethod
-    def parse_payload(payload):
-        SlackEvent(payload)
+    def convert_payload(payload):
+        return SlackEvent.create_from(payload)
 
     @property
     def id(self) -> str:
@@ -66,12 +71,22 @@ class SlackAdapter(Adapter):
         return self._cached_bot_id
 
     @property
-    def respond_tokens(self):
+    def respond_tokens(self) -> Tuple[str, Pattern]:
         return (
             re.compile('@?kiz(?:una)?', re.IGNORECASE),
             format_slack_mention(self.id),
             KIZUNA
         )
+
+    def addressed_by(self, message: SlackMessage):
+        for token in self.respond_tokens:
+            if isinstance(token, str) and message.text.startswith(token):
+                return True
+
+            if token.match(message.text):
+                return True
+
+        return False
 
     def respond(self, message: SlackMessage, text: str):
         send(self.client, message.channel, text)

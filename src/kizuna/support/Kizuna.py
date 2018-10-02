@@ -1,8 +1,10 @@
+import asyncio
 import inspect
 
 from typing import Dict
 
 from kizuna.adapters import Adapter
+from .di import build_di_args, DependencyMissing
 
 
 class Kizuna:
@@ -30,9 +32,18 @@ class Kizuna:
 
         return handleable
 
-
     def handle(self, adapter_name: str, payload: dict):
         adapter: Adapter = self.adapters.get(adapter_name)
+        event = adapter.convert_payload(payload)
         handleable = self.get_handleable(adapter)
+
+        components = {event} | self.skills | {adapter for adapter in self.adapters.values()}
         for command in handleable:
-            pass
+            try:
+                asyncio.run(command.handle(**build_di_args(components, command.handle)))
+            except DependencyMissing as e:
+                if e.dependency == event.__class__.__name__:
+                    # this command isn't meant to handle this type of event
+                    return
+
+                raise e

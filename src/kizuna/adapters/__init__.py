@@ -1,4 +1,4 @@
-from abc import ABC, abstractproperty
+from abc import ABC, abstractproperty, abstractmethod
 
 
 class Adapter(ABC):
@@ -9,4 +9,9 @@ class Adapter(ABC):
 
     @abstractproperty
     def handles(self):
+        raise NotImplementedError
+
+    @staticmethod
+    @abstractmethod
+    def convert_payload(payload):
         raise NotImplementedError

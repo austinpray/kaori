@@ -7,6 +7,6 @@ class PingCommand(SlackCommand):
     """usage: {bot} ping - respond with pong"""
 
     @staticmethod
-    def handle(message: SlackMessage, bot: SlackAdapter):
-        if re.compile('ping$', re.I).match(message.text):
-            bot.respond(message, 'pong')
+    async def handle(message: SlackMessage, bot: SlackAdapter):
+        if bot.addressed_by(message) and re.compile('.* ping$', re.I).match(message.text):
+            bot.reply(message, 'pong')

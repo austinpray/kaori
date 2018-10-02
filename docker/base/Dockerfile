@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.7
 
 ENV KIZ_DOCKER_VERSION 1
 WORKDIR /kizuna
