@@ -8,5 +8,5 @@ class PingCommand(SlackCommand):
 
     @staticmethod
     async def handle(message: SlackMessage, bot: SlackAdapter):
-        if bot.addressed_by(message) and re.compile('.* ping$', re.I).match(message.text):
+        if bot.addressed_by(message) and bot.understands(message, with_pattern=re.compile('ping$', re.I)):
             bot.reply(message, 'pong')

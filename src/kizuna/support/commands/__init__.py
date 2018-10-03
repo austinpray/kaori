@@ -1,5 +1,4 @@
 from .AtGraphCommand import AtGraphCommand
-from .ClapCommand import ClapCommand
 from .HelpCommand import HelpCommand
 from .KKredsBalanceCommand import KKredsBalanceCommand
 from .KKredsMiningCommand import KKredsMiningCommand

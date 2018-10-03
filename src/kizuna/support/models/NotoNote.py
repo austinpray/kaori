@@ -3,7 +3,7 @@ from textwrap import shorten
 from sqlalchemy import Column, Integer, BigInteger, Boolean, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
-from . import Base
+from .Models import Base
 
 
 class NotoNote(Base):

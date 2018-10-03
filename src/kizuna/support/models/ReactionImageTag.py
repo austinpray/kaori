@@ -1,7 +1,7 @@
 import arrow
 from sqlalchemy import Column, Integer, String, DateTime, func, Text
 
-from . import Base
+from .Models import Base
 
 
 class ReactionImageTag(Base):

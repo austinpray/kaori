@@ -8,6 +8,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 import config
+import kizuna.plugins.chat
 import kizuna.plugins.ping
 from kizuna.adapters.slack import SlackAdapter
 from kizuna.skills import DB
@@ -42,7 +43,9 @@ k.skills |= {
 }
 
 k.plugins |= {
-    kizuna.plugins.ping
+    kizuna.plugins.ping,
+    kizuna.plugins.chat
+    # kizuna.plugins.clap
 }
 
 

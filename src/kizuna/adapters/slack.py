@@ -1,12 +1,15 @@
 from abc import ABC, abstractmethod
 
 import re
+from functools import partial
 from slackclient import SlackClient
 from slacktools.chat import send
 from slacktools.message import format_slack_mention
-from typing import Pattern, Tuple
+from types import SimpleNamespace
+from typing import Pattern, Callable
 
 from kizuna.support.strings import KIZUNA
+from kizuna.support.utils import strip_tokens
 from . import Adapter
 
 
@@ -70,23 +73,49 @@ class SlackAdapter(Adapter):
 
         return self._cached_bot_id
 
+    @staticmethod
+    def make_mention_token(token: str) -> Pattern:
+        return re.compile(token, re.IGNORECASE)
+
     @property
-    def respond_tokens(self) -> Tuple[str, Pattern]:
+    def mention_tokens(self):
         return (
-            re.compile('@?kiz(?:una)?', re.IGNORECASE),
-            format_slack_mention(self.id),
-            KIZUNA
+            self.make_mention_token(re.escape(format_slack_mention(self.id))),
+            self.make_mention_token('@?kiz(?:una)?'),
+            self.make_mention_token(f'@?{re.escape(KIZUNA)}'),
         )
 
-    def addressed_by(self, message: SlackMessage):
-        for token in self.respond_tokens:
-            if isinstance(token, str) and message.text.startswith(token):
-                return True
+    @property
+    def mentioned(self) -> SimpleNamespace:
+        ns = SimpleNamespace()
 
-            if token.match(message.text):
+        def anywhere(token: Pattern, text: str):
+            return token.search(text)
+
+        def directly(token: Pattern, text: str):
+            return token.match(text)
+
+        ns.anywhere = partial(self.mentioned_by, self.mention_tokens, anywhere)
+        ns.directly = partial(self.mentioned_by, self.mention_tokens, directly)
+
+        return ns
+
+    @staticmethod
+    def mentioned_by(tokens, fn: Callable, text: str) -> bool:
+        for token in tokens:
+            if fn(token, text):
                 return True
 
         return False
+
+    def addressed_by(self, message: SlackMessage):
+        if message.user == self.id:
+            return False
+
+        return self.mentioned.directly(message.text)
+
+    def understands(self, message: SlackMessage, with_pattern: Pattern):
+        return with_pattern.match(strip_tokens(self.mention_tokens, message.text.strip()))
 
     def respond(self, message: SlackMessage, text: str):
         send(self.client, message.channel, text)

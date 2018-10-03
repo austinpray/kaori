@@ -50,7 +50,7 @@ class EventsResource(object):
         if callback_type == 'event_callback':
             self.logger.debug(doc)
             self.rabbitmq_broker.enqueue(Message(queue_name='default',
-                                                 actor_name='worker',
+                                                 actor_name='slack_worker',
                                                  args=(doc,),
                                                  options={},
                                                  kwargs={}))

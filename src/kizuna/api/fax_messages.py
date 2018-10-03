@@ -6,7 +6,7 @@ import falcon
 from sqlalchemy import asc
 from sqlalchemy.orm import sessionmaker
 
-from kizuna.support.models.FaxMessage import FaxMessage
+from kizuna.support.models import FaxMessage
 from kizuna.support.utils import db_session_scope
 from .utils import valid_auth_header
 

@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
-from . import Base
+from .Models import Base
 
 
 class SlackMessage(Base):

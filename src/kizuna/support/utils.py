@@ -11,6 +11,14 @@ def build_url(baseurl, path, args_dict=None):
     return urlunparse(url_parts)
 
 
+def strip_tokens(tokens, message: str):
+    message = message.strip()
+    for token in tokens:
+        match = token.match(message)
+        if match:
+            return message[match.end(0):].strip()
+
+
 @contextmanager
 def db_session_scope(session_maker):
     if not session_maker:
