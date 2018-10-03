@@ -4,7 +4,7 @@ const webpack = require("webpack");
 module.exports = {
     entry: [
         'whatwg-fetch',
-        './kizuna_js/index.js'
+        './src/kizuna/web/js/index.js'
     ],
     output: {
         path: path.resolve(__dirname, 'static/dist'),

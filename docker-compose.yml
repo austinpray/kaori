@@ -10,22 +10,22 @@ services:
       POSTGRES_DB: kizuna
       POSTGRES_PASSWORD: kizuna
       POSTGRES_USER: kizuna
+
   rabbitmq:
     image: rabbitmq
+
   worker:
-    build:
-      context: .
-      dockerfile: Dockerfile.worker
+    image: austinpray/kizuna/worker
     env_file: .env
+    command: ["dramatiq-gevent", "kizuna.worker", "-p", "2", "-t", "8", "--watch", "./src"]
     volumes:
       - .:/kizuna
     depends_on:
       - db
       - rabbitmq
+
   api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
+    image: austinpray/kizuna/api
     env_file: .env
     volumes:
       - .:/kizuna
@@ -34,10 +34,9 @@ services:
       - rabbitmq
     ports:
       - 8001:8001
+
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.web
+    image: austinpray/kizuna/web
     env_file: .env
     volumes:
       - .:/kizuna
@@ -45,9 +44,3 @@ services:
       - db
     ports:
       - 8000:8000
-  js:
-    image: "node:9"
-    working_dir: /kizuna
-    volumes:
-      - ./:/kizuna
-    command: npm run watch

@@ -1,0 +1,13 @@
+{% extends 'parents/base.jinja2' %}
+{% block content %}
+    <div class="announce">
+        <h1>Not Authorized</h1>
+        <figure><img style="max-height: 200px" src="/static/images/annoyed.jpg"/></figure>
+        <p>You either:</p>
+        <ul>
+            <li>Did not give me an authorization token</li>
+            <li>Your session expired and you need to login again</li>
+        </ul>
+        <p>Just run "kizuna login" to give your browser a fresh token.</p>
+    </div>
+{% endblock %}

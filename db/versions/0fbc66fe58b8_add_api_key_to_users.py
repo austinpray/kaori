@@ -8,9 +8,13 @@ Create Date: 2017-12-03 22:49:06.036773
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.sql import select
+from secrets import token_hex
 
 
-from kizuna.models.User import user_generate_api_key
+def user_generate_api_key():
+    token = token_hex(32)
+    return 'kiz-{}'.format(token)
+
 
 # revision identifiers, used by Alembic.
 revision = '0fbc66fe58b8'

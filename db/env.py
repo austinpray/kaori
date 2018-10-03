@@ -2,7 +2,12 @@ from __future__ import with_statement
 from alembic import context
 from sqlalchemy import create_engine
 from logging.config import fileConfig
-import config as kizuna_config
+import os
+from types import SimpleNamespace
+
+kizuna_config = SimpleNamespace(
+    DATABASE_URL=os.environ.get('DATABASE_URL')
+)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
