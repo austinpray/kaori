@@ -2,7 +2,7 @@
   "name": "kizuna",
   "version": "1.0.0",
   "description": ":^)",
-  "main": "kizuna_js/index.js",
+  "main": "src/kizuna/api/web/js/index.js",
   "dependencies": {
     "localforage": "^1.5.5",
     "lodash": "^4.17.4",
@@ -31,8 +31,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "npm ci && webpack --watch",
-    "build": "npm ci && webpack -p"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
