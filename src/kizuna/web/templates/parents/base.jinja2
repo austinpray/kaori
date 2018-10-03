@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Kizuna - {{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <style>
+        html, body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
+        .loading {
+            animation: opacityPulse 1s ease-out;
+            animation-iteration-count: infinite;
+            opacity: 0;
+        }
+
+        @-webkit-keyframes opacityPulse {
+            0% {
+                opacity: 0.0;
+            }
+            50% {
+                opacity: 1.0;
+            }
+            100% {
+                opacity: 0.0;
+            }
+        }
+
+        a.button {
+            -webkit-appearance: button;
+            -moz-appearance: button;
+            appearance: button;
+
+            text-decoration: none;
+            color: initial;
+        }
+
+        .announce {
+            text-align: center;
+        }
+
+        .announce ul {
+            display: inline-block;
+        }
+
+        .announce li {
+            text-align: left;
+        }
+
+        {% include 'includes/buttons.css' %}
+
+    </style>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/pure/1.0.0/pure.css"
+          integrity="sha256-dfwvgA3BzMgzABXGXPOTXeInWAkSOmKPpSYqEoY8nqY="
+          crossorigin="anonymous"/>
+</head>
+<body>
+{% block content %}{% endblock %}
+<script src="/static/dist/kizuna.bundle.js"></script>
+<script>
+  // if kizuna.bundle.js doesn't render in like 30 seconds just error out
+  var loading_el_id = 'default-loading-indicator';
+  if (document.getElementById(loading_el_id)) {
+    window.setTimeout(function () {
+      var loading = document.getElementById(loading_el_id);
+      if (loading) {
+        loading.textContent = "It's prolly not gonna load, you should just refresh";
+      }
+    }, 3e4)
+  }
+</script>
+</body>
+</html>

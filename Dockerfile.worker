@@ -1,5 +1,0 @@
-FROM austinpray/kizuna/base
-
-CMD ["dramatiq-gevent", "worker", "-p", "2", "-t", "8"]
-
-COPY . ${workdir}
