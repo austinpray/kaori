@@ -24,11 +24,11 @@ before_install:
   --project kizuna-188702
 - make dev_info
 install:
-- make pull
+- make registry_pull
 - make build
 script:
-- make pep8
-- make test
+#- make pep8
+#- make test
 deploy:
   provider: script
   skip_cleanup: true
