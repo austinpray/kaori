@@ -24,6 +24,8 @@ clap_parser.add_argument('message',
                          nargs=REMAINDER,
                          help='the message to clappify')
 
+clap_parser.add_help_argument()
+
 
 class ClapCommand(SlackCommand):
     """usage: {bot} clap TEXT - adds obnoxious claps between each word in TEXT"""
@@ -41,6 +43,9 @@ class ClapCommand(SlackCommand):
             # lol commented out for max sass
             # send(str(err))
             return bot.respond(message, random_insult())
+
+        if args.help:
+            return bot.respond(message, clap_parser.get_help())
 
         if not args.message:
             return bot.respond(message, random_insult())
