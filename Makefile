@@ -152,7 +152,7 @@ migrate_dev:
 .PHONY: pull-slacktools push-slacktools
 
 pull-slacktools:
-	git subtree pull --prefix vendor/python-slacktools python-slacktools dev --squash
+	git subtree pull --prefix vendor/python-slacktools python-slacktools develop --squash
 
 push-slacktools:
-	git subtree push --prefix vendor/python-slacktools python-slacktools dev
+	git subtree push --prefix vendor/python-slacktools python-slacktools develop
