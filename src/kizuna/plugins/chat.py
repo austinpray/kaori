@@ -12,7 +12,6 @@ def to_pattern(strings: List[str]) -> Pattern:
 
 greeting = to_pattern([
     '(?:hi|h[e|u]llo)(?: there)?',
-    'yo',
     'waddup',
     "what['|’]?s up",
 ])
@@ -45,6 +44,9 @@ class GreetingCommand(SlackCommand):
 
     @staticmethod
     async def handle(message: SlackMessage, bot: SlackAdapter):
+        if message.user == bot.id:
+            return
+
         text = message.text.strip()
         tokens = text.split()
         if not text:
