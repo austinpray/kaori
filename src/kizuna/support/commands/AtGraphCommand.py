@@ -1,10 +1,11 @@
+from subprocess import CalledProcessError
+from threading import Thread
+from time import sleep
+
 from graphviz import Digraph
 from palettable import tableau
 from slacktools.arguments import SlackArgumentParserException, SlackArgumentParser
 from slacktools.chat import send_factory
-from subprocess import CalledProcessError
-from threading import Thread
-from time import sleep
 
 from .slack_command import SlackCommand
 from ..models import AtGraphEdge, User

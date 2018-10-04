@@ -1,9 +1,9 @@
 import json
 import os
+from uuid import uuid4
 
 from flask import render_template
 from flask import request, Response, Blueprint
-from uuid import uuid4
 from werkzeug.utils import secure_filename
 
 from config import \

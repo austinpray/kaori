@@ -1,6 +1,6 @@
+import itertools
 from random import choice
 
-import itertools
 import sqlalchemy.orm as orm
 from slacktools.chat import send_ephemeral_factory, send_factory
 from slacktools.message import format_url

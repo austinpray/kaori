@@ -1,12 +1,12 @@
-from abc import ABC, abstractmethod
-
 import re
+from abc import ABC, abstractmethod
 from functools import partial
+from types import SimpleNamespace
+from typing import Pattern, Callable
+
 from slackclient import SlackClient
 from slacktools.chat import send
 from slacktools.message import format_slack_mention
-from types import SimpleNamespace
-from typing import Pattern, Callable
 
 from kizuna.support.strings import KIZUNA
 from kizuna.support.utils import strip_tokens

@@ -1,5 +1,6 @@
-from flask import request, session, render_template
 from functools import wraps
+
+from flask import request, session, render_template
 
 from kizuna.support.models import User
 

@@ -1,5 +1,4 @@
 import random
-
 import re
 from typing import List, Pattern
 
