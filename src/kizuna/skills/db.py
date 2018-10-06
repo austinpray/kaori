@@ -7,5 +7,5 @@ class DB:
     def __init__(self, make_session: sessionmaker) -> None:
         self.make_session = make_session
 
-    def scope(self):
+    def session_scope(self):
         return db_session_scope(self.make_session)

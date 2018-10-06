@@ -1,8 +1,8 @@
 from slacktools.chat import send_ephemeral_factory
 
 from config import KIZUNA_WEB_URL
+from kizuna.plugins.users.models.user import User
 from .slack_command import SlackCommand
-from ..models.User import User
 from ..utils import build_url
 
 
