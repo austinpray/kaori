@@ -28,7 +28,6 @@ class EventsResource(object):
         body = req.bounded_stream.read().decode('utf8')
 
         try:
-            print(config.SLACK_SIGNING_SECRET, flush=True)
             if not verify_signature(config.SLACK_SIGNING_SECRET,
                                     int(req.get_header('X-Slack-Request-Timestamp')),
                                     body,
