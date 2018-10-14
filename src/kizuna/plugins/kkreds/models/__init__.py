@@ -1,0 +1,1 @@
+from .kkreds_transaction import KKredsTransaction

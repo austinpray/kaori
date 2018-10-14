@@ -11,6 +11,7 @@ import config
 import kizuna.plugins.chat
 import kizuna.plugins.clap
 import kizuna.plugins.ping
+import kizuna.plugins.kkreds
 from kizuna.adapters.slack import SlackAdapter
 from kizuna.skills import DB
 from kizuna.support import Kizuna
@@ -47,6 +48,7 @@ k.plugins |= {
     kizuna.plugins.chat,
     kizuna.plugins.clap,
     kizuna.plugins.ping,
+    kizuna.plugins.kkreds
 }
 
 
