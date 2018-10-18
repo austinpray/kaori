@@ -1,3 +1,4 @@
+import re
 from subprocess import CalledProcessError
 from threading import Thread
 from time import sleep
@@ -5,59 +6,50 @@ from time import sleep
 from graphviz import Digraph
 from palettable import tableau
 from slacktools.arguments import SlackArgumentParserException, SlackArgumentParser
-from slacktools.chat import send_factory
 
-from .slack_command import SlackCommand
-from ..models import AtGraphEdge, User
-from ..strings import WAIT_A_SEC, JAP_DOT
+from kizuna.adapters.slack import SlackAdapter, SlackMessage, SlackCommand
+from .models import MentionGraphEdge
+from kizuna.plugins.users import User
+from kizuna.support.strings import WAIT_A_SEC, JAP_DOT
+from kizuna.support.utils import linear_scale
+from kizuna.skills.db import DB
+
+parser = SlackArgumentParser(prog='kizuna mentions', description='Generate a mentions graph', add_help=False)
+available_layouts = ['dot', 'neato', 'fdp', 'twopi', 'circo']
+
+markdown_available_layouts = list(map(lambda s: f'`{s}`', available_layouts))
+parser.add_argument('--layout',
+                    '-l',
+                    dest='layout',
+                    default='dot',
+                    help='Defaults to `dot`. Can be any of ' + ', '.join(markdown_available_layouts))
+
+parser.add_argument('--raster',
+                    '-r',
+                    dest='raster',
+                    action='store_true',
+                    help='Set to render a png instead of a pdf')
+
+parser.add_help_argument()
 
 
-class AtGraphCommand(SlackCommand):
-    def __init__(self, db_session) -> None:
-
-        self.available_layouts = ['dot', 'neato', 'fdp', 'twopi', 'circo']
-
-        parser = SlackArgumentParser(prog='kizuna mentions', description='Generate a mentions graph', add_help=False)
-        self.add_help_command(parser)
-
-        markdown_available_layouts = list(map(lambda s: '`{}`'.format(s), self.available_layouts))
-        parser.add_argument('--layout',
-                            '-l',
-                            dest='layout',
-                            default='dot',
-                            help='Defaults to `dot`. Can be any of ' + ', '.join(markdown_available_layouts))
-
-        parser.add_argument('--raster',
-                            '-r',
-                            dest='raster',
-                            action='store_true',
-                            help='Set to render a png instead of a pdf')
-
-        self.set_help_text(parser)
-        self.parser = parser
-
-        pattern = "mentions(?: (.*))?$"
-        super().__init__(name='mention-graph',
-                         pattern=pattern,
-                         help_text=self.help_text,
-                         is_at=True,
-                         db_session_maker=db_session)
+class MentionGraphCommand(SlackCommand):
 
     @staticmethod
-    def linear_scale(old_max, old_min, new_max, new_min, value):
-        old_range = (old_max - old_min)
-        if old_range == 0:
-            return value
-        new_range = (new_max - new_min)
-        return (((value - old_min) * new_range) / old_range) + new_min
+    def handle(message: SlackMessage, bot: SlackAdapter, db: DB):
 
-    def respond(self, slack_client, message, matches):
-        channel = message['channel']
-        send = send_factory(slack_client, message['channel'])
+        if not bot.addressed_by(message):
+            return
 
-        user_args = matches[0].split(' ') if matches[0] else []
+        matches = bot.understands(message, with_pattern=re.compile('mentions(?: (.*))?', re.I))
+
+        if not matches:
+            return
+
+        user_args = matches.group(1).split() if matches. else []
+
         try:
-            args = self.parser.parse_args(user_args)
+            args = parser.parse_args(user_args)
         except SlackArgumentParserException as err:
             return send(str(err))
 

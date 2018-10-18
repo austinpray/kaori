@@ -33,3 +33,11 @@ def db_session_scope(session_maker):
         raise
     finally:
         session.close()
+
+
+def linear_scale(old_max, old_min, new_max, new_min, value):
+    old_range = (old_max - old_min)
+    if old_range == 0:
+        return value
+    new_range = (new_max - new_min)
+    return (((value - old_min) * new_range) / old_range) + new_min
