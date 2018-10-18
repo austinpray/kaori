@@ -1,7 +1,7 @@
 import arrow
 from sqlalchemy import Column, Integer, String, DateTime, func, Text
 
-from .Models import Base
+from kizuna.support.models.Models import Base
 
 
 class ReactionImageTag(Base):

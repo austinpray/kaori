@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, func, Text
 from sqlalchemy.orm import relationship
 
-from .Models import Base, reaction_images_tags_join_table
+from kizuna.support.models.Models import Base, reaction_images_tags_join_table
 
 
 class ReactionImage(Base):

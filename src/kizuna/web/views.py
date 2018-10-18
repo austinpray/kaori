@@ -10,8 +10,8 @@ from config import \
     IMAGE_UPLOAD_DIR, \
     S3_BUCKET, \
     S3_BUCKET_URL
-from kizuna.support.models.ReactionImage import ReactionImage
-from kizuna.support.models.ReactionImageTag import ReactionImageTag
+from kizuna.plugins.reactions.models.reaction_image import ReactionImage
+from kizuna.plugins.reactions.models.reaction_image_tag import ReactionImageTag
 from .extentions import aws_client, make_db_session
 from .middleware import requires_auth_factory
 from .utils import image_path_to_content_type
