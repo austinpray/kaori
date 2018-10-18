@@ -1,6 +1,9 @@
 from kizuna.adapters.slack import SlackCommand, SlackMessage, SlackAdapter
 from kizuna.skills.db import DB
 from .models.user import User
+from config import KIZUNA_WEB_URL
+from kizuna.plugins.users.models.user import User
+from kizuna.support.utils import build_url
 
 
 class UserRefreshCommand(SlackCommand):
@@ -36,3 +39,20 @@ class UserRefreshCommand(SlackCommand):
                     member.name = el['name']
 
         bot.reply(message, 'Refreshed users. :^)')
+
+
+class LoginCommand(SlackCommand):
+    """usage: {bot} login - login to the web interface"""
+
+    @staticmethod
+    def handle(message: SlackMessage, bot: SlackAdapter, db: DB):
+        with db.session_scope() as session:
+            user = User.get_by_slack_id(session, message.user)
+
+            if not user:
+                return bot.reply(message, """
+                I don't have your user in the db. Prolly run 'kizuna refresh users' and if that still doesn't fix it:
+                Austin fucked up somewhere :^(
+                """.strip(), ephemeral=True)
+
+            bot.reply(message, build_url(KIZUNA_WEB_URL, '/login', {'auth': user.get_token()}), ephemeral=True)

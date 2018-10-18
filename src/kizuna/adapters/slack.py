@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from typing import Pattern, Callable
 
 from slackclient import SlackClient
-from slacktools.chat import send
+from slacktools.chat import send, send_ephemeral
 from slacktools.message import format_slack_mention
 
 from kizuna.support.strings import KIZUNA
@@ -120,5 +120,9 @@ class SlackAdapter(Adapter):
     def respond(self, message: SlackMessage, text: str):
         send(self.client, message.channel, text)
 
-    def reply(self, message: SlackMessage, text: str):
-        send(self.client, message.channel, f'{format_slack_mention(message.user)} {text}')
+    def reply(self, message: SlackMessage, text: str, ephemeral: bool = False):
+        text_with_mention = f'{format_slack_mention(message.user)} {text}'
+        if ephemeral:
+            return send_ephemeral(self.client, message.channel, message.user,  text_with_mention)
+
+        return send(self.client, message.channel, text_with_mention)
