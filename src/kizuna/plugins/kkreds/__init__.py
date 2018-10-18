@@ -1,5 +1,5 @@
-from datetime import datetime
 import re
+from datetime import datetime
 from decimal import Decimal, InvalidOperation
 
 import arrow
@@ -9,7 +9,6 @@ from slacktools.message import is_user_mention, extract_user_id_from_mention
 from kizuna.adapters.slack import SlackAdapter, SlackMessage, SlackCommand
 from kizuna.plugins.users import User
 from kizuna.skills.db import DB
-
 from .models import KKredsTransaction
 
 
@@ -163,7 +162,7 @@ class KKredsTransactionCommand(SlackCommand):
 
             if amount <= 0:
                 return bot.reply(message,
-                             'Amount has to be non-zero')
+                                 'Amount has to be non-zero')
 
             if amount > sending_user.get_kkred_balance(session):
                 return bot.reply(message,

@@ -10,8 +10,8 @@ from sqlalchemy.orm import sessionmaker
 import config
 import kizuna.plugins.chat
 import kizuna.plugins.clap
-import kizuna.plugins.ping
 import kizuna.plugins.kkreds
+import kizuna.plugins.ping
 from kizuna.adapters.slack import SlackAdapter
 from kizuna.skills import DB
 from kizuna.support import Kizuna
