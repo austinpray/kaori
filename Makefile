@@ -44,7 +44,7 @@ registry_web_tag_latest = $(registry_web_tag):latest
 registry_worker_tag_latest = $(registry_worker_tag):latest
 
 # build everything
-build: dev_info api worker web
+build: api worker web
 
 # check the project for pep8 compliance
 pep8:
