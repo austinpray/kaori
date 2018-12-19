@@ -7,6 +7,5 @@ workflow "Production Deploy" {
 
 action "make" {
   uses = "actions/docker/cli@76ff57a"
-  runs = "sh"
-  args = "-c  'apk add --update make && make'"
+  args = "sh -c  'apk add --update make && make'"
 }
