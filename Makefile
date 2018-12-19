@@ -131,7 +131,7 @@ api: base
 		.
 
 web: api
-	docker run -it --rm --name build-web-assets -v $(shell pwd):/kizuna -w /kizuna node:10 npm run build
+	docker run --rm --name build-web-assets -v $(shell pwd):/kizuna -w /kizuna node:10 npm run build
 	docker build \
 		--file Dockerfile.web \
 		--cache-from $(web_tag) \
