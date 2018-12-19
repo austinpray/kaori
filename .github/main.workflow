@@ -19,4 +19,5 @@ action "GitHub Action for Google Cloud" {
 
 action "make" {
   uses = "actions/docker/cli@76ff57a"
+  runs = "sn"
 }
