@@ -1,4 +1,4 @@
 #!/bin/sh -l
 
-apt --update make
+apk --update make
 make
