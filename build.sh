@@ -1,4 +1,4 @@
 #!/bin/sh -l
 
-apk --update make
+apk add --update make && \
 make
