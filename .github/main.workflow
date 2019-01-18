@@ -1,9 +1,15 @@
 workflow "New workflow" {
   on = "push"
-  resolves = ["GitHub Action for Docker"]
+  resolves = ["assets build"]
 }
 
-action "GitHub Action for Docker" {
-  uses = "actions/docker/cli@c08a5fc9e0286844156fefff2c141072048141f6"
-  runs = "./build.sh"
+action "node modules" {
+  uses = "actions/npm@de7a3705a9510ee12702e124482fad6af249991b"
+  runs = "npm ci"
+}
+
+action "assets build" {
+  uses = "actions/npm@de7a3705a9510ee12702e124482fad6af249991b"
+  runs = "npm run build"
+  needs = ["node modules"]
 }
