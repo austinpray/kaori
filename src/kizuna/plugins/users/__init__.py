@@ -22,7 +22,6 @@ class UserRefreshCommand(SlackCommand):
         if not match:
             return
 
-
         res = bot.client.api_call('users.list')
 
         if not res['ok']:
