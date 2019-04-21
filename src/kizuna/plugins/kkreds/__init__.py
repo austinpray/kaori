@@ -74,7 +74,7 @@ class KKredsMiningCommand(SlackCommand):
 
         message_ts = arrow.get(message.ts)
 
-        if not is_payable(message_ts):
+        if not is_payable(message_ts) or not bot.understands(message, with_pattern=trigger):
             return
 
         user_id = message.user

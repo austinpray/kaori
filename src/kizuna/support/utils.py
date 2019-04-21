@@ -16,7 +16,9 @@ def strip_tokens(tokens, message: str):
     for token in tokens:
         match = token.match(message)
         if match:
-            return message[match.end(0):].strip()
+            message = message[match.end(0):].strip()
+
+    return message
 
 
 @contextmanager
