@@ -19,23 +19,18 @@ function initStorage() {
   return new Promise(function (resolve, reject) {
     if (auth) {
       return store.setItem('auth', auth)
-        .then(() = > resolve({...result, auth
-    }))
-    .
-      catch(() = > resolve(result)
-    )
+        .then(() => resolve({...result, auth}))
+        .catch(() => resolve(result))
     }
     return store.getItem('auth')
       .then(function (auth) {
         if (auth) {
-          return resolve({...result, auth
-        })
+          return resolve({...result, auth})
         }
 
         return resolve(result);
       })
-      .catch(() = > resolve(result)
-  )
+      .catch(() => resolve(result))
   });
 }
 
@@ -46,16 +41,12 @@ if (new_reaction_image_entry_el) {
   import(
     /* webpackChunkName: "kizuna-new-reaction-image" */
     "./containers/NewReactionImage"
-    ).then(module = > {
+    ).then(module => {
     const {NewReactionImageContainer} = module;
-  initStorage().then(function (storage) {
-    ReactDOM.render( < NewReactionImageContainer
-    {...
-      storage
-    }
-    />, new_reaction_image_entry_el);
-  });
-})
+    initStorage().then(function (storage) {
+      ReactDOM.render(<NewReactionImageContainer {...storage} />, new_reaction_image_entry_el);
+    });
+  })
 }
 
 // just a regular page with no react components
@@ -63,7 +54,6 @@ if (new_reaction_image_entry_el) {
 const entry_elements = [
   new_reaction_image_entry_el
 ];
-if (_every(entry_elements, element = > !element))
-{
+if (_every(entry_elements, element => !element)) {
   initStorage();
 }
