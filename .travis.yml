@@ -22,6 +22,7 @@ before_install:
 - gcloud config set project kizuna-188702
 - gcloud container clusters get-credentials kizuna-prod-cluster --zone us-central1-a
   --project kizuna-188702
+- gcloud auth configure-docker
 - make dev_info
 install:
 - make registry_pull
