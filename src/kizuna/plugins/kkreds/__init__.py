@@ -116,7 +116,7 @@ class KKredsTransactionCommand(SlackCommand):
     @staticmethod
     async def handle(message: SlackMessage, bot: SlackAdapter, db: DB):
 
-        pattern = re.compile("(?:pay|tip|give|send)\s+(\S*)\s+(\S*)", re.IGNORECASE)
+        pattern = re.compile(r"(?:pay|tip|give|send)\s+(\S*)\s+(\S*)", re.IGNORECASE)
 
         if not bot.addressed_by(message):
             return

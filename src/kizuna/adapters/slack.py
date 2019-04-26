@@ -123,6 +123,6 @@ class SlackAdapter(Adapter):
     def reply(self, message: SlackMessage, text: str, ephemeral: bool = False):
         text_with_mention = f'{format_slack_mention(message.user)} {text}'
         if ephemeral:
-            return send_ephemeral(self.client, message.channel, message.user,  text_with_mention)
+            return send_ephemeral(self.client, message.channel, message.user, text_with_mention)
 
         return send(self.client, message.channel, text_with_mention)

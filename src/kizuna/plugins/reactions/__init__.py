@@ -17,6 +17,7 @@ from kizuna.plugins.users.models import User
 no_user_message = "I don't have your users in the db. Prolly run 'kizuna refresh users' and if that still doesn't fix" \
                   "it: Austin fucked up somewhere :^("
 
+
 def authenticated_path(user, path):
     return build_url(KIZUNA_WEB_URL, path, {'auth': user.get_token()})
 
