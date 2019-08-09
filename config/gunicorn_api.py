@@ -1,4 +1,4 @@
-from .kizuna import KIZUNA_ENV
+from .kaori import KIZUNA_ENV
 
 if KIZUNA_ENV == 'development':
     bind = '0.0.0.0:8001'

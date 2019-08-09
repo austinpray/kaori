@@ -3,13 +3,9 @@
 .PHONY: clean ci_%
 
 #build: api worker web
-build: api worker
+build:
+	docker-compose build
 
-api: image_api
-
-worker: image_worker
-
-#web: image_web
 
 clean: perms docker_clean
 	git clean -fdx -e .idea -e .env
@@ -21,20 +17,18 @@ ci_%:
 
 TRAVIS_COMMIT ?= $(shell git rev-parse HEAD)-WIP
 
-local_prefix ?= austinpray/kizuna
+local_prefix ?= austinpray/kaori/kaori
 registry_prefix ?= us.gcr.io/kizuna-188702
 
-DRUN = docker run -it --rm -v $(shell pwd):/kizuna -w /kizuna
-NODE = $(DRUN) --name kizuna-node-$$(uuidgen) node:10
-PYTHON = $(DRUN) --name kizuna-py-$$(uuidgen) python:3.6
-KIZ = $(DRUN) --name kizuna-$$(uuidgen) $(local_prefix)/base
+DRUN = docker run -it --rm -v $(shell pwd):/app -w /app
+KIZ = docker-compose run --rm worker
 
 .PHONY: test dev_info
 
 test:
-	$(KIZ) pytest
+	docker-compose -f docker-compose.test.yml test pytest
 
-# make a dev-info file so kizuna knows what commit she's on
+# make a dev-info file so kaori knows what commit she's on
 dev_info:
 	bin/generate-dev-info.py --revision $(TRAVIS_COMMIT) > .dev-info.json
 
@@ -116,7 +110,7 @@ docker_clean:
 node_modules: package-lock.json
 	${NODE} npm ci
 
-#static/dist: node_modules webpack.config.js src/kizuna/web/js
+#static/dist: node_modules webpack.config.js src/kaori/web/js
 #	${NODE} npm run build -- -p
 
 assets-watch: node_modules
@@ -140,7 +134,7 @@ pep8:
 	docker run --rm -v $(shell pwd):/code omercnet/pycodestyle --show-source /code/src
 
 autopep8:
-	find ./src -name '*.py' | xargs autopep8 --in-place --aggressive --aggressive
+	find ./src -name '*.py' | xargs autopep8 --in-place --aggressive
 
 
 # docker permissions helper
@@ -156,7 +150,7 @@ dev_worker:
 
 ## run dev migrations
 migrate_dev:
-	docker-compose run api alembic upgrade head
+	docker-compose run worker alembic upgrade head
 
 ## slacktools
 .PHONY: pull-slacktools push-slacktools

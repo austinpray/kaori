@@ -1,5 +1,5 @@
 import config
-from kizuna.models.ReactionImage import ReactionImage
+from kaori.models.ReactionImage import ReactionImage
 
 import sqlalchemy as sa
 import sqlalchemy.orm as orm

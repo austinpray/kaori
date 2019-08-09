@@ -1,6 +1,6 @@
-from kizuna_web.extentions import aws_client
+from kaori_web.extentions import aws_client
 import config
-from kizuna_web.utils import image_path_to_content_type
+from kaori_web.utils import image_path_to_content_type
 
 res = aws_client.list_objects_v2(Bucket=config.S3_BUCKET)
 

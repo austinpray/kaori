@@ -5,7 +5,7 @@ from logging.config import fileConfig
 import os
 from types import SimpleNamespace
 
-kizuna_config = SimpleNamespace(
+kaori_config = SimpleNamespace(
     DATABASE_URL=os.environ.get('DATABASE_URL')
 )
 
@@ -41,7 +41,7 @@ def run_migrations_offline():
     script output.
 
     """
-    url = kizuna_config.DATABASE_URL
+    url = kaori_config.DATABASE_URL
     context.configure(
         url=url, target_metadata=target_metadata, literal_binds=True)
 
@@ -56,7 +56,7 @@ def run_migrations_online():
     and associate a connection with the context.
 
     """
-    connectable = create_engine(kizuna_config.DATABASE_URL)
+    connectable = create_engine(kaori_config.DATABASE_URL)
 
     with connectable.connect() as connection:
         context.configure(
