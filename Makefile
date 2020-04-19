@@ -26,7 +26,7 @@ KIZ = docker-compose run --rm worker
 .PHONY: test dev_info
 
 test:
-	docker-compose -f docker-compose.test.yml test pytest
+	docker-compose run --rm test
 
 # make a dev-info file so kaori knows what commit she's on
 dev_info:
