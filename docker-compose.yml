@@ -44,6 +44,7 @@ services:
 
   test:
     <<: *kaori
+    image: austinpray/kaori/debug
     build:
       context: .
       target: development
