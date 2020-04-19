@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions-hub/gcloud@master
+      env:
+        PROJECT_ID: ${{secrets.GCLOUD_PROJECT_ID}}
+        APPLICATION_CREDENTIALS: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
+      with:
+        args: auth configure-docker
+    - name: Build the Docker image
+      run: make
+    - name: Run the tests
+      run: make test
+    - name: Push to GCR
+      if: github.ref == 'refs/heads/master'
+      run: |
+        docker tag austinpray/kaori/kaori us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-${{github.sha}}
+        docker push us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-${{github.sha}}
+      
