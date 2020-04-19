@@ -6,10 +6,12 @@
 !scripts/
 !src/
 !static/
+!test/
 !vendor/
 
+**/__pycache__
+
 !alembic.ini
-!requirements.in
-!requirements.txt
-!setup.cfg
-!setup.py
+!poetry.lock
+!pyproject.toml
+!pytest.ini

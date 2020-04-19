@@ -1,4 +1,15 @@
-version: '3'
+version: '3.7'
+
+x-kaori:
+  &kaori
+  build:
+    context: .
+    target: production
+  image: austinpray/kaori/kaori
+  env_file: .env
+  volumes:
+    - .:/app
+
 services:
   db:
     image: postgres
@@ -7,40 +18,33 @@ services:
     volumes:
       - "/var/lib/postgresql/data"
     environment:
-      POSTGRES_DB: kizuna
-      POSTGRES_PASSWORD: kizuna
-      POSTGRES_USER: kizuna
+      POSTGRES_DB: kaori
+      POSTGRES_PASSWORD: kaori
+      POSTGRES_USER: kaori
 
   rabbitmq:
     image: rabbitmq
 
   worker:
-    image: austinpray/kizuna/worker
-    env_file: .env
-    command: ["dramatiq-gevent", "kizuna.worker", "-p", "2", "-t", "8", "--watch", "./src"]
-    volumes:
-      - .:/kizuna
+    <<: *kaori
+    #command: ["dramatiq-gevent", "src.kaori.worker", "-p", "2", "-t", "8", "--watch", "./src"]
+    command: ["dramatiq-gevent", "kaori.worker", "-p", "2", "-t", "8"]
     depends_on:
       - db
       - rabbitmq
 
   api:
-    image: austinpray/kizuna/api
-    env_file: .env
-    volumes:
-      - .:/kizuna
+    <<: *kaori
+    command: ["gunicorn", "--config", "python:config.gunicorn_api", "kaori.api:app"]
     depends_on:
       - db
       - rabbitmq
     ports:
       - 8001:8001
 
-  #web:
-  #  image: austinpray/kizuna/web
-  #  env_file: .env
-  #  volumes:
-  #    - .:/kizuna
-  #  depends_on:
-  #    - db
-  #  ports:
-  #    - 8000:8000
+  test:
+    <<: *kaori
+    build:
+      context: .
+      target: development
+    command: ["pytest"]

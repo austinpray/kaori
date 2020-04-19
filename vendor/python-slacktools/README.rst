@@ -78,7 +78,7 @@ Roadmap
 In the Wild
 -----------
 
-`austinpray/kizuna`_ is a silly chatbot that `uses this library <https://github.com/austinpray/kizuna/tree/master/vendor/python-slacktools>`_.
+`austinpray/kaori`_ is a silly chatbot that `uses this library <https://github.com/austinpray/kaori/tree/master/vendor/python-slacktools>`_.
 
 
 .. _Slack APIs: https://api.slack.com/
@@ -90,4 +90,4 @@ In the Wild
 .. _Message text utils: https://python-slacktools.readthedocs.io/en/latest/api.html#module-slacktools.message
 .. _Message sending functions: https://python-slacktools.readthedocs.io/en/latest/api.html#module-slacktools.chat
 .. _Silly stuff: https://python-slacktools.readthedocs.io/en/latest/api.html#module-slacktools.arguments
-.. _austinpray/kizuna: https://github.com/austinpray/kizuna
+.. _austinpray/kaori: https://github.com/austinpray/kaori
