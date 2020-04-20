@@ -1,6 +1,7 @@
 import re
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
+from random import randint
 
 import arrow
 from arrow import Arrow
@@ -48,6 +49,17 @@ def is_payable(utc: Arrow) -> bool:
         return False
 
     return True
+
+
+def should_2020_04_mega_pay(utc: Arrow) -> bool:
+    """Should return True it is 4/20/2020 4:20 AM/PM in Texas"""
+
+    central = utc.to('America/Chicago')
+
+    return (central.month == 4 and
+            central.day == 20 and
+            central.year == 2020 and
+            is_payable(utc))
 
 
 def strip_date(target_date):
@@ -119,16 +131,22 @@ class KKredsMiningCommand(SlackCommand):
                 if latest_mine_time_stripped >= message_ts_stripped:
                     return
 
+            amount = 1
+
+            if should_2020_04_mega_pay(message_ts):
+                amount = randint(1, 10_000)
+
             kaori_user = User.get_by_slack_id(session, bot.id)
             mined_kkred = KKredsTransaction(from_user=kaori_user,
                                             to_user=user,
-                                            amount=1,
+                                            amount=amount,
                                             is_mined=True,
                                             created_at=message_ts.datetime)
 
             session.add(mined_kkred)
 
-        bot.reply(message, 'successfully mined 1 kkred')
+        pluralized = '1 kkred' if amount == 1 else f'{amount} kkreds'
+        bot.reply(message, f'successfully mined {pluralized}')
 
 
 class KKredsTransactionCommand(SlackCommand):
