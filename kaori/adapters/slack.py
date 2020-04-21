@@ -81,13 +81,14 @@ class SlackAdapter(Adapter):
     def mention_tokens(self):
         return (
             self.make_mention_token(re.escape(format_slack_mention(self.id))),
-            self.make_mention_token('@?kazu?(?:ha)?'),
-            self.make_mention_token(f'@?{re.escape("カズハ")}'),
-            self.make_mention_token(f'@?{re.escape("かずは")}'),
-            self.make_mention_token(f'@?{re.escape("和葉")}'),
-            # old kaori name
+            # new kaori name
+            self.make_mention_token('@?kaori'),
+            self.make_mention_token(f'@?{re.escape("かおり")}'),
+            self.make_mention_token(f'@?{re.escape("カオリ")}'),
+            # old kizuna name
             self.make_mention_token('@?kiz(?:una)?'),
-            self.make_mention_token(f'@?{re.escape(KIZUNA)}'),
+            self.make_mention_token(f'@?{re.escape("きずな")}'),
+            self.make_mention_token(f'@?{re.escape("キズナ")}'),
         )
 
     @property
