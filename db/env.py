@@ -5,6 +5,8 @@ from logging.config import fileConfig
 import os
 from types import SimpleNamespace
 
+from kaori.support.models import Base
+
 kaori_config = SimpleNamespace(
     DATABASE_URL=os.environ.get('DATABASE_URL')
 )
@@ -21,7 +23,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = None
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

@@ -1,9 +1,9 @@
+import re
+
 from kaori.adapters.slack import SlackCommand, SlackMessage, SlackAdapter
 from kaori.plugins.users.models.user import User
 from kaori.skills.db import DB
-from kaori.support.utils import build_url
 from .models.user import User
-import re
 
 
 class UserRefreshCommand(SlackCommand):
@@ -46,3 +46,7 @@ class UserRefreshCommand(SlackCommand):
                     member.name = el['name']
 
         bot.reply(message, 'Refreshed users. :^)')
+
+
+class UserNotFound(Exception):
+    pass

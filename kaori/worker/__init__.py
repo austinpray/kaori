@@ -11,6 +11,7 @@ from sqlalchemy.orm import sessionmaker
 
 import kaori.plugins.chat
 import kaori.plugins.clap
+import kaori.plugins.gacha
 import kaori.plugins.kkreds
 import kaori.plugins.ping
 import kaori.plugins.users
@@ -39,7 +40,7 @@ if not config.SLACK_API_TOKEN:
 
 sc = SlackClient(config.SLACK_API_TOKEN)
 db_engine = create_engine(config.DATABASE_URL)
-make_session = sessionmaker(bind=db_engine)
+make_session = sessionmaker(bind=db_engine, autoflush=False)
 
 k = Kaori()
 
@@ -55,6 +56,7 @@ k.plugins |= {
     kaori.plugins.ping,
     kaori.plugins.users,
     kaori.plugins.kkreds,
+    kaori.plugins.gacha,
 }
 
 

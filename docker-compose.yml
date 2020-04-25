@@ -7,6 +7,8 @@ x-kaori:
     target: production
   image: austinpray/kaori/kaori
   env_file: .env
+  environment:
+    DATABASE_URL: postgresql://kaori:kaori@db:5432/kaori
   volumes:
     - .:/app
 
