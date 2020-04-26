@@ -3,11 +3,15 @@ from functools import partial
 from .message import format_slack_mention
 
 
-def send(slack_client, channel: str, text: str):
+def send(slack_client,
+         channel: str,
+         text: str,
+         thread_ts: str = None):
     """chat.postMessage to a channel"""
     return slack_client.api_call("chat.postMessage",
                                  channel=channel,
                                  text=text,
+                                 thread_ts=thread_ts,
                                  as_user=True)
 
 

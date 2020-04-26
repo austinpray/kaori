@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from typing import Pattern, Callable
 
 from slackclient import SlackClient
-from slacktools.chat import send, send_ephemeral
+from slacktools.chat import send, reply, send_ephemeral
 from slacktools.message import format_slack_mention
 
 from kaori.support.strings import KIZUNA
@@ -19,14 +19,36 @@ class SlackEvent:
         event = payload.get('event')
         self.type = event.get('type')
         self.user = event.get('user')
-        self.ts = event.get('ts')
         self.text = event.get('text')
         self.item = event.get('item')
 
+        # threading
+        self.ts = event.get('ts')
+        self.thread_ts = event.get('thread_ts')
+
+        """
+        ## Spotting threads
+        <https://api.slack.com/messaging/retrieving#finding_threads>
+        
+        There's a few steps involved with spotting a thread and then
+        understanding the context of a message within it. Let's unspool them:
+
+        1. Detect a threaded message by looking for a thread_ts value in the message
+        object. The existence of such a value indicates that the message is part of a
+        thread.
+        2. Identify parent messages by comparing the thread_ts and ts values.  If they
+        are equal, the message is a parent message.
+        3. Threaded replies are also identified by comparing the thread_ts and ts
+        values. If they are different, the message is a reply.
+        """
+        self.is_thread = bool(self.thread_ts)
+        self.is_thread_parent = True if self.is_thread and self.ts == self.thread_ts else False
+        self.is_thread_reply = True if self.is_thread and self.ts != self.thread_ts else False
+
     @staticmethod
     def create_from(payload):
-        type = payload.get('event', {}).get('type')
-        if type == 'message':
+        payload_type = payload.get('event', {}).get('type')
+        if payload_type == 'message':
             return SlackMessage(payload)
 
         return SlackEvent(payload)
@@ -126,9 +148,20 @@ class SlackAdapter(Adapter):
     def respond(self, message: SlackMessage, text: str):
         send(self.client, message.channel, text)
 
-    def reply(self, message: SlackMessage, text: str, ephemeral: bool = False):
+    def reply(self,
+              message: SlackMessage,
+              text: str,
+              ephemeral: bool = False,
+              create_thread: bool = False
+              ):
         text_with_mention = f'{format_slack_mention(message.user)} {text}'
         if ephemeral:
             return send_ephemeral(self.client, message.channel, message.user, text_with_mention)
 
-        return send(self.client, message.channel, text_with_mention)
+        thread_ts = None
+        if message.is_thread:
+            thread_ts = message.thread_ts
+        elif create_thread:
+            thread_ts = message.ts
+
+        return send(self.client, message.channel, text_with_mention, thread_ts=thread_ts)
