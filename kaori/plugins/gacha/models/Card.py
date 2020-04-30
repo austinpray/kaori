@@ -40,13 +40,10 @@ class Card(Base):
             return 'None'
 
         return [
-            'SS',
             'S',
             'A',
             'B',
             'C',
-            'D',
-            'E',
             'F',
         ][self.rarity]
 
