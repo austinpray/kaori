@@ -1,4 +1,3 @@
-from . import StatName
 from .lib import Rarity, Nature, StatName
 from .utils import find_max_nature_value
 
