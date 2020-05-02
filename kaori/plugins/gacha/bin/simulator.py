@@ -1,6 +1,96 @@
 #!/usr/bin/env python3
 
+import arrow
+
 from kaori.plugins.gacha.engine import *
+
+balanced_S = {
+    'name': "Balanced S",
+    'rarity': S,
+    'natures': (stupid, horny),
+    'nature_values': {
+        stupid: 6,
+        baby: 2,
+        clown: 2,
+        horny: 6,
+        cursed: 2,
+        feral: 2,
+    }
+}
+
+balanced_A = {
+    'name': "Balanced A",
+    'rarity': S,
+    'natures': (stupid, horny),
+    'nature_values': {
+        stupid: 5,
+        baby: 3,
+        clown: 3,
+        horny: 5,
+        cursed: 2,
+        feral: 2,
+    }
+}
+
+balanced_B = {
+    'name': "Balanced B",
+    'rarity': B,
+    'natures': (stupid, horny),
+    'nature_values': {
+        stupid: 4,
+        baby: 3,
+        clown: 3,
+        horny: 4,
+        cursed: 3,
+        feral: 2,
+    }
+}
+
+balanced_C = {
+    'name': "Balanced C",
+    'rarity': C,
+    'natures': (stupid, horny),
+    'nature_values': {
+        stupid: 3,
+        baby: 3,
+        clown: 3,
+        horny: 3,
+        cursed: 2,
+        feral: 2,
+    }
+}
+
+balanced_F = {
+    'name': "Balanced F",
+    'rarity': F,
+    'natures': (stupid, horny),
+    'nature_values': {
+        stupid: 2,
+        baby: 2,
+        clown: 2,
+        horny: 2,
+        cursed: 1,
+        feral: 1,
+    }
+}
+
+
+
+
+
+hp_no_invest = {
+    'name': "Baseline HP with no investment",
+    'rarity': B,
+    'natures': (cursed, clown),
+    'nature_values': {
+        stupid: 1,
+        baby: 1,
+        clown: 6,
+        horny: 4,
+        cursed: 4,
+        feral: 3,
+    }
+}
 
 low_hp = {
     'name': "Lowest Possible HP in the game",
@@ -142,34 +232,66 @@ tlp = {
     }
 }
 
-if __name__ == '__main__':
-    cards = [
-        low_hp,
-        really_unlucky_hp,
-        unlucky_hp,
-        mid_hp,
-        lucky_hp,
-        really_lucky_hp,
-        high_hp,
-        matt_morg,
-        kim_jong_un_lil_sis,
-        tlp,
-    ]
 
+def render_card_md(card, combat):
+    nv_sum = sum(card['nature_values'].values())
+    budget = rarities[card['rarity']].budget
+
+    assert nv_sum == budget, \
+        f"'**ERROR:** {card['name']}' {nv_sum} does not square with budget {budget}"
+
+    print(f"#### {card['name']} ({card['rarity']}-tier {' '.join((str(n) for n in card['natures']))})")
+    print()
+    print("Nature | Value | Stat | Value ")
+    print("------ | --- | ---- | --- ")
+    for k, v in card['nature_values'].items():
+        print(' | '.join([
+            f"**{k}**",
+            str(v),
+            f"**{combat.natures[k].boosts}**",
+            str(combat.calculate_stat(combat.natures[k].boosts, card['nature_values'])),
+        ]))
     print()
 
-    for card in cards:
-        nv_sum = sum(card['nature_values'].values())
-        budget = rarities[card['rarity']].budget
-        assert nv_sum == budget, \
-            f"'{card['name']}' {nv_sum} does not square with budget {budget}"
-        print(f"------------")
-        print(f"{card['name']} ({card['rarity']}-tier {' '.join((str(n) for n in card['natures']))})")
-        print(f"## Nature")
-        for k, v in card['nature_values'].items():
-            print(f"{k}: {v}")
-        print(f"## Stats")
-        for stat in [HP, EVA, ARMOR, DMG, CRIT, SPEED]:
-            print(f"{stat}: {combat.calculate_stat(stat, card['nature_values'])}")
-        print(f"------------")
+
+if __name__ == '__main__':
+    card_groups = {
+        'HP Simulations': [
+            low_hp,
+            really_unlucky_hp,
+            unlucky_hp,
+            mid_hp,
+            lucky_hp,
+            really_lucky_hp,
+            high_hp,
+            hp_no_invest,
+        ],
+        'Random Interesting Cards': [
+            matt_morg,
+            kim_jong_un_lil_sis,
+            tlp,
+        ],
+        'Balanced Cards': [
+            balanced_S,
+            balanced_A,
+            balanced_B,
+            balanced_C,
+            balanced_F,
+        ],
+    }
+
+    print(f"## Simulator Results: {arrow.utcnow()}")
+    print()
+    print(f"### Game Facts")
+    print()
+    print(f"Nature values range from {combat.min_nature_value} to {combat.max_nature_value}")
+    print()
+    print(f"### Cards")
+    print()
+    for name, cards in card_groups.items():
+        print(f"<details><summary>{name}</summary>")
+        print()
+        for card in cards:
+            render_card_md(card, combat=combat)
+        print(f"</details>")
         print()
