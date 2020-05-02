@@ -82,12 +82,14 @@ class Combat:
     def __init__(self,
                  rarities: Dict[RarityName, Rarity],
                  stats: Dict[StatName, Stat],
-                 natures: Dict[NatureName, Nature]) -> None:
+                 natures: Dict[NatureName, Nature],
+                 stat_curvatures: Dict[StatName, Number]) -> None:
         self.rarities = rarities
         self.stats = stats
         self.natures = natures
         self.min_nature_value = 1
         self.max_nature_value = find_max_nature_value(rarities)
+        self.stat_curvatures = stat_curvatures
 
     def calculate_stat(self, stat: StatName, nature_values: Dict[NatureName, int]) -> Number:
         target_stat = self.stats[stat]

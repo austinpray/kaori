@@ -5,6 +5,15 @@ EVA_MAX = 0.9
 ARMOR_MAX = 10
 DAMAGE_MAX = 100
 
+stat_curvatures = {
+    HP: 0,
+    EVA: 0,
+    ARMOR: 0,
+    DMG: 0,
+    CRIT: 0,
+    SPEED: 0,
+}
+
 CRIT_MAX = 0.9
 CRIT_MULTIPLIER = 3
 
@@ -45,4 +54,5 @@ natures = {
 
 combat = Combat(rarities=rarities,
                 stats=stats,
-                natures=natures)
+                natures=natures,
+                stat_curvatures=stat_curvatures)
