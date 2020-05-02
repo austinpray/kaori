@@ -1,7 +1,7 @@
 from enum import unique, Enum
 from typing import Dict
 
-from .utils import Number, linear_scale, nt_sigmoid
+from .utils import Number, linear_scale, nt_sigmoid, sign
 
 
 @unique
@@ -82,43 +82,39 @@ class Combat:
     def __init__(self,
                  rarities: Dict[RarityName, Rarity],
                  stats: Dict[StatName, Stat],
-                 natures: Dict[NatureName, Nature]) -> None:
+                 natures: Dict[NatureName, Nature],
+                 stat_curvatures: Dict[StatName, Number]) -> None:
         self.rarities = rarities
         self.stats = stats
         self.natures = natures
         self.min_nature_value = 1
         self.max_nature_value = find_max_nature_value(rarities)
+        self.stat_curvatures = stat_curvatures
 
-    def calculate_stat(self, stat: StatName, nature_values: Dict[NatureName, int]) -> Number:
+    def calculate_stat(self,
+                       stat: StatName,
+                       nature_values: Dict[NatureName, int]) -> Number:
         target_stat = self.stats[stat]
-
+        
         natures = self.natures.values()
         booster = next((n.name for n in natures if n.boosts == stat))
         inhibitor = next((n.name for n in natures if n.inhibits == stat))
 
         booster_value = nature_values[booster]
         inhibitor_value = nature_values[inhibitor]
+        curvature = 0
+        curvature = self.stat_curvatures[stat]
 
-        # individually tunable stats
-        if stat == HP:
-            sensitivity = 0.95
-        elif stat == EVA:
-            sensitivity = 0.95
-        else:
-            sensitivity = 0.95
+        
 
-        tuner = linear_scale(booster_value / inhibitor_value,
+        value = linear_scale(booster_value - inhibitor_value,
                              (
-                                 self.min_nature_value / self.max_nature_value,
-                                 self.max_nature_value / self.min_nature_value
+                                self.min_nature_value - self.max_nature_value,
+                                self.max_nature_value - self.min_nature_value
                              ),
-                             (-sensitivity, sensitivity))
-
-        value = linear_scale(booster_value,
-                             (self.min_nature_value, self.max_nature_value),
-                             (0, 1))
-
-        return linear_scale(nt_sigmoid(tuner, value), (0, 1), (target_stat.min, target_stat.max))
+                             (-1, 1))
+        print(f'{stat} value: {value}')
+        return linear_scale(nt_sigmoid(curvature, value), (-1, 1), (target_stat.min, target_stat.max))
 
 
 def find_max_nature_value(rarities: Dict[RarityName, Rarity]) -> int:

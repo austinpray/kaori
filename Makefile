@@ -162,3 +162,8 @@ pull-slacktools:
 
 push-slacktools:
 	git subtree push --prefix vendor/python-slacktools python-slacktools develop
+
+.PHONY: sim
+sim:
+	docker-compose run --rm --no-deps test ./kaori/plugins/gacha/bin/simulator.py
+	
