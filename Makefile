@@ -165,5 +165,5 @@ push-slacktools:
 
 .PHONY: sim
 sim:
-	docker-compose run --rm --no-deps test ./kaori/plugins/gacha/bin/simulator.py
+	@docker-compose run --rm --no-deps test ./kaori/plugins/gacha/bin/simulator.py
 	
