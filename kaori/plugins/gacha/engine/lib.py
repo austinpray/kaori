@@ -91,7 +91,9 @@ class Combat:
         self.max_nature_value = find_max_nature_value(rarities)
         self.stat_curvatures = stat_curvatures
 
-    def calculate_stat(self, stat: StatName, nature_values: Dict[NatureName, int]) -> Number:
+    def calculate_stat(self,
+                       stat: StatName,
+                       nature_values: Dict[NatureName, int]) -> Number:
         target_stat = self.stats[stat]
 
         natures = self.natures.values()

@@ -38,11 +38,5 @@ class Image(Base):
                      owner=user.id,
                      url=url)
 
-
-
-
-
-
-
     def __repr__(self):
         return f"<Img (id='{self.id}', url='{self.url}' owner='{self.owner}')>"
