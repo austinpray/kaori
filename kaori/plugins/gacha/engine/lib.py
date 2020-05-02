@@ -111,18 +111,24 @@ class Combat:
         else:
             sensitivity = 0.95
 
-        tuner = linear_scale(booster_value / inhibitor_value,
+        inibition_factor = linear_scale(booster_value / inhibitor_value,
+                                        (
+                                            self.max_nature_value / self.min_nature_value,
+                                            self.min_nature_value / self.max_nature_value,
+                                        ),
+                                        (0, 0.5))
+
+        boost = linear_scale(booster_value,
                              (
-                                 self.min_nature_value / self.max_nature_value,
-                                 self.max_nature_value / self.min_nature_value
+                                 self.max_nature_value, self.min_nature_value,
                              ),
-                             (-sensitivity, sensitivity))
+                             (0, 0.5))
 
-        value = linear_scale(booster_value,
-                             (self.min_nature_value, self.max_nature_value),
-                             (0, 1))
+        # print(f"{stat} value: {inibition_factor}")
 
-        return linear_scale(nt_sigmoid(tuner, value), (0, 1), (target_stat.min, target_stat.max))
+        return linear_scale(nt_sigmoid(0, inibition_factor + boost),
+                            (0, 1),
+                            (target_stat.min, target_stat.max))
 
 
 def find_max_nature_value(rarities: Dict[RarityName, Rarity]) -> int:
