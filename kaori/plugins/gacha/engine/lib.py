@@ -103,15 +103,7 @@ class Combat:
         booster_value = nature_values[booster]
         inhibitor_value = nature_values[inhibitor]
 
-        # individually tunable stats
-        if stat == HP:
-            sensitivity = 0.95
-        elif stat == EVA:
-            sensitivity = 0.95
-        else:
-            sensitivity = 0.95
-
-        inibition_factor = linear_scale(booster_value / inhibitor_value,
+        inhibition_factor = linear_scale(booster_value / inhibitor_value,
                                         (
                                             self.max_nature_value / self.min_nature_value,
                                             self.min_nature_value / self.max_nature_value,
@@ -124,9 +116,7 @@ class Combat:
                              ),
                              (0, 0.5))
 
-        # print(f"{stat} value: {inibition_factor}")
-
-        return linear_scale(nt_sigmoid(0, inibition_factor + boost),
+        return linear_scale(nt_sigmoid(self.stat_curvatures[stat], inhibition_factor + boost),
                             (0, 1),
                             (target_stat.min, target_stat.max))
 

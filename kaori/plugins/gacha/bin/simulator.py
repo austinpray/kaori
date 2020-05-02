@@ -2,235 +2,10 @@
 
 import arrow
 
-from kaori.plugins.gacha.engine import *
-
-balanced_S = {
-    'name': "Balanced S",
-    'rarity': S,
-    'natures': (stupid, horny),
-    'nature_values': {
-        stupid: 6,
-        baby: 2,
-        clown: 2,
-        horny: 6,
-        cursed: 2,
-        feral: 2,
-    }
-}
-
-balanced_A = {
-    'name': "Balanced A",
-    'rarity': S,
-    'natures': (stupid, horny),
-    'nature_values': {
-        stupid: 5,
-        baby: 3,
-        clown: 3,
-        horny: 5,
-        cursed: 2,
-        feral: 2,
-    }
-}
-
-balanced_B = {
-    'name': "Balanced B",
-    'rarity': B,
-    'natures': (stupid, horny),
-    'nature_values': {
-        stupid: 4,
-        baby: 3,
-        clown: 3,
-        horny: 4,
-        cursed: 3,
-        feral: 2,
-    }
-}
-
-balanced_C = {
-    'name': "Balanced C",
-    'rarity': C,
-    'natures': (stupid, horny),
-    'nature_values': {
-        stupid: 3,
-        baby: 3,
-        clown: 3,
-        horny: 3,
-        cursed: 2,
-        feral: 2,
-    }
-}
-
-balanced_F = {
-    'name': "Balanced F",
-    'rarity': F,
-    'natures': (stupid, horny),
-    'nature_values': {
-        stupid: 2,
-        baby: 2,
-        clown: 2,
-        horny: 2,
-        cursed: 1,
-        feral: 1,
-    }
-}
-
-
-
-
-
-hp_no_invest = {
-    'name': "Baseline HP with no investment",
-    'rarity': B,
-    'natures': (cursed, clown),
-    'nature_values': {
-        stupid: 1,
-        baby: 1,
-        clown: 6,
-        horny: 4,
-        cursed: 4,
-        feral: 3,
-    }
-}
-
-low_hp = {
-    'name': "Lowest Possible HP in the game",
-    'rarity': B,
-    'natures': (horny, baby),
-    'nature_values': {
-        stupid: 1,
-        baby: 11,
-        clown: 1,
-        horny: 4,
-        cursed: 1,
-        feral: 1,
-    }
-}
-
-high_hp = {
-    'name': "Highest Possible HP in the game",
-    'rarity': B,
-    'natures': (stupid, horny),
-    'nature_values': {
-        stupid: 11,
-        baby: 1,
-        clown: 1,
-        horny: 4,
-        cursed: 1,
-        feral: 1,
-    }
-}
-
-mid_hp = {
-    'name': "Middle HP example",
-    'rarity': B,
-    'natures': (stupid, feral),
-    'nature_values': {
-        stupid: 5,
-        baby: 1,
-        clown: 1,
-        horny: 7,
-        cursed: 1,
-        feral: 4,
-    }
-}
-
-unlucky_hp = {
-    'name': "Unlucky HP example",
-    'rarity': B,
-    'natures': (stupid, feral),
-    'nature_values': {
-        stupid: 5,
-        baby: 2,
-        clown: 1,
-        horny: 6,
-        cursed: 1,
-        feral: 4,
-    }
-}
-
-really_unlucky_hp = {
-    'name': "Really Unlucky HP example",
-    'rarity': B,
-    'natures': (stupid, feral),
-    'nature_values': {
-        stupid: 5,
-        baby: 3,
-        clown: 1,
-        horny: 5,
-        cursed: 1,
-        feral: 4,
-    }
-}
-
-lucky_hp = {
-    'name': "Lucky HP example",
-    'rarity': B,
-    'natures': (stupid, feral),
-    'nature_values': {
-        stupid: 6,
-        baby: 1,
-        clown: 1,
-        horny: 6,
-        cursed: 1,
-        feral: 4,
-    }
-}
-
-really_lucky_hp = {
-    'name': "Really Lucky HP example",
-    'rarity': B,
-    'natures': (stupid, feral),
-    'nature_values': {
-        stupid: 7,
-        baby: 1,
-        clown: 1,
-        horny: 5,
-        cursed: 1,
-        feral: 4,
-    }
-}
-
-matt_morg = {
-    'name': "Matt Morgan",
-    'rarity': S,
-    'natures': (cursed, clown),
-    'nature_values': {
-        stupid: 1,
-        baby: 6,
-        clown: 3,
-        horny: 1,
-        cursed: 7,
-        feral: 2,
-    }
-}
-
-kim_jong_un_lil_sis = {
-    'name': "Kim Jong Un's Little Sister",
-    'rarity': S,
-    'natures': (horny, baby),
-    'nature_values': {
-        stupid: 3,
-        baby: 6,
-        clown: 1,
-        horny: 7,
-        cursed: 2,
-        feral: 1
-    }
-}
-
-tlp = {
-    'name': "TLP",
-    'rarity': C,
-    'natures': (horny, feral),
-    'nature_values': {
-        stupid: 1,
-        baby: 2,
-        clown: 3,
-        horny: 5,
-        cursed: 2,
-        feral: 3
-    }
-}
+from kaori.plugins.gacha.engine.test.balanced_cards import *
+from kaori.plugins.gacha.engine.test.dmg_cards import *
+from kaori.plugins.gacha.engine.test.hp_cards import *
+from kaori.plugins.gacha.engine.test.meme_cards import *
 
 
 def render_card_md(card, combat):
@@ -256,6 +31,10 @@ def render_card_md(card, combat):
 
 if __name__ == '__main__':
     card_groups = {
+        'Baselines': [
+            hp_no_invest,
+            dmg_no_invest,
+        ],
         'HP Simulations': [
             low_hp,
             really_unlucky_hp,
@@ -264,7 +43,18 @@ if __name__ == '__main__':
             lucky_hp,
             really_lucky_hp,
             high_hp,
-            hp_no_invest,
+        ],
+        'DMG Simulations': [
+            low_dmg,
+            really_unlucky_dmg,
+            unlucky_dmg,
+            mid_dmg,
+            lucky_dmg,
+            really_lucky_dmg,
+            unlikely_dmg1,
+            unlikely_dmg2,
+            unlikely_dmg3,
+            high_dmg,
         ],
         'Random Interesting Cards': [
             matt_morg,
