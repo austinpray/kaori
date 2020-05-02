@@ -1,25 +1,4 @@
-from .lib import Rarity, Nature, StatName, RarityName, NatureName
-from .utils import find_max_nature_value
-
-HP = StatName.HP
-EVA = StatName.EVA
-ARMOR = StatName.ARMOR
-DMG = StatName.DMG
-CRIT = StatName.CRIT
-SPEED = StatName.SPEED
-
-S = RarityName.S
-A = RarityName.A
-B = RarityName.B
-C = RarityName.C
-F = RarityName.F
-
-stupid = NatureName.stupid
-baby = NatureName.baby
-clown = NatureName.clown
-horny = NatureName.horny
-cursed = NatureName.cursed
-feral = NatureName.feral
+from .lib import *
 
 HP_MAX = 100
 EVA_MAX = 0.9
@@ -40,18 +19,15 @@ rarities = {
     ]
 }
 
-min_nature_value = 1
-max_nature_value = find_max_nature_value(rarities)
-
 stats = {
-    name: (min_value, max_value) for (name, min_value, max_value) in
+    stat.name: stat for stat in
     [
-        (HP, 1, HP_MAX),
-        (EVA, 0, EVA_MAX),
-        (ARMOR, 0, ARMOR_MAX),
-        (DMG, 1, DAMAGE_MAX),
-        (CRIT, 0, CRIT_MAX),
-        (SPEED, 1, max_nature_value)
+        Stat(name=HP, i_min=1, i_max=HP_MAX),
+        Stat(name=EVA, i_min=0, i_max=EVA_MAX),
+        Stat(name=ARMOR, i_min=0, i_max=ARMOR_MAX),
+        Stat(name=DMG, i_min=1, i_max=DAMAGE_MAX),
+        Stat(name=CRIT, i_min=0, i_max=CRIT_MAX),
+        Stat(name=SPEED, i_min=1, i_max=100),
     ]
 }
 
@@ -66,3 +42,7 @@ natures = {
         Nature(name=feral, boosts=SPEED, inhibits=CRIT),
     ]
 }
+
+combat = Combat(rarities=rarities,
+                stats=stats,
+                natures=natures)
