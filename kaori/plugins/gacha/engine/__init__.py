@@ -2,16 +2,16 @@ from .lib import *
 
 HP_MAX = 100
 EVA_MAX = 0.9
-ARMOR_MAX = 10
+ARMOR_MAX = 1
 DAMAGE_MAX = 100
 
 stat_curvatures = {
-    HP: 0, 
-    EVA: 0,
-    ARMOR: 0,
-    DMG: 0,
-    CRIT: 0,
-    SPEED: 0,
+    HP: 0.5, 
+    EVA: 0.95,
+    ARMOR: 0.95,
+    DMG: 0.5,
+    CRIT: 0.95,
+    SPEED: 0.95,
 }
 
 CRIT_MAX = 0.9

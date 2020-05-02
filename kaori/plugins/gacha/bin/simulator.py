@@ -9,10 +9,16 @@ matt_morg = {
     'nature_values': {
         stupid: 1,
         baby: 1,
-        clown: 10,
-        horny: 1,
-        cursed: 6,
-        feral: 1,
+        clown: 6,
+        horny: 3,
+        cursed: 7,
+        feral: 2,
+        # stupid: 1,
+        # baby: 1,
+        # clown: 10,
+        # horny: 1,
+        # cursed: 6,
+        # feral: 1,
     }
 }
 
@@ -48,6 +54,7 @@ if __name__ == '__main__':
     cards = [
         matt_morg,
         kim_jong_un_lil_sis,
+        tlp
     ]
 
     for card in cards:

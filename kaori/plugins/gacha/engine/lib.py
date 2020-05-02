@@ -104,17 +104,27 @@ class Combat:
         inhibitor_value = nature_values[inhibitor]
         curvature = 0
         curvature = self.stat_curvatures[stat]
+        derived_rarity = sum(nature_values.values())
+        print(f'derived_rarity: {derived_rarity}')
+        tuner = linear_scale(inhibitor_value,
+                             (self.min_nature_value, self.max_nature_value),
+                             (-curvature, curvature))
 
+        value = linear_scale(booster_value + derived_rarity,
+                             (self.min_nature_value + derived_rarity, self.max_nature_value + derived_rarity),
+                             (0, 1))
+
+        return linear_scale(nt_sigmoid(tuner, value), (0, 1), (target_stat.min, target_stat.max))
         
 
-        value = linear_scale(booster_value - inhibitor_value,
-                             (
-                                self.min_nature_value - self.max_nature_value,
-                                self.max_nature_value - self.min_nature_value
-                             ),
-                             (-1, 1))
-        print(f'{stat} value: {value}')
-        return linear_scale(nt_sigmoid(curvature, value), (-1, 1), (target_stat.min, target_stat.max))
+        # value = linear_scale(booster_value - inhibitor_value,
+        #                      (
+        #                         self.min_nature_value - self.max_nature_value,
+        #                         self.max_nature_value - self.min_nature_value
+        #                      ),
+        #                      (-1, 1))
+        # print(f'{stat} value: {value}')
+        # return linear_scale(nt_sigmoid(curvature, value), (-1, 1), (target_stat.min, target_stat.max))
 
 
 def find_max_nature_value(rarities: Dict[RarityName, Rarity]) -> int:
