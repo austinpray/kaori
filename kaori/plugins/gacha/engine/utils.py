@@ -1,3 +1,4 @@
+from functools import partial
 from typing import Dict, Tuple, Union
 
 from .lib import Rarity
@@ -33,3 +34,21 @@ def linear_scale(x: Number,
     a = min(target_range)
     b = max(target_range)
     return a + (x - x_min) * (b - a) / (x_max - x_min)
+
+
+def nt_sigmoid(k: Number, x: Number) -> Number:
+    """
+    Normalized Tunable Sigmoid Function
+
+    k tunes the sigmoid curve, should be between -1 and 1
+    x is the input
+    outputs ranges from 0 to 1
+
+    https://dhemery.github.io/DHE-Modules/technical/sigmoid/
+    https://dinodini.wordpress.com/2010/04/05/normalized-tunable-sigmoid-functions/
+    """
+    return (x - k * x) / (k - 2 * k * abs(x) + 1)
+
+
+def make_sigmoid(k: Number) -> callable:
+    return partial(nt_sigmoid, k)
