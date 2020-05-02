@@ -4,6 +4,10 @@ from typing import Tuple, Union
 Number = Union[int, float]
 
 
+def sign(x: Number) -> Number:
+    return bool(x > 0) - bool(x < 0)
+
+
 def linear_scale(x: Number,
                  x_range: Tuple[Number, Number],
                  target_range: Tuple[Number, Number]) -> Number:
