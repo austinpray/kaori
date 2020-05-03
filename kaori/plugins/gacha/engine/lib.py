@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from enum import unique, Enum
-from typing import Dict, Tuple, List
 from io import StringIO
+from typing import Dict, Tuple
 
 from .utils import Number, linear_scale, nt_sigmoid
 
@@ -172,6 +174,9 @@ class Card:
 
         return round(self._current_hp)
 
+    def accept_damage(self, value: int):
+        self._current_hp -= value
+
     @property
     def dmg(self):
         return self._stat(DMG)
@@ -235,7 +240,7 @@ class Card:
             target_stat = self.combat.natures[k].boosts
             stat = self._stat(target_stat)
             if target_stat in {EVA, CRIT}:
-                stat = f"{round(stat*100)}%"
+                stat = f"{round(stat * 100)}%"
 
             p(' | '.join([
                 f"**{k}**",
@@ -246,6 +251,9 @@ class Card:
         p()
 
         return out.getvalue()
+
+    def attack_damage(self, target: Card, crit_multiplier: int = 1) -> int:
+        return round((self.dmg * crit_multiplier) - target.armor)
 
 
 def find_max_nature_value(rarities: Dict[RarityName, Rarity]) -> int:
