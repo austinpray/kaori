@@ -28,7 +28,11 @@ KIZ = docker-compose run --rm worker
 .PHONY: test dev_info
 
 test:
-	docker-compose run --rm test
+	docker-compose run --rm --no-deps test
+
+.PHONY: test-sims
+test-sims:
+	docker-compose run --rm --no-deps gsim
 
 # make a dev-info file so kaori knows what commit she's on
 dev_info:
