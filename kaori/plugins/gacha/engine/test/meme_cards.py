@@ -1,4 +1,5 @@
 from kaori.plugins.gacha.engine import *
+from kaori.plugins.gacha.engine import Card
 
 matt_morg = Card(name="Matt Morgan",
                  rarity=S,

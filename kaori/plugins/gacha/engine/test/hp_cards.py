@@ -1,4 +1,5 @@
 from kaori.plugins.gacha.engine import *
+from kaori.plugins.gacha.engine import Card
 
 hp_no_invest = Card(
     name="Baseline HP with no investment",
