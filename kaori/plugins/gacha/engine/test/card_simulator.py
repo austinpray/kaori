@@ -63,18 +63,24 @@ def run_card_simulator(raw=False):
         return print(x, file=out) if x else print(file=out)
 
     p(f"## Simulator Results: {arrow.utcnow()}")
+    p()
     p(f"### Game Facts")
     p(f"{combat_strat.__class__.__name__} combat strategy")
     p(trim_doc(combat_strat.__doc__))
+    p()
     p(f"Nature values range from {combat_strat.min_nature_value} to {combat_strat.max_nature_value}")
+    p()
     p(f"### Cards")
+    p()
     for name, cards in card_groups.items():
-        p(f"<details><summary>{name}</summary>" if raw else "")
+        p(f"<details><summary>{name}</summary>" if raw else f"### {name}")
+        p()
         card: Card
         for card in cards:
             p(card.to_markdown())
         p(f"</details>" if raw else "")
-
+        p()
+        
     if raw:
         print(out.getvalue())
     else:
