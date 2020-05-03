@@ -1,3 +1,3 @@
-from .abc import *
-from .rid import *
-from .sigmoid import *
+from .abc import CombatStrategyABC
+from .rid import RidV1
+from .sigmoid import SigmoidV1
