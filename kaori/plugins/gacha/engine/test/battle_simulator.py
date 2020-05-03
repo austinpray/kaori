@@ -66,7 +66,7 @@ def run_battle_simulator(card_a,
     turn = 0
 
     while card_a.current_hp > 0 and card_b.current_hp > 0:
-        if turn > 20:
+        if turn > 100:
             raise RuntimeError('This battle is taking too long...')
 
         current_card = cards[turn % len(cards)]
