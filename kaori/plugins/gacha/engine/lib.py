@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+from abc import ABC, abstractmethod
 from enum import unique, Enum
 from io import StringIO
 from typing import Dict, Tuple
@@ -82,19 +83,40 @@ class Nature:
         self.inhibits = inhibits
 
 
-class Combat:
+class CombatStrategyABC(ABC):
+
     def __init__(self,
                  rarities: Dict[RarityName, Rarity],
                  stats: Dict[StatName, Stat],
                  natures: Dict[NatureName, Nature],
-                 crit_multiplier: int,
-                 stat_curvatures: Dict[StatName, Number]) -> None:
+                 crit_multiplier: int) -> None:
         self.rarities = rarities
         self.stats = stats
         self.natures = natures
         self.min_nature_value = 1
         self.max_nature_value = find_max_nature_value(rarities)
         self.crit_multiplier = crit_multiplier
+
+    @abstractmethod
+    def calculate_stat(self,
+                       stat: StatName,
+                       nature_values: Dict[NatureName, int]) -> Number:
+        ...
+
+
+class SigmoidV1(CombatStrategyABC):
+    """
+    - Natures can boost and inhibit certain stats
+    - Stat values lie on a normalized tunable sigmoid curve
+    """
+
+    def __init__(self,
+                 rarities: Dict[RarityName, Rarity],
+                 stats: Dict[StatName, Stat],
+                 natures: Dict[NatureName, Nature],
+                 crit_multiplier: int,
+                 stat_curvatures: Dict[StatName, Number]) -> None:
+        super().__init__(rarities, stats, natures, crit_multiplier)
         self.stat_curvatures = stat_curvatures
 
     def calculate_stat(self,
@@ -125,8 +147,30 @@ class Combat:
                             (target_stat.min, target_stat.max))
 
 
+class RidV1(CombatStrategyABC):
+    """
+    Natures only boost
+    WIP: haven't tested this
+    TODO: @ridhoq needs to fill out his idea
+    """
+
+    def calculate_stat(self,
+                       stat: StatName,
+                       nature_values: Dict[NatureName, int]) -> Number:
+        target_stat = self.stats[stat]
+
+        natures = self.natures.values()
+        booster = next((n.name for n in natures if n.boosts == stat))
+
+        booster_value = nature_values[booster]
+
+        return linear_scale(booster_value,
+                            (self.min_nature_value, self.max_nature_value),
+                            (target_stat.min, target_stat.max))
+
+
 class Card:
-    combat: Combat = None
+    combat_strat: CombatStrategyABC = None
 
     def __init__(self,
                  name: str,
@@ -134,7 +178,7 @@ class Card:
                  nature: Tuple[NatureName, NatureName],
                  **kwargs) -> None:
 
-        if self.combat is None:
+        if self.combat_strat is None:
             raise RuntimeError('You need to set the initialize the combat class')
 
         self.name = name
@@ -205,7 +249,7 @@ class Card:
         return self._stat(HP)
 
     def _stat(self, name: StatName):
-        value = self.combat.calculate_stat(name, self.nature_values)
+        value = self.combat_strat.calculate_stat(name, self.nature_values)
         if name in _integer_stats:
             return round(value)
 
@@ -219,7 +263,7 @@ class Card:
 
     def is_valid_card(self) -> bool:
         nv_sum = sum(self.nature_values.values())
-        budget = self.combat.rarities[self.rarity].budget
+        budget = self.combat_strat.rarities[self.rarity].budget
         assert nv_sum == budget, \
             f"'**ERROR:** {self.name}' {nv_sum} does not square with budget {budget}"
 
@@ -232,13 +276,12 @@ class Card:
     @staticmethod
     def detect_standoff(a: Card, b: Card, debug: bool = False) -> bool:
         a_max_dmg = a.attack_damage(b,
-                                    crit_multiplier=Card.combat.crit_multiplier,
+                                    crit_multiplier=Card.combat_strat.crit_multiplier,
                                     debug=debug)
         b_max_dmg = b.attack_damage(a,
-                                    crit_multiplier=Card.combat.crit_multiplier,
+                                    crit_multiplier=Card.combat_strat.crit_multiplier,
                                     debug=debug)
         return max(a_max_dmg, b_max_dmg) == 0
-
 
     def to_markdown(self):
         out = StringIO()
@@ -251,7 +294,7 @@ class Card:
         p("Nature | Value | Stat | Value ")
         p("------ | --- | ---- | --- ")
         for k, v in self.nature_values.items():
-            target_stat = self.combat.natures[k].boosts
+            target_stat = self.combat_strat.natures[k].boosts
             stat = self._stat(target_stat)
             if target_stat in {EVA, CRIT}:
                 stat = f"{round(stat * 100)}%"
@@ -259,7 +302,7 @@ class Card:
             p(' | '.join([
                 f"**{k}**",
                 str(v),
-                f"**{self.combat.natures[k].boosts}**",
+                f"**{self.combat_strat.natures[k].boosts}**",
                 str(stat),
             ]))
         p()
