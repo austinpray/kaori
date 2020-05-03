@@ -14,7 +14,7 @@ balanced_S = Card(
 
 balanced_A = Card(
     name="Balanced A",
-    rarity=S,
+    rarity=A,
     nature=(stupid, horny),
     stupid=5,
     baby=3,

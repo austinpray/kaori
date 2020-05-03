@@ -2,8 +2,10 @@
 
 import argparse
 import sys
+from typing import Optional, List
 
 from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator
+from kaori.plugins.gacha.engine.test.battle_simulator import BattleResult
 
 battle_command = argparse.ArgumentParser(description='Process some integers.')
 battle_command.add_argument('card_A',
@@ -42,10 +44,25 @@ def main():
 
     if command == 'battle':
         args = battle_command.parse_args(sys.argv[2:])
+        results: List[BattleResult] = []
         for i in range(args.repeat):
-            run_battle_simulator(args.card_A, args.card_B,
-                                 print_header=(i == 0),
-                                 debug=args.debug, interactive=args.interactive)
+            result = run_battle_simulator(args.card_A,
+                                          args.card_B,
+                                          print_header=(i == 0),
+                                          debug=args.debug,
+                                          interactive=args.interactive)
+            if result:
+                results.append(result)
+
+        if len(results) > 0:
+            aggregate = {}
+            for result in results:
+                if not result.winner.slug + '_wins' in aggregate:
+                    aggregate[result.winner.slug + '_wins'] = 0
+                aggregate[result.winner.slug + '_wins'] += 1
+
+            print(aggregate)
+
         return
 
     raise RuntimeError('invalid command')

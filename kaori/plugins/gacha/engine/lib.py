@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 from enum import unique, Enum
 from io import StringIO
 from typing import Dict, Tuple
@@ -86,12 +87,14 @@ class Combat:
                  rarities: Dict[RarityName, Rarity],
                  stats: Dict[StatName, Stat],
                  natures: Dict[NatureName, Nature],
+                 crit_multiplier: int,
                  stat_curvatures: Dict[StatName, Number]) -> None:
         self.rarities = rarities
         self.stats = stats
         self.natures = natures
         self.min_nature_value = 1
         self.max_nature_value = find_max_nature_value(rarities)
+        self.crit_multiplier = crit_multiplier
         self.stat_curvatures = stat_curvatures
 
     def calculate_stat(self,
@@ -226,6 +229,17 @@ class Card:
     def title(self):
         return f"{self.name} ({self.rarity}-tier {humanize_nature(*self.nature)})"
 
+    @staticmethod
+    def detect_standoff(a: Card, b: Card, debug: bool = False) -> bool:
+        a_max_dmg = a.attack_damage(b,
+                                    crit_multiplier=Card.combat.crit_multiplier,
+                                    debug=debug)
+        b_max_dmg = b.attack_damage(a,
+                                    crit_multiplier=Card.combat.crit_multiplier,
+                                    debug=debug)
+        return max(a_max_dmg, b_max_dmg) == 0
+
+
     def to_markdown(self):
         out = StringIO()
 
@@ -252,8 +266,28 @@ class Card:
 
         return out.getvalue()
 
-    def attack_damage(self, target: Card, crit_multiplier: int = 1) -> int:
-        return round((self.dmg * crit_multiplier) - target.armor)
+    @staticmethod
+    def sluggify_name(name) -> str:
+        return '-'.join(name.strip().split()).lower().encode('idna').decode('utf-8')
+
+    @property
+    def slug(self) -> str:
+        return Card.sluggify_name(self.name)
+
+    def attack_damage(self,
+                      target: Card,
+                      crit_multiplier: int = 1,
+                      debug: bool = False) -> int:
+        apply_crit = self.dmg * crit_multiplier
+        apply_armor = apply_crit - target.armor
+        rounded = round(apply_armor)
+        dmg = max(0, rounded)
+        if debug:
+            print(
+                f"[debug] Attack Calculation: "
+                f"max(0, round({self.dmg} * {crit_multiplier}) - {target.armor}))",
+                file=sys.stderr)
+        return dmg
 
 
 def find_max_nature_value(rarities: Dict[RarityName, Rarity]) -> int:

@@ -6,7 +6,7 @@ ARMOR_MAX = 10
 DAMAGE_MAX = 100
 
 stat_curvatures = {
-    HP: 0,
+    HP: -0.7,
     EVA: -0.5,
     ARMOR: -0.5,
     DMG: 0.5,
@@ -55,6 +55,7 @@ natures = {
 combat = Combat(rarities=rarities,
                 stats=stats,
                 natures=natures,
+                crit_multiplier=CRIT_MULTIPLIER,
                 stat_curvatures=stat_curvatures)
 
 Card.combat = combat
