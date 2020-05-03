@@ -7,6 +7,14 @@ from typing import Optional, List
 from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator
 from kaori.plugins.gacha.engine.test.battle_simulator import BattleResult
 
+card_command = argparse.ArgumentParser(description='Simulate cards and their values.')
+card_command.add_argument('--raw',
+                          '-r',
+                          action='store_true',
+                          dest='raw',
+                          default=False,
+                          help='print output in raw markdown')
+
 battle_command = argparse.ArgumentParser(description='Process some integers.')
 battle_command.add_argument('card_A',
                             metavar='card_name',
@@ -40,7 +48,8 @@ def main():
     command = sys.argv[1]
 
     if command == 'cards':
-        return run_card_simulator()
+        args = card_command.parse_args(sys.argv[2:])
+        return run_card_simulator(args.raw)
 
     if command == 'battle':
         args = battle_command.parse_args(sys.argv[2:])
