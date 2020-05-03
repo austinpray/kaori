@@ -1,87 +1,46 @@
 #!/usr/bin/env python3
 
-import arrow
+import argparse
+import sys
 
-from kaori.plugins.gacha.engine.test.balanced_cards import *
-from kaori.plugins.gacha.engine.test.dmg_cards import *
-from kaori.plugins.gacha.engine.test.hp_cards import *
-from kaori.plugins.gacha.engine.test.meme_cards import *
+from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator
+
+battle_command = argparse.ArgumentParser(description='Process some integers.')
+battle_command.add_argument('card_A',
+                            metavar='card_name',
+                            type=str,
+                            help='first card')
+battle_command.add_argument('card_B',
+                            metavar='card_name',
+                            type=str,
+                            help='second card')
+battle_command.add_argument('--debug',
+                            '-d',
+                            dest='debug',
+                            type=bool,
+                            default=False,
+                            help='verbose debugging statements')
+battle_command.add_argument('--interactive',
+                            '-i',
+                            dest='interactive',
+                            type=bool,
+                            default=False,
+                            help='run battle step by step in dramatic fashion')
 
 
-def render_card_md(card, combat):
-    nv_sum = sum(card['nature_values'].values())
-    budget = rarities[card['rarity']].budget
+def main():
+    command = sys.argv[1]
 
-    assert nv_sum == budget, \
-        f"'**ERROR:** {card['name']}' {nv_sum} does not square with budget {budget}"
+    if command == 'cards':
+        return run_card_simulator()
 
-    print(f"#### {card['name']} ({card['rarity']}-tier {' '.join((str(n) for n in card['natures']))})")
-    print()
-    print("Nature | Value | Stat | Value ")
-    print("------ | --- | ---- | --- ")
-    for k, v in card['nature_values'].items():
-        print(' | '.join([
-            f"**{k}**",
-            str(v),
-            f"**{combat.natures[k].boosts}**",
-            str(combat.calculate_stat(combat.natures[k].boosts, card['nature_values'])),
-        ]))
-    print()
+    if command == 'battle':
+        args = battle_command.parse_args(sys.argv[2:])
+        return run_battle_simulator(args.card_A, args.card_B,
+                                    debug=args.debug, interactive=args.interactive)
+
+    raise RuntimeError('invalid command')
 
 
 if __name__ == '__main__':
-    card_groups = {
-        'Baselines': [
-            hp_no_invest,
-            dmg_no_invest,
-        ],
-        'HP Simulations': [
-            low_hp,
-            really_unlucky_hp,
-            unlucky_hp,
-            mid_hp,
-            lucky_hp,
-            really_lucky_hp,
-            high_hp,
-        ],
-        'DMG Simulations': [
-            low_dmg,
-            really_unlucky_dmg,
-            unlucky_dmg,
-            mid_dmg,
-            lucky_dmg,
-            really_lucky_dmg,
-            unlikely_dmg1,
-            unlikely_dmg2,
-            unlikely_dmg3,
-            high_dmg,
-        ],
-        'Random Interesting Cards': [
-            matt_morg,
-            kim_jong_un_lil_sis,
-            tlp,
-        ],
-        'Balanced Cards': [
-            balanced_S,
-            balanced_A,
-            balanced_B,
-            balanced_C,
-            balanced_F,
-        ],
-    }
-
-    print(f"## Simulator Results: {arrow.utcnow()}")
-    print()
-    print(f"### Game Facts")
-    print()
-    print(f"Nature values range from {combat.min_nature_value} to {combat.max_nature_value}")
-    print()
-    print(f"### Cards")
-    print()
-    for name, cards in card_groups.items():
-        print(f"<details><summary>{name}</summary>")
-        print()
-        for card in cards:
-            render_card_md(card, combat=combat)
-        print(f"</details>")
-        print()
+    main()

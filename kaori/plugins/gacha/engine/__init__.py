@@ -56,3 +56,5 @@ combat = Combat(rarities=rarities,
                 stats=stats,
                 natures=natures,
                 stat_curvatures=stat_curvatures)
+
+Card.combat = combat
