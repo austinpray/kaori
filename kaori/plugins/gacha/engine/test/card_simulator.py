@@ -7,6 +7,7 @@ from .dmg_cards import *
 from .hp_cards import *
 from .meme_cards import *
 from .. import NatureName, RarityName
+from ..utils import trim_doc
 
 
 def run_card_simulator():
@@ -59,8 +60,10 @@ def run_card_simulator():
     print(f"## Simulator Results: {arrow.utcnow()}")
     print()
     print(f"### Game Facts")
+    print(f"{combat_strat.__class__.__name__} combat strategy")
+    print(trim_doc(combat_strat.__doc__))
     print()
-    print(f"Nature values range from {combat.min_nature_value} to {combat.max_nature_value}")
+    print(f"Nature values range from {combat_strat.min_nature_value} to {combat_strat.max_nature_value}")
     print()
     print(f"### Cards")
     print()

@@ -1,3 +1,5 @@
+import os
+
 from .lib import *
 
 HP_MAX = 100
@@ -52,10 +54,29 @@ natures = {
     ]
 }
 
-combat = Combat(rarities=rarities,
-                stats=stats,
-                natures=natures,
-                crit_multiplier=CRIT_MULTIPLIER,
-                stat_curvatures=stat_curvatures)
+# The original linear scaling + sigmoid curve based algorithm
+cs_sigmoid_v1 = SigmoidV1(rarities=rarities,
+                          stats=stats,
+                          natures=natures,
+                          crit_multiplier=CRIT_MULTIPLIER,
+                          stat_curvatures=stat_curvatures)
 
-Card.combat = combat
+cs_rid_v1 = RidV1(rarities=rarities,
+                  stats=stats,
+                  natures=natures,
+                  crit_multiplier=CRIT_MULTIPLIER)
+
+combat_strat = cs_sigmoid_v1
+user_combat_strat = os.environ.get('COMBAT_STRATEGY')
+
+if isinstance(user_combat_strat, str):
+    user_combat_strat = user_combat_strat.lower()
+
+    found_cs = globals().get(user_combat_strat)
+    if isinstance(found_cs, CombatStrategyABC):
+        combat_strat = found_cs
+
+    else:
+        raise RuntimeError(f'I do not have a combat strat named "{user_combat_strat}"')
+
+Card.combat_strat = combat_strat
