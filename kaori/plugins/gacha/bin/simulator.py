@@ -26,6 +26,12 @@ battle_command.add_argument('--interactive',
                             type=bool,
                             default=False,
                             help='run battle step by step in dramatic fashion')
+battle_command.add_argument('--num-battle',
+                            '-n',
+                            dest='repeat',
+                            type=int,
+                            default=1,
+                            help='repeat battle N times')
 
 
 def main():
@@ -36,8 +42,11 @@ def main():
 
     if command == 'battle':
         args = battle_command.parse_args(sys.argv[2:])
-        return run_battle_simulator(args.card_A, args.card_B,
-                                    debug=args.debug, interactive=args.interactive)
+        for i in range(args.repeat):
+            run_battle_simulator(args.card_A, args.card_B,
+                                 print_header=(i == 0),
+                                 debug=args.debug, interactive=args.interactive)
+        return
 
     raise RuntimeError('invalid command')
 
