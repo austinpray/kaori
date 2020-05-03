@@ -8,7 +8,7 @@ DAMAGE_MAX = 100
 stat_curvatures = {
     HP: 0,
     EVA: -0.5,
-    ARMOR: 0,
+    ARMOR: -0.5,
     DMG: 0.5,
     CRIT: 0,
     SPEED: 0,
