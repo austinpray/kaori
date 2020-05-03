@@ -24,6 +24,8 @@ jobs:
       run: make
     - name: Run the tests
       run: make test
+    - name: Run the card sim
+      run: make test-sims
     - name: Push to GCR
       if: github.ref == 'refs/heads/master'
       run: |
