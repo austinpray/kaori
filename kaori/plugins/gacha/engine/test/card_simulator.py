@@ -1,4 +1,5 @@
 import arrow
+import mdv
 
 from .balanced_cards import *
 from .dmg_cards import *
@@ -8,7 +9,7 @@ from .. import Card
 from ..utils import trim_doc
 
 
-def run_card_simulator():
+def run_card_simulator(raw=False):
     card_groups = {
         'Baselines': [
             hp_no_invest,
@@ -54,22 +55,23 @@ def run_card_simulator():
         card: Card
         for card in cards:
             card.is_valid_card()
-
-    print(f"## Simulator Results: {arrow.utcnow()}")
-    print()
-    print(f"### Game Facts")
-    print(f"{combat_strat.__class__.__name__} combat strategy")
-    print(trim_doc(combat_strat.__doc__))
-    print()
-    print(f"Nature values range from {combat_strat.min_nature_value} to {combat_strat.max_nature_value}")
-    print()
-    print(f"### Cards")
-    print()
+    output_strs = []
+    output_strs.append(f"## Simulator Results: {arrow.utcnow()}")
+    output_strs.append(f"### Game Facts")
+    output_strs.append(f"{combat_strat.__class__.__name__} combat strategy")
+    output_strs.append(trim_doc(combat_strat.__doc__))
+    output_strs.append(f"Nature values range from {combat_strat.min_nature_value} to {combat_strat.max_nature_value}")
+    output_strs.append(f"### Cards")
     for name, cards in card_groups.items():
-        print(f"<details><summary>{name}</summary>")
-        print()
+        output_strs.append(f"<details><summary>{name}</summary>" if raw else "")
         card: Card
         for card in cards:
-            print(card.to_markdown())
-        print(f"</details>")
-        print()
+            output_strs.append(card.to_markdown())
+        output_strs.append(f"</details>" if raw else "")
+
+    output = "\n".join(output_strs)
+    if raw:
+        print(output)
+    else:
+        formatted = mdv.main(output, theme="960.847")
+        print(formatted)
