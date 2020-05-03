@@ -177,6 +177,22 @@ class Card:
         return self._stat(DMG)
 
     @property
+    def speed(self):
+        return self._stat(SPEED)
+
+    @property
+    def crit(self):
+        return self._stat(CRIT)
+
+    @property
+    def armor(self):
+        return self._stat(ARMOR)
+
+    @property
+    def evasion(self):
+        return self._stat(EVA)
+
+    @property
     def max_hp(self):
         return self._stat(HP)
 
@@ -201,13 +217,17 @@ class Card:
 
         return True
 
+    @property
+    def title(self):
+        return f"{self.name} ({self.rarity}-tier {humanize_nature(*self.nature)})"
+
     def to_markdown(self):
         out = StringIO()
 
         def p(x=None):
             return print(x, file=out) if x else print(file=out)
 
-        p(f"#### {self.name} ({self.rarity}-tier {humanize_nature(*self.nature)})")
+        p(f"#### {self.title}")
         p()
         p("Nature | Value | Stat | Value ")
         p("------ | --- | ---- | --- ")
