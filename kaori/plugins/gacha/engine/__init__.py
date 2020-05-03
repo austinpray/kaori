@@ -10,7 +10,7 @@ stat_curvatures = {
     EVA: -0.5,
     ARMOR: -0.5,
     DMG: 0.5,
-    CRIT: 0,
+    CRIT: -0.5,
     SPEED: 0,
 }
 
