@@ -1,4 +1,5 @@
 from kaori.plugins.gacha.engine import *
+from kaori.plugins.gacha.engine import Card
 
 dmg_no_invest = Card(
     name="Baseline DMG with no investment",

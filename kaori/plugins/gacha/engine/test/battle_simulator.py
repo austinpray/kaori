@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from . import interesting_cards as card_pool
 from .. import *
+from .. import Card
 
 
 def find_card(module, search: str) -> Card:

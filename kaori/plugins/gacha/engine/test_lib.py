@@ -1,4 +1,4 @@
-from .lib import *
+from .core import *
 
 def test_humanize():
 

@@ -1,6 +1,6 @@
 import os
 
-from .lib import *
+from .core import *
 
 HP_MAX = 100
 EVA_MAX = 0.9

@@ -1,12 +1,10 @@
-from typing import Dict, Union, Tuple
-
 import arrow
 
 from .balanced_cards import *
 from .dmg_cards import *
 from .hp_cards import *
 from .meme_cards import *
-from .. import NatureName, RarityName
+from .. import Card
 from ..utils import trim_doc
 
 
