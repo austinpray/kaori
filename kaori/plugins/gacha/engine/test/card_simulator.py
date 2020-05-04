@@ -4,8 +4,6 @@ import arrow
 import mdv
 
 from .cards import *
-from kaori.plugins.gacha.engine.test.cards.dmg_cards import dmg_no_invest
-from kaori.plugins.gacha.engine.test.cards.hp_cards import hp_no_invest
 from .utils import collect_cards
 from .. import *
 from ..utils import trim_doc

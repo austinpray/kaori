@@ -1,4 +1,4 @@
-from kaori.plugins.gacha.engine.core import *
+from ...core import *
 
 orange_president = Card(
     name="Orange President",
