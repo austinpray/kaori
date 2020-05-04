@@ -1,6 +1,6 @@
 from . import *
 
-from kaori.plugins.gacha.engine.test.card_simulator import low_hp, high_hp
+from .test.hp_cards import low_hp, high_hp
 
 
 def test_engine():
