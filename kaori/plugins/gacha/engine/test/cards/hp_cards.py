@@ -1,4 +1,4 @@
-from ..core import *
+from ...core import *
 
 hp_no_invest = Card(
     name="Baseline HP with no investment",

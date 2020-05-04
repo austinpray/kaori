@@ -3,9 +3,7 @@ from io import StringIO
 import arrow
 import mdv
 
-from . import hp_cards, dmg_cards, balanced_cards, meme_cards
-from .dmg_cards import dmg_no_invest
-from .hp_cards import hp_no_invest
+from .cards import *
 from .utils import collect_cards
 from .. import *
 from ..utils import trim_doc

@@ -2,7 +2,7 @@ import copy
 from random import random, sample
 from typing import Optional
 
-from . import interesting_cards as card_pool
+from . import cards as card_pool
 from .utils import find_card
 from .. import *
 from .. import Card

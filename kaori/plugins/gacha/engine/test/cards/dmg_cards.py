@@ -1,4 +1,4 @@
-from ..core import *
+from ...core import *
 
 dmg_no_invest = Card(
     name="Baseline DMG with no investment",

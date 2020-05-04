@@ -1,6 +1,6 @@
 from . import *
 
-from .test.hp_cards import low_hp, high_hp
+from .test.cards.hp_cards import low_hp, high_hp
 
 
 def test_engine():
