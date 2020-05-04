@@ -9,7 +9,7 @@ class NoInhibitorV0(CombatStrategyABC):
     - WIP: haven't tested this
     - TODO: @ridhoq needs to fill out his idea
     """
-    
+
     def __init__(self,
                  rarities: Dict[RarityName, Rarity],
                  stats: Dict[StatName, Stat],
@@ -33,9 +33,9 @@ class NoInhibitorV0(CombatStrategyABC):
                              (self.min_nature_value, self.max_nature_value),
                              (0, 1))
         baseline = target_stat.max * 0.1
-        
+
         scaled = linear_scale(nt_sigmoid(self.stat_curvatures[stat], boost),
-                            (0, 1),
-                            (target_stat.min, target_stat.max))
-        
+                              (0, 1),
+                              (target_stat.min, target_stat.max))
+
         return max(baseline, scaled)
