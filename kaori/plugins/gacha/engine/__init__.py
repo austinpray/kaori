@@ -64,7 +64,8 @@ cs_sigmoid_v1 = SigmoidV1(rarities=rarities,
 cs_no_inhibitor_v0 = NoInhibitorV0(rarities=rarities,
                   stats=stats,
                   natures=natures,
-                  crit_multiplier=CRIT_MULTIPLIER)
+                  crit_multiplier=CRIT_MULTIPLIER,
+                  stat_curvatures=stat_curvatures)
 
 # combat_strat = cs_sigmoid_v1
 combat_strat = cs_no_inhibitor_v0
