@@ -1,4 +1,4 @@
-from ..core import *
+from kaori.plugins.gacha.engine.core import *
 
 balanced_S = Card(
     name="Balanced S",
