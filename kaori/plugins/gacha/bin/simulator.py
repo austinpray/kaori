@@ -4,6 +4,7 @@ import argparse
 import sys
 from typing import Optional, List
 
+from kaori.plugins.gacha.engine import Card
 from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator
 from kaori.plugins.gacha.engine.test.battle_simulator import BattleResult
 
@@ -43,6 +44,22 @@ battle_command.add_argument('--num-battle',
                             default=1,
                             help='repeat battle N times')
 
+gen_command = argparse.ArgumentParser(description='create cards')
+gen_command.add_argument('-R',
+                         dest='rarity',
+                         metavar='rarity',
+                         type=str,
+                         help='rarity: one of S, A, B, C, F')
+gen_command.add_argument('--name',
+                         metavar='card_name',
+                         type=str,
+                         help='card name')
+gen_command.add_argument('natures',
+                         metavar='natures',
+                         nargs=2,
+                         type=str,
+                         help='Choose two natures from Stupid Baby Clown Horny Cursed Feral')
+
 
 def main():
     command = sys.argv[1]
@@ -50,6 +67,15 @@ def main():
     if command == 'cards':
         args = card_command.parse_args(sys.argv[2:])
         return run_card_simulator(args.raw)
+
+    if command == 'generate':
+        args = gen_command.parse_args(sys.argv[2:])
+        card = Card.generate(name=args.name,
+                             rarity=args.rarity,
+                             natures=args.natures)
+        card.is_valid_card()
+        print(card.to_markdown())
+        return
 
     if command == 'battle':
         args = battle_command.parse_args(sys.argv[2:])
