@@ -3,11 +3,11 @@ from ..core import *
 from ...utils import linear_scale
 
 
-class RidV1(CombatStrategyABC):
+class NoInhibitorV0(CombatStrategyABC):
     """
-    Natures only boost
-    WIP: haven't tested this
-    TODO: @ridhoq needs to fill out his idea
+    - Natures only boost
+    - WIP: haven't tested this
+    - TODO: @ridhoq needs to fill out his idea
     """
 
     def calculate_stat(self,
