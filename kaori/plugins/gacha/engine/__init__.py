@@ -66,8 +66,8 @@ cs_no_inhibitor_v0 = NoInhibitorV0(rarities=rarities,
                   natures=natures,
                   crit_multiplier=CRIT_MULTIPLIER)
 
-combat_strat = cs_sigmoid_v1
-# combat_strat = cs_no_inhibitor_v0
+# combat_strat = cs_sigmoid_v1
+combat_strat = cs_no_inhibitor_v0
 user_combat_strat = os.environ.get('COMBAT_STRATEGY')
 
 if isinstance(user_combat_strat, str):
