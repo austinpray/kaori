@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import sys
 from io import StringIO
-from typing import Tuple
+from random import choice
+from typing import Tuple, Union
 
 from .combat_strategies import CombatStrategyABC
 from .core import *
@@ -170,3 +171,44 @@ class Card:
                 f"max(0, round({self.dmg} * {crit_multiplier}) - {target.armor}))",
                 file=sys.stderr)
         return dmg
+
+    @staticmethod
+    def generate(name: str,
+                 rarity: Union[RarityName, str],
+                 natures: list) -> Card:
+        if not isinstance(rarity, StatName):
+            rarity: RarityName = {str(r): r for r in Card.combat_strat.rarities.keys()}[rarity]
+
+        for i, nature_in in enumerate(natures):
+            if not isinstance(nature_in, NatureName):
+                natures[i]: NatureName = {str(n): n for n in Card.combat_strat.natures.keys()}[nature_in]
+
+        natures = tuple(natures)
+
+        primary_nature, secondary_nature = natures
+
+        rarity_config = Card.combat_strat.rarities[rarity]
+
+        budget = rarity_config.budget
+
+        nature_points = {
+            stupid: 1,
+            baby: 1,
+            clown: 1,
+            horny: 1,
+            cursed: 1,
+            feral: 1,
+            primary_nature: rarity_config.split,
+            secondary_nature: rarity_config.split
+        }
+
+        budget -= sum(nature_points.values())
+
+        while budget > 0:
+            nature_points[choice(list(Card.combat_strat.natures.keys()))] += 1
+            budget -= 1
+
+        return Card(name=name,
+                    rarity=rarity,
+                    nature=natures,
+                    **{str(k): v for k, v in nature_points.items()})
