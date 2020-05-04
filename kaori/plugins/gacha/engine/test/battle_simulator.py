@@ -1,5 +1,5 @@
 import copy
-from random import random
+from random import random, sample
 from typing import Optional
 
 from . import interesting_cards as card_pool
@@ -46,7 +46,11 @@ def run_battle_simulator(card_a,
         print(f"They agree to be friends instead of fighting.")
         return None
 
-    cards = sorted([card_a, card_b], key=lambda card: -card.speed)
+    if card_a.speed != card_b.speed:
+        cards = sorted([card_a, card_b], key=lambda card: -card.speed)
+    else:
+        cards = sample([card_a, card_b], 2)
+
     first, second = cards
 
     print(f"{first.name} goes first because of higher speed. {first.speed} vs {second.speed}")
