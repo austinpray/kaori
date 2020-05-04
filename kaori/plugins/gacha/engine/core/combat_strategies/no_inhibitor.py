@@ -30,9 +30,12 @@ class NoInhibitorV0(CombatStrategyABC):
         booster_value = nature_values[booster]
 
         boost = linear_scale(booster_value,
-                             (self.max_nature_value, self.min_nature_value),
-                             (0, 0.5))
-
-        return linear_scale(nt_sigmoid(self.stat_curvatures[stat], boost),
+                             (self.min_nature_value, self.max_nature_value),
+                             (0, 1))
+        baseline = target_stat.max * 0.1
+        
+        scaled = linear_scale(nt_sigmoid(self.stat_curvatures[stat], boost),
                             (0, 1),
                             (target_stat.min, target_stat.max))
+        
+        return max(baseline, scaled)
