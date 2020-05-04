@@ -38,7 +38,7 @@ def run_card_simulator(raw=False):
             high_dmg,
         ],
         'Random Interesting Cards': [
-            matt_morg,
+            orange_president,
             kim_jong_un_lil_sis,
             tlp,
         ],

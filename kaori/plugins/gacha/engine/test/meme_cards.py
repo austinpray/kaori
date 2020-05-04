@@ -1,15 +1,15 @@
 from kaori.plugins.gacha.engine import *
 from kaori.plugins.gacha.engine import Card
 
-matt_morg = Card(name="Matt Morgan",
-                 rarity=S,
-                 nature=(cursed, clown),
-                 stupid=1,
-                 baby=6,
-                 clown=3,
-                 horny=1,
-                 cursed=7,
-                 feral=2)
+orange_president = Card(name="Orange President",
+                        rarity=S,
+                        nature=(cursed, clown),
+                        stupid=1,
+                        baby=6,
+                        clown=3,
+                        horny=1,
+                        cursed=7,
+                        feral=2)
 
 kim_jong_un_lil_sis = Card(name="Kim Jong Un's Little Sister",
                            rarity=S,
