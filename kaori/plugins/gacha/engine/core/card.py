@@ -161,7 +161,10 @@ class Card:
                       target: Card,
                       crit_multiplier: int = 1,
                       debug: bool = False) -> int:
-        apply_crit = self.dmg * crit_multiplier
+        dmg = self.dmg
+        if crit_multiplier != 1:
+            dmg = self.dmg + self.cursed
+        apply_crit = dmg * crit_multiplier
         apply_armor = apply_crit - target.armor
         rounded = round(apply_armor)
         dmg = max(0, rounded)
