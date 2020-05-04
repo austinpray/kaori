@@ -1,22 +1,11 @@
 import copy
-from random import random, choice
-from typing import List, Optional
+from random import random
+from typing import Optional
 
 from . import interesting_cards as card_pool
+from .utils import find_card
 from .. import *
 from .. import Card
-
-
-def find_card(module, search: str) -> Card:
-    card_variables: List[Card] = [
-        getattr(module, var_name) for var_name in
-        dir(module) if isinstance(getattr(module, var_name), Card)
-    ]
-    available_cards = {card.slug: card for card in card_variables}
-    if search.lower() == 'random':
-        return choice(list(available_cards.values()))
-
-    return available_cards[Card.sluggify_name(search)]
 
 
 class BattleResult:
@@ -104,4 +93,3 @@ def run_battle_simulator(card_a,
     for card in cards:
         card.reset_hp()
     return br
-

@@ -1,11 +1,13 @@
 from io import StringIO
+
 import arrow
 import mdv
 
-from .balanced_cards import *
-from .dmg_cards import *
-from .hp_cards import *
+from . import hp_cards, dmg_cards, balanced_cards, meme_cards
+from .dmg_cards import dmg_no_invest
+from .hp_cards import hp_no_invest
 from .meme_cards import *
+from .utils import collect_cards
 from .. import Card
 from ..utils import trim_doc
 
@@ -17,37 +19,16 @@ def run_card_simulator(raw=False):
             dmg_no_invest,
         ],
         'HP Simulations': [
-            low_hp,
-            really_unlucky_hp,
-            unlucky_hp,
-            mid_hp,
-            lucky_hp,
-            really_lucky_hp,
-            high_hp,
+            *collect_cards(hp_cards).values(),
         ],
         'DMG Simulations': [
-            low_dmg,
-            really_unlucky_dmg,
-            unlucky_dmg,
-            mid_dmg,
-            lucky_dmg,
-            really_lucky_dmg,
-            unlikely_dmg1,
-            unlikely_dmg2,
-            unlikely_dmg3,
-            high_dmg,
+            *collect_cards(dmg_cards).values(),
         ],
         'Random Interesting Cards': [
-            orange_president,
-            kim_jong_un_lil_sis,
-            tlp,
+            *collect_cards(meme_cards).values()
         ],
         'Balanced Cards': [
-            balanced_S,
-            balanced_A,
-            balanced_B,
-            balanced_C,
-            balanced_F,
+            *collect_cards(balanced_cards).values()
         ],
     }
 
@@ -80,7 +61,7 @@ def run_card_simulator(raw=False):
             p(card.to_markdown())
         p(f"</details>" if raw else "")
         p()
-        
+
     if raw:
         print(out.getvalue())
     else:
