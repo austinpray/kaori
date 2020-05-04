@@ -1,3 +1,3 @@
 from .abc import CombatStrategyABC
-from .rid import RidV1
+from .no_inhibitor import NoInhibitorV0
 from .sigmoid import SigmoidV1
