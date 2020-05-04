@@ -1,7 +1,7 @@
 from .core import *
 
-def test_humanize():
 
+def test_humanize():
     assert humanize_nature(baby, clown) == 'baby clown'
     assert humanize_nature(clown, baby) == 'clown baby'
     assert humanize_nature(baby, cursed) == 'cursed baby'

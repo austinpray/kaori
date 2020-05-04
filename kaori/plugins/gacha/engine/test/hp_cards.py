@@ -1,5 +1,4 @@
-from kaori.plugins.gacha.engine import *
-from kaori.plugins.gacha.engine import Card
+from ..core import *
 
 hp_no_invest = Card(
     name="Baseline HP with no investment",
@@ -96,4 +95,3 @@ really_lucky_hp = Card(
     cursed=1,
     feral=4
 )
-
