@@ -1,5 +1,4 @@
-from kaori.plugins.gacha.engine import *
-from kaori.plugins.gacha.engine import Card
+from ..core import *
 
 balanced_S = Card(
     name="Balanced S",
@@ -60,5 +59,3 @@ balanced_F = Card(
     cursed=1,
     feral=1
 )
-
-
