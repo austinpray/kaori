@@ -19,27 +19,13 @@ class BattleResult:
         self.winner = winner
 
 
-def run_battle_simulator(card_a,
-                         card_b,
+def run_battle_simulator(card_a: Card,
+                         card_b: Card,
                          debug: bool = False,
                          interactive: bool = False,
                          print_header: bool = True) -> Optional[BattleResult]:
-    card_a: Card = find_card(card_pool, card_a)
-    card_b: Card = find_card(card_pool, card_b)
-
     for card in [card_a, card_b]:
         card.is_valid_card()
-
-    print()
-
-    if print_header:
-        print(card_a.title)
-        print("VS")
-        print(card_b.title)
-        print()
-
-        print(card_a.to_markdown())
-        print(card_b.to_markdown())
 
     if Card.detect_standoff(card_a, card_b, debug=False):
         print(f"These two cards could go at it all day and not harm eachother due to armor, dmg, etc.")

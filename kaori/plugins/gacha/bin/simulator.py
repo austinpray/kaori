@@ -3,10 +3,13 @@
 import argparse
 import sys
 from typing import Optional, List
+from rich.console import Console
+from rich.table import Table
 
 from kaori.plugins.gacha.engine import Card
-from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator
+from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator, cards
 from kaori.plugins.gacha.engine.test.battle_simulator import BattleResult
+from kaori.plugins.gacha.engine.test.utils import find_card
 
 card_command = argparse.ArgumentParser(description='Simulate cards and their values.')
 card_command.add_argument('--raw',
@@ -60,6 +63,7 @@ gen_command.add_argument('natures',
                          type=str,
                          help='Choose two natures from Stupid Baby Clown Horny Cursed Feral')
 
+console = Console()
 
 def main():
     command = sys.argv[1]
@@ -74,16 +78,25 @@ def main():
                              rarity=args.rarity,
                              natures=args.natures)
         card.is_valid_card()
-        print(card.to_markdown())
+        console.print(card.to_rich_table())
         return
 
     if command == 'battle':
         args = battle_command.parse_args(sys.argv[2:])
+        card_a = find_card(cards, args.card_A)
+        card_b = find_card(cards, args.card_B)
+        
         results: List[BattleResult] = []
+
+        battle_table = Table(title=f"{card_a.title} VS. {card_b.title}", show_header=False)
+        battle_table.add_column(card_a.title, justify="center")
+        battle_table.add_column(card_b.title, justify="center")
+        battle_table.add_row(card_a.to_rich_table(), card_b.to_rich_table())
+        console.print(battle_table)
+        
         for i in range(args.repeat):
-            result = run_battle_simulator(args.card_A,
-                                          args.card_B,
-                                          print_header=(i == 0),
+            result = run_battle_simulator(card_a,
+                                          card_b,
                                           debug=args.debug,
                                           interactive=args.interactive)
             if result:

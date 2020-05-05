@@ -4,6 +4,7 @@ import sys
 from io import StringIO
 from random import choice
 from typing import Tuple, Union
+from rich.table import Table
 
 from .combat_strategies import CombatStrategyABC
 from .core import *
@@ -122,6 +123,45 @@ class Card:
                                     crit_multiplier=Card.combat_strat.crit_multiplier,
                                     debug=debug)
         return max(a_max_dmg, b_max_dmg) == 0
+
+    def to_rich_table(self) -> Table:
+        table = Table(title=self.title, show_header=False, title_style="bold underline yellow")
+        table.add_column("Natures", justify="right")
+        table.add_column("Stats", justify="right")
+
+        nature_table = Table(header_style="bold magenta")
+        nature_table.add_column("Nature")
+        nature_table.add_column("Value", justify="right")
+
+        stat_table = Table(header_style="bold dodger_blue2")
+        stat_table.add_column("Stat")
+        stat_table.add_column("Value", justify="right")
+
+        nature_styles = {
+            stupid: 'bright_red',
+            baby: 'bright_green',
+            clown: 'bright_yellow',
+            horny: 'bright_blue',
+            cursed: 'bright_magenta',
+            feral: 'bright_cyan'
+        }
+
+        def style_row(nature, r):
+            return f"[{nature_styles[nature]}] {str(r)}"
+
+        for k, v in self.nature_values.items():
+            target_stat = self.combat_strat.natures[k].boosts
+            stat = self._stat(target_stat)
+            if target_stat in {EVA, CRIT}:
+                stat = f"{round(stat * 100)}%"
+            if target_stat == SPEED:
+                stat = f"{round(stat, 3)}"
+
+            nature_table.add_row(style_row(k, k), style_row(k, v))
+            stat_table.add_row(style_row(k, self.combat_strat.natures[k].boosts), style_row(k, stat))
+
+        table.add_row(nature_table, stat_table)
+        return table
 
     def to_markdown(self):
         out = StringIO()
