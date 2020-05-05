@@ -24,12 +24,17 @@ def run_battle_simulator(card_a: Card,
                          debug: bool = False,
                          interactive: bool = False,
                          print_header: bool = True) -> Optional[BattleResult]:
+    
+    def debug_print(out):
+        if debug:
+            print(out)
+        
     for card in [card_a, card_b]:
         card.is_valid_card()
 
     if Card.detect_standoff(card_a, card_b, debug=False):
-        print(f"These two cards could go at it all day and not harm eachother due to armor, dmg, etc.")
-        print(f"They agree to be friends instead of fighting.")
+        debug_print(f"These two cards could go at it all day and not harm eachother due to armor, dmg, etc.")
+        debug_print(f"They agree to be friends instead of fighting.")
         return None
 
     if card_a.speed != card_b.speed:
@@ -39,7 +44,7 @@ def run_battle_simulator(card_a: Card,
 
     first, second = cards
 
-    print(f"{first.name} goes first because of higher speed. {first.speed} vs {second.speed}")
+    debug_print(f"{first.name} goes first because of higher speed. {first.speed} vs {second.speed}")
 
     winner = None
     loser = None
@@ -51,10 +56,10 @@ def run_battle_simulator(card_a: Card,
 
         current_card = cards[turn % len(cards)]
         target_card = cards[(turn + 1) % len(cards)]
-        print(f"{current_card.name} is attacking")
+        debug_print(f"{current_card.name} is attacking")
         # evasion check
         if random() < target_card.evasion:
-            print(f"**{target_card.name} dodged the attack**")
+            debug_print(f"**{target_card.name} dodged the attack**")
             turn += 1
             continue
 
@@ -62,23 +67,23 @@ def run_battle_simulator(card_a: Card,
         # crit
         if random() < current_card.crit:
             crit_multiplier = CRIT_MULTIPLIER
-            print(f"**{current_card.name} hit a crit!**")
+            debug_print(f"**{current_card.name} hit a crit!**")
 
         damage = current_card.attack_damage(target_card, crit_multiplier=crit_multiplier, debug=debug)
-        print(f"{current_card.name} will hit {target_card.name} for {damage}!")
+        debug_print(f"{current_card.name} will hit {target_card.name} for {damage}!")
         target_card.accept_damage(damage)
 
         if target_card.current_hp < 1:
-            print(f"{target_card.name} was killed!!")
+            debug_print(f"{target_card.name} was killed!!")
             winner = current_card
             loser = target_card
             break
         else:
-            print(f"{target_card.name} has {target_card.current_hp} HP left")
+            debug_print(f"{target_card.name} has {target_card.current_hp} HP left")
 
         turn += 1
 
-    print("battle over")
+    debug_print("battle over")
     br = BattleResult(winner=copy.deepcopy(winner), loser=copy.deepcopy(loser), turns=turn + 1)
     for card in cards:
         card.reset_hp()
