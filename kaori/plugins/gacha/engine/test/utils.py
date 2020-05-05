@@ -12,7 +12,7 @@ def collect_cards(module) -> Dict[str, Card]:
     return {card.slug: card for card in card_variables}
 
 
-def find_card(module, search: str) -> Card:
+def find_card(module: object, search: str) -> Card:
     available_cards = collect_cards(module)
 
     if search.lower() == 'random':

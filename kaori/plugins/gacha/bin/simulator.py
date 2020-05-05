@@ -3,10 +3,14 @@
 import argparse
 import sys
 from typing import Optional, List
+from rich.console import Console
+from rich.progress import track
+from rich.table import Table
 
 from kaori.plugins.gacha.engine import Card
-from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator
+from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator, cards
 from kaori.plugins.gacha.engine.test.battle_simulator import BattleResult
+from kaori.plugins.gacha.engine.test.utils import find_card
 
 card_command = argparse.ArgumentParser(description='Simulate cards and their values.')
 card_command.add_argument('--raw',
@@ -27,8 +31,8 @@ battle_command.add_argument('card_B',
                             help='second card')
 battle_command.add_argument('--debug',
                             '-d',
+                            action='store_true',
                             dest='debug',
-                            type=bool,
                             default=False,
                             help='verbose debugging statements')
 battle_command.add_argument('--interactive',
@@ -60,6 +64,8 @@ gen_command.add_argument('natures',
                          type=str,
                          help='Choose two natures from Stupid Baby Clown Horny Cursed Feral')
 
+console = Console()
+
 
 def main():
     command = sys.argv[1]
@@ -74,16 +80,28 @@ def main():
                              rarity=args.rarity,
                              natures=args.natures)
         card.is_valid_card()
-        print(card.to_markdown())
+        console.print(card.to_rich_table())
         return
 
     if command == 'battle':
         args = battle_command.parse_args(sys.argv[2:])
+        card_a = find_card(cards, args.card_A)
+        card_b = find_card(cards, args.card_B)
+
         results: List[BattleResult] = []
-        for i in range(args.repeat):
-            result = run_battle_simulator(args.card_A,
-                                          args.card_B,
-                                          print_header=(i == 0),
+
+        card_a_style = "bold royal_blue1"
+        card_b_style = "bold yellow1"
+        battle_table = Table(title=f"[{card_a_style}]{card_a.title}[/] [bold]VS.[/] [{card_b_style}]{card_b.title}[/]",
+                             show_header=False)
+        battle_table.add_column(card_a.title, justify="center")
+        battle_table.add_column(card_b.title, justify="center")
+        battle_table.add_row(card_a.to_rich_table(card_a_style), card_b.to_rich_table(card_b_style))
+        console.print(battle_table)
+
+        for i in track(range(args.repeat), description=f"battling..."):
+            result = run_battle_simulator(card_a,
+                                          card_b,
                                           debug=args.debug,
                                           interactive=args.interactive)
             if result:
@@ -92,11 +110,11 @@ def main():
         if len(results) > 0:
             aggregate = {}
             for result in results:
-                if not result.winner.slug + '_wins' in aggregate:
-                    aggregate[result.winner.slug + '_wins'] = 0
-                aggregate[result.winner.slug + '_wins'] += 1
+                if not result.winner.title in aggregate:
+                    aggregate[result.winner.title] = 0
+                aggregate[result.winner.title] += 1
 
-            print(aggregate)
+            console.print(aggregate)
 
         return
 
