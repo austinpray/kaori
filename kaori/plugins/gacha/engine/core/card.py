@@ -124,8 +124,8 @@ class Card:
                                     debug=debug)
         return max(a_max_dmg, b_max_dmg) == 0
 
-    def to_rich_table(self) -> Table:
-        table = Table(title=self.title, show_header=False, title_style="bold underline yellow")
+    def to_rich_table(self, title_style="bold underline yellow") -> Table:
+        table = Table(title=self.title, show_header=False, title_style=title_style)
         table.add_column("Natures", justify="right")
         table.add_column("Stats", justify="right")
 
