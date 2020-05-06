@@ -9,6 +9,8 @@ from rich.table import Table
 from .combat_strategies import CombatStrategyABC
 from .core import *
 
+_default_image = 'https://storage.googleapis.com/img.kaori.io/static/present.png'
+
 
 class Card:
     combat_strat: CombatStrategyABC = None
@@ -17,10 +19,15 @@ class Card:
                  name: str,
                  rarity: RarityName,
                  nature: Tuple[NatureName, NatureName],
+                 image_url: str = _default_image,
+                 card_id: int = None,
                  **kwargs) -> None:
 
         if self.combat_strat is None:
             raise RuntimeError('You need to set the initialize the combat class')
+
+        self.id = card_id
+        self.image_url = image_url
 
         self.name = name
         self.rarity = rarity
@@ -255,3 +262,19 @@ class Card:
                     rarity=rarity,
                     nature=natures,
                     **{str(k): v for k, v in nature_points.items()})
+
+    def serialize_min(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'image_url': self.image_url,
+            'rarity': str(self.rarity),
+            'nature': humanize_nature(*self.nature),
+            **{str(k): v for k, v in self.nature_values.items()},
+            'max_hp': self.max_hp,
+            'dmg': self.dmg,
+            'speed': self.speed,
+            'crit': self.crit,
+            'armor': self.armor,
+            'evasion': self.evasion,
+        }
