@@ -95,8 +95,9 @@ def main():
         card_b = find_card(cards, args.card_B)
 
         if args.format.startswith('web'):
-            run_battle_simulator2(card_a=args.card_A,
-                                  card_b=args.card_B,
+            run_battle_simulator2(card_a_name=args.card_A,
+                                  card_b_name=args.card_B,
+                                  repeat=args.repeat,
                                   out_format=args.format)
             return
 
