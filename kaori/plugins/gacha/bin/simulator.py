@@ -8,7 +8,7 @@ from rich.progress import track
 from rich.table import Table
 
 from kaori.plugins.gacha.engine import Card
-from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator, cards
+from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator, cards, run_battle_simulator2
 from kaori.plugins.gacha.engine.test.battle_simulator import BattleResult
 from kaori.plugins.gacha.engine.test.utils import find_card
 
@@ -20,7 +20,7 @@ card_command.add_argument('--raw',
                           default=False,
                           help='print output in raw markdown')
 
-battle_command = argparse.ArgumentParser(description='Process some integers.')
+battle_command = argparse.ArgumentParser(description='battle two cards')
 battle_command.add_argument('card_A',
                             metavar='card_name',
                             type=str,
@@ -47,6 +47,11 @@ battle_command.add_argument('--num-battle',
                             type=int,
                             default=1,
                             help='repeat battle N times')
+battle_command.add_argument('--format',
+                            '-f',
+                            type=str,
+                            default='cli',
+                            help='can be one of cli, web, web_raw')
 
 gen_command = argparse.ArgumentParser(description='create cards')
 gen_command.add_argument('-R',
@@ -85,8 +90,15 @@ def main():
 
     if command == 'battle':
         args = battle_command.parse_args(sys.argv[2:])
+
         card_a = find_card(cards, args.card_A)
         card_b = find_card(cards, args.card_B)
+
+        if args.format.startswith('web'):
+            run_battle_simulator2(card_a=args.card_A,
+                                  card_b=args.card_B,
+                                  out_format=args.format)
+            return
 
         results: List[BattleResult] = []
 
