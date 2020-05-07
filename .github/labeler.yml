@@ -1,0 +1,3 @@
+feature/gacha:
+   - kaori/plugins/gacha/*
+   - kaori/plugins/gacha/**/*
