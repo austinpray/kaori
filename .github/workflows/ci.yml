@@ -20,7 +20,11 @@ jobs:
         export_default_credentials: true
     - run: gcloud auth configure-docker
     - name: Build the Docker image
-      run: make
+      run: |
+        docker pull $CACHE_FROM_IMAGE
+        make
+      env:
+        CACHE_FROM_IMAGE: us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
     - name: Run the tests
       run: make test
     - name: Run the card sim
@@ -29,5 +33,7 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: |
         docker tag austinpray/kaori/kaori us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-${{github.sha}}
+        docker tag austinpray/kaori/kaori us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
         docker push us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-${{github.sha}}
+        docker push us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
       
