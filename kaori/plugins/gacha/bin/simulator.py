@@ -2,15 +2,10 @@
 
 import argparse
 import sys
-from typing import Optional, List
 from rich.console import Console
-from rich.progress import track
-from rich.table import Table
 
 from kaori.plugins.gacha.engine import Card
-from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator, cards, run_battle_simulator2
-from kaori.plugins.gacha.engine.test.battle_simulator import BattleResult
-from kaori.plugins.gacha.engine.test.utils import find_card
+from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator2, run_cli_battle_simulator
 
 card_command = argparse.ArgumentParser(description='Simulate cards and their values.')
 card_command.add_argument('--raw',
@@ -91,9 +86,6 @@ def main():
     if command == 'battle':
         args = battle_command.parse_args(sys.argv[2:])
 
-        card_a = find_card(cards, args.card_A)
-        card_b = find_card(cards, args.card_B)
-
         if args.format.startswith('web'):
             run_battle_simulator2(card_a_name=args.card_A,
                                   card_b_name=args.card_B,
@@ -101,35 +93,13 @@ def main():
                                   out_format=args.format)
             return
 
-        results: List[BattleResult] = []
-
-        card_a_style = "bold royal_blue1"
-        card_b_style = "bold yellow1"
-        battle_table = Table(title=f"[{card_a_style}]{card_a.title}[/] [bold]VS.[/] [{card_b_style}]{card_b.title}[/]",
-                             show_header=False)
-        battle_table.add_column(card_a.title, justify="center")
-        battle_table.add_column(card_b.title, justify="center")
-        battle_table.add_row(card_a.to_rich_table(card_a_style), card_b.to_rich_table(card_b_style))
-        console.print(battle_table)
-
-        for i in track(range(args.repeat), description=f"battling..."):
-            result = run_battle_simulator(card_a,
-                                          card_b,
-                                          debug=args.debug,
-                                          interactive=args.interactive)
-            if result:
-                results.append(result)
-
-        if len(results) > 0:
-            aggregate = {}
-            for result in results:
-                if not result.winner.title in aggregate:
-                    aggregate[result.winner.title] = 0
-                aggregate[result.winner.title] += 1
-
-            console.print(aggregate)
-
-        return
+        if args.format.startswith('cli'):
+            run_cli_battle_simulator(card_a_name=args.card_A,
+                                     card_b_name=args.card_B,
+                                     console=console,
+                                     repeat=args.repeat,
+                                     out_format=args.format)
+            return
 
     raise RuntimeError('invalid command')
 
