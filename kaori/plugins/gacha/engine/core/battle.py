@@ -43,6 +43,8 @@ class Turn:
 
 class Battle:
     turns: List[Turn]
+    winner: Card
+    loser: Card
 
     def __init__(self,
                  card_a: Card,

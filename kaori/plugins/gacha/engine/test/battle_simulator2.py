@@ -16,10 +16,10 @@ def run_battle_simulator(card_a_name: str,
                          debug: bool = False,
                          interactive: bool = False) -> List[Battle]:
     results: List[Battle] = []
-    for i in range(repeat):
+    card_a: Card = find_card(card_pool, card_a_name)
+    card_b: Card = find_card(card_pool, card_b_name)
 
-        card_a: Card = find_card(card_pool, card_a_name)
-        card_b: Card = find_card(card_pool, card_b_name)
+    for i in range(repeat):
 
         if not card_a.id:
             card_a.id = 1
@@ -27,6 +27,8 @@ def run_battle_simulator(card_a_name: str,
             card_b.id = card_a.id + 1
 
         results.append(Battle(card_a=card_a, card_b=card_b).run())
+        card_a.reset_hp()
+        card_b.reset_hp()
 
     if not out_format:
         return results
