@@ -1,10 +1,7 @@
-import urllib.parse
 from typing import List
 from rich.console import Console
 from rich.progress import track
 from rich.table import Table
-
-import ujson
 
 from . import cards as card_pool
 from .utils import find_card
