@@ -21,7 +21,7 @@ jobs:
     - run: gcloud auth configure-docker
     - name: Build the Docker image
       run: |
-        docker pull $CACHE_FROM_IMAGE
+        docker pull $CACHE_FROM_IMAGE || true
         make
       env:
         CACHE_FROM_IMAGE: us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
