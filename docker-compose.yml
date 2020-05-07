@@ -7,6 +7,8 @@ x-kaori:
     target: production
   image: austinpray/kaori/kaori
   env_file: .env
+  environment:
+    DATABASE_URL: postgresql://kaori:kaori@db:5432/kaori
   volumes:
     - .:/app
 
@@ -42,10 +44,15 @@ services:
     ports:
       - 8001:8001
 
-  test:
+  test: &test
     <<: *kaori
     image: austinpray/kaori/debug
     build:
       context: .
       target: development
     command: ["pytest"]
+
+  gsim:
+    <<: *test
+    entrypoint: ["bin/gsim"]
+    command: ["cards"]

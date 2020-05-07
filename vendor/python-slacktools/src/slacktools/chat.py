@@ -5,14 +5,34 @@ from .message import format_slack_mention
 
 def send(slack_client,
          channel: str,
-         text: str,
-         thread_ts: str = None):
+         text: str = '',
+         thread_ts: str = None,
+         **kwargs
+         ):
     """chat.postMessage to a channel"""
+
+    if text:
+        text_block = {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": text,
+            }
+        }
+        blocks = kwargs.get('blocks')
+        if blocks and isinstance(blocks, list):
+            blocks.insert(0, text_block)
+        else:
+            blocks = [text_block]
+
+        kwargs['blocks'] = blocks
+        print(blocks)
+
     return slack_client.api_call("chat.postMessage",
                                  channel=channel,
-                                 text=text,
                                  thread_ts=thread_ts,
-                                 as_user=True)
+                                 as_user=True,
+                                 **kwargs)
 
 
 def reply(slack_client, message: dict, text: str):

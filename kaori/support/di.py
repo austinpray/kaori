@@ -6,8 +6,19 @@ from typing import Dict, Any, Set, Callable
 
 class DependencyMissing(RuntimeError):
     def __init__(self, *args: object, **kwargs: object) -> None:
-        super().__init__(*args, **kwargs)
+        super().__init__(*args)
         self.dependency = kwargs.get('dependency', None)
+
+
+def needs_di(fn: Callable, component: object) -> bool:
+    params = inspect.signature(fn).parameters
+
+    param: Parameter
+    for name, param in params.items():
+        if component.__class__.__name__ == param.annotation.__name__:
+            return True
+
+    return False
 
 
 def build_di_args(components: Set, fn: Callable) -> Dict[str, Any]:

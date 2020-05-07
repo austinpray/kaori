@@ -2,7 +2,7 @@ import re
 from abc import ABC, abstractmethod
 from functools import partial
 from types import SimpleNamespace
-from typing import Pattern, Callable
+from typing import Pattern, Callable, Optional
 
 from slackclient import SlackClient
 from slacktools.chat import send, send_ephemeral
@@ -46,8 +46,10 @@ class SlackEvent:
 
     @staticmethod
     def create_from(payload):
-        payload_type = payload.get('event', {}).get('type')
-        if payload_type == 'message':
+        event = payload.get('event', {})
+        event_type = event.get('type')
+        text = event.get('text')
+        if event_type == 'message' and text:
             return SlackMessage(payload)
 
         return SlackEvent(payload)
@@ -59,6 +61,7 @@ class SlackMessage(SlackEvent):
         event = payload.get('event')
         self.channel = event.get('channel')
         self.text: str = event.get('text')
+        self.files: Optional[list] = event.get('files')
 
 
 class SlackCommand(ABC):
@@ -76,7 +79,7 @@ class SlackAdapter(Adapter):
         self._cached_bot_id = None
 
     handles = {SlackCommand}
-    provides = {SlackMessage}
+    provides = {SlackMessage, SlackEvent}
 
     @staticmethod
     def convert_payload(payload):
@@ -97,6 +100,10 @@ class SlackAdapter(Adapter):
     @staticmethod
     def make_mention_token(token: str) -> Pattern:
         return re.compile(token, re.IGNORECASE)
+
+    @property
+    def mention_string(self) -> str:
+        return format_slack_mention(self.id)
 
     @property
     def mention_tokens(self):
@@ -147,13 +154,29 @@ class SlackAdapter(Adapter):
     def respond(self, message: SlackMessage, text: str):
         send(self.client, message.channel, text)
 
+    def edit(self,
+             message: SlackMessage,
+             **kwargs):
+        return self.client.api_call('chat.update',
+                                    ts=message.ts,
+                                    channel=message.channel,
+                                    **kwargs)
+
+    def react(self,
+              message: SlackMessage,
+              reaction: str):
+        return self.client.api_call('reactions.add',
+                                    name=reaction,
+                                    channel=message.channel,
+                                    timestamp=message.ts)
+
     def reply(self,
               message: SlackMessage,
-              text: str,
+              text: str = '',
               ephemeral: bool = False,
-              create_thread: bool = False
-              ):
-        text_with_mention = f'{format_slack_mention(message.user)} {text}'
+              create_thread: bool = False,
+              **kwargs):
+        text_with_mention = f'{format_slack_mention(message.user)} {text}' if text else ''
         if ephemeral:
             return send_ephemeral(self.client, message.channel, message.user, text_with_mention)
 
@@ -163,4 +186,4 @@ class SlackAdapter(Adapter):
         elif create_thread:
             thread_ts = message.ts
 
-        return send(self.client, message.channel, text_with_mention, thread_ts=thread_ts)
+        return send(self.client, message.channel, text_with_mention, thread_ts=thread_ts, **kwargs)
