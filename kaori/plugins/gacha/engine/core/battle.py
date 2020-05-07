@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import re
 from enum import Enum, unique
 from random import sample, random
 from typing import List
@@ -26,6 +28,8 @@ _kill = TurnResult.kill
 
 class Turn:
 
+    _serialize_version = 1
+
     def __init__(self,
                  attacker: Card,
                  defender: Card,
@@ -36,9 +40,15 @@ class Turn:
         self.dmg = 0
         self.crit = False
 
+    notation_regex = re.compile(r'(?P<prefix>v(?P<version>\d+)\.(?P<attacker>\d+)x(?P<defender>\d+))'
+                                r'(?P<payload>(?P<result>[A-Z])(?P<dmg>\d+)?(?P<crit>C)?)')
+
     def __str__(self) -> str:
-        return f"{self.attacker.id}x{self.defender.id}_" \
-               f"{str(self.result)}{self.dmg}_{int(self.crit)}"
+        result = str(self.result)
+        if self.result in [_hit, _kill]:
+            crit = 'C' if self.crit else ''
+            result += f'{self.dmg}{crit}'
+        return f"v{self._serialize_version}.{self.attacker.id}x{self.defender.id}{result}"
 
 
 class Battle:
@@ -111,8 +121,13 @@ class Battle:
         return self
 
     def serialize_min(self):
+        turns_prefix = Turn.notation_regex.match(str(self.turns[0])).group('prefix')
+        turns = [
+            Turn.notation_regex.match(str(t)).group('payload')
+            for t in self.turns
+        ]
         return {
             'a': self.card_a.serialize_min(),
             'b': self.card_b.serialize_min(),
-            'turns': '~'.join([str(t) for t in self.turns])
+            'turns': turns_prefix + '~'.join(turns)
         }

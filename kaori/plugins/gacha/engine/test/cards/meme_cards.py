@@ -2,6 +2,7 @@ from ...core import *
 
 orange_president = Card(
     name="Orange President",
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/oj.png',
     rarity=S,
     nature=(cursed, baby),
     stupid=1,
@@ -11,6 +12,20 @@ orange_president = Card(
     cursed=7,
     feral=2
 )
+
+ubu = Card(
+    name="ubu",
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/ubu.png',
+    rarity=C,
+    nature=(feral, cursed),
+    stupid=2,
+    baby=2,
+    clown=2,
+    horny=3,
+    cursed=3,
+    feral=4
+)
+
 
 leg_hair = Card(
     name="Leg hAir",
