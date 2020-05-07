@@ -1,3 +1,4 @@
 from .battle_simulator import run_battle_simulator
 from .battle_simulator2 import run_battle_simulator as run_battle_simulator2
+from .cli_battle_simulator import run_cli_battle_simulator
 from .card_simulator import run_card_simulator
