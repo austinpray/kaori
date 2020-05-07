@@ -62,3 +62,10 @@ services:
     <<: *test
     entrypoint: ["bin/gsim"]
     command: ["cards"]
+
+  gweb:
+    <<: *test
+    working_dir: /app/kaori/plugins/gacha/static
+    command: ["python", "-m", "http.server"]
+    ports:
+      - 8080:8000

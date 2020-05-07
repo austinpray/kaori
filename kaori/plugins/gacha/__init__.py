@@ -66,8 +66,6 @@ def next_card_creation_step(card: Card,
                 .filter(Card.slug == card.slug) \
                 .count()
 
-            print(f'SETTTO {num_dupes}')
-
             if num_dupes > 0:
                 raise InvalidCardName('That name is taken')
 

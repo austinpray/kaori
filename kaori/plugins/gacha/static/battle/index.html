@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang=en>
+<head>
+    <meta charset=utf-8>
+    <title>Battle Simulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            color: #1d1d1d;
+            margin: 0;
+        }
+
+        html {
+            box-sizing: border-box;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
+        :root {
+            --grid-gap: 0.25em;
+        }
+
+        #app {
+            display: grid;
+            gap: var(--grid-gap);
+            /*max-width: 2000px;*/
+        }
+
+        @media (min-width: 1200px) {
+            #app {
+                grid-template-columns: fit-content(40em) 1fr;
+            }
+        }
+
+        #menu {
+            max-width: 40em;
+            margin: 8px;
+        }
+
+        .cardName {
+            text-align: center;
+        }
+
+        .cardBody {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .cardProps {
+            flex: 1 0 150px;
+            max-width: 400px;
+            padding: 1em;
+        }
+        .cardStats {
+            max-width: 350px;
+            flex: 1;
+            margin: 0 auto;
+            border: 1px solid #f1f1f1;
+        }
+
+        .cardImage {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        .cardImageCont {
+            position: relative;
+            height: 0;
+            padding-top: 50%;
+        }
+
+        .cardStats th, td {
+            border: 1px solid #f1f1f1;
+            padding: 10px;
+        }
+
+        [data-hp-bar] {
+            height: 1em;
+            transition: width 500ms ease-out;
+        }
+
+        .deadCard {
+            filter: grayscale(100);
+        }
+
+        .hpBar {
+            margin: 0 0 1em;
+            border: 1px solid #1d1d1d;
+            grid-area: hp;
+        }
+
+
+        details {
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            padding: .5em .5em 0;
+        }
+
+        summary {
+            font-weight: bold;
+            margin: -.5em -.5em 0;
+            padding: .5em;
+        }
+
+        details[open] {
+            padding: .5em;
+        }
+
+        details[open] summary {
+            border-bottom: 1px solid #aaa;
+            margin-bottom: .5em;
+        }
+        @media (min-width: 800px) {
+            :root {
+                --grid-gap: 0.5em;
+            }
+
+        }
+
+        @media (min-width: 620px) {
+            #player {
+                display: grid;
+                gap: var(--grid-gap);
+                grid-template-columns: minmax(25vw, 1fr) repeat( auto-fit, minmax(300px, 1fr) );
+            }
+
+        }
+
+        #cardBox {
+            display: grid;
+            grid-column-end: span 2;
+        }
+
+
+        #cards {
+            display: grid;
+            grid-template-columns: repeat( auto-fit, minmax(300px, 1fr) );
+
+            gap: var(--grid-gap)
+        }
+
+        #battlefield {
+            height: 0;
+            padding-top: 75%;
+            position: relative;
+            background: #1d1d1d linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-blend-mode: overlay;
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            overflow: hidden;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0 50%;
+            }
+        }
+
+        @media (min-width: 700px) {
+            #battlefield {
+                /*min-width: 50vw;*/
+            }
+            #controls {
+                min-height: 300px;
+            }
+        }
+
+        .battleCard {
+            position: absolute;
+            color: white;
+            width: 35%;
+            height: 35%;
+            transition: all 300ms ease;
+        }
+        .battleCard.attacking {
+            transition: all 500ms ease;
+        }
+        .battleCard .deets {
+            width: 100%;
+            position: absolute;
+            bottom: 100%;
+            font-size: 0.75em;
+        }
+        .battleCard img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        #controls {
+            min-height: 150px;
+            background: #f1f1f1;
+            border-left: var(--grid-gap) solid #888888;
+            padding: 1em;
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+
+        .logItem {
+            display: grid;
+            gap: var(--grid-gap);
+            margin-bottom: var(--grid-gap);
+            align-items: center;
+        }
+
+        .logItem.align {
+            grid-template-columns: min-content 1fr min-content;
+            grid-template-areas: "L msg R";
+        }
+        .logItem.align .logItemBody {
+             grid-area: msg;
+        }
+        .logItem.alignLeft {
+            text-align: left;
+        }
+        .logItem.alignRight {
+            text-align: right;
+        }
+        .logItem.alignLeft .logItemImage {
+            grid-area: L;
+        }
+        .logItem.alignRight .logItemImage {
+            grid-area: R;
+        }
+
+        .logItemImage {
+            width: 2em;
+            height: 2em;
+        }
+
+    </style>
+    <link rel="preload"
+          as="style"
+          href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"
+          integrity="sha256-6yeYVT2GxrGAbSCDIPZFvXnqsM688iF2vdvGSOjzzNQ="
+          crossorigin="anonymous"
+          onload="this.onload=null;this.rel='stylesheet'">
+</head>
+<body>
+<div id="app">
+    <div id="menu">
+        <h1>Gacha Card Battle Player</h1>
+
+        <noscript>turn on javascript dood</noscript>
+
+        <details>
+            <summary>Input Battle Data</summary>
+
+            <form id="battleInput">
+                <label>
+                    Battle data
+                    <textarea rows="15" id="in" name="in" style="width: 100%"></textarea>
+                </label>
+                <div style="display: flex; flex-direction: column">
+                    <button type="submit" name="autoplay" value="t" style="align-self: flex-end">Load Battle Data</button>
+                </div>
+            </form>
+
+        </details>
+    </div>
+    <div id="player">
+        <div id="battlefield"></div>
+        <div id="controls"></div>
+        <details id="cardBox" open>
+            <summary>Card Stats</summary>
+            <div id="cards"></div>
+        </details>
+    </div>
+</div>
+
+<script type="text/html" id="cardTemplate">
+    <div>
+        <h2 class="cardName">
+            <span data-name>Unknown</span><br>
+            <small>(<span data-rarity>?</span>-tier <span data-nature>?</span>)</small>
+        </h2>
+        <div class="cardBody">
+            <div class="cardProps">
+                <!--
+                <div data-hp></div>
+                <div class="hpBar">
+                    <div data-hp-bar></div>
+                </div>
+                -->
+                <div class="cardImageCont">
+                    <img class="cardImage">
+                </div>
+            </div>
+            <table class="cardStats">
+                <thead>
+                <tr>
+                    <th>nature</th>
+                    <th>value</th>
+                    <th>stat</th>
+                    <th>value</th>
+                </tr>
+
+                </thead>
+                <tbody data-stats>
+
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</script>
+
+<script type="text/html" id="cardAvatarTemplate">
+    <div class="battleCard">
+        <div class="deets">
+            <span data-name>Unknown</span><br>
+            <div data-hp></div>
+            <div class="hpBar">
+                <div data-hp-bar></div>
+            </div>
+        </div>
+        <img data-image>
+    </div>
+</script>
+
+
+<script type="module" src="js/app.js"></script>
+
+</body>
+</html>
