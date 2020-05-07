@@ -1,3 +1,4 @@
+from copy import deepcopy
 from random import choice
 from typing import List, Dict
 
@@ -16,6 +17,6 @@ def find_card(module, search: str) -> Card:
     available_cards = collect_cards(module)
 
     if search.lower() == 'random':
-        return choice(list(available_cards.values()))
+        return deepcopy(choice(list(available_cards.values())))
 
-    return available_cards[Card.sluggify_name(search)]
+    return deepcopy(available_cards[Card.sluggify_name(search)])
