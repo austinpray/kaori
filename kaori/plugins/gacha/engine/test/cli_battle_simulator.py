@@ -25,8 +25,6 @@ def run_cli_battle_simulator(card_a_name: str,
         card_a.id = 1
     if not card_b.id:
         card_b.id = card_a.id + 1
-    print(card_a.id)
-    print(card_b.id)
 
     print_battle_table(card_a, card_b, console)
 
