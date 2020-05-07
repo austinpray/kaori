@@ -25,7 +25,7 @@ def run_cli_battle_simulator(card_a_name: str,
 
     print_battle_table(card_a, card_b, console)
 
-    for i in track(range(repeat), description="battling..."):
+    for _ in track(range(repeat), description="battling..."):
 
         if not card_a.id:
             card_a.id = 1
@@ -33,8 +33,10 @@ def run_cli_battle_simulator(card_a_name: str,
             card_b.id = card_a.id + 1
 
         results.append(Battle(card_a=card_a, card_b=card_b).run())
+        card_a.reset_hp()
+        card_b.reset_hp()
 
-    # print_results(card_a, card_b, results, console)
+    print_results(card_a, card_b, results, console)
 
     return results
 
@@ -50,11 +52,9 @@ def print_battle_table(card_a: Card, card_b: Card, console: Console):
 
     console.print(battle_table)
 
-# TODO: make this work...this throws the following:
-#  card_a_wins = [r for r in results if r.winner.title == card_b.title]
-#  AttributeError: 'NoneType' object has no attribute 'title'
+
 def print_results(card_a: Card, card_b: Card, results: List[Battle], console: Console):
-    card_a_wins = [r for r in results if r.winner.title == card_a.title]
+    card_a_wins = [r for r in results if r.winner.slug == card_a.slug]
     console.print(f"card_a wins: {len(card_a_wins)}")
-    card_b_wins = [r for r in results if r.winner.title == card_b.title]
+    card_b_wins = [r for r in results if r.winner.slug == card_b.slug]
     console.print(f"card_b wins: {len(card_b_wins)}")
