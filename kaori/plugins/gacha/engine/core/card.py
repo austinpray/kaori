@@ -4,6 +4,7 @@ import sys
 from io import StringIO
 from random import choice
 from typing import Tuple, Union
+
 from rich.table import Table
 
 from .combat_strategies import CombatStrategyABC
@@ -114,6 +115,12 @@ class Card:
         budget = self.combat_strat.rarities[self.rarity].budget
         assert nv_sum == budget, \
             f"'**ERROR:** {self.name}' {nv_sum} does not square with budget {budget}"
+        split = self.combat_strat.rarities[self.rarity].split
+        for n in self.nature:
+            assert self.nature_values[
+                       n] >= split, f"'**ERROR:** {self.name}'s {n.name} nature value of {self.nature_values[n]} does " \
+                                    f"not have minimum " \
+                                    f"split value of {split} for rarity {self.rarity.name} "
 
         return True
 
