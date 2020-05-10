@@ -3,7 +3,7 @@ from ...core import *
 orange_president = Card(
     name="Orange President",
     rarity=S,
-    nature=(cursed, clown),
+    nature=(cursed, baby),
     stupid=1,
     baby=6,
     clown=3,
