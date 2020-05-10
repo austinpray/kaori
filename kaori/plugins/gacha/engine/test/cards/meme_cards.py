@@ -98,3 +98,17 @@ the_rust_programming_language = Card(
     cursed=4,
     feral=4,
 )
+
+_xss = "<script>alert('pwnd')</script>"
+
+xss = Card(
+    name=f"XSS {_xss}",
+    rarity=S,
+    nature=(cursed, baby),
+    stupid=2,
+    baby=6,
+    clown=2,
+    horny=2,
+    cursed=6,
+    feral=2,
+)
