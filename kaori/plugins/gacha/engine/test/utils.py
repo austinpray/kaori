@@ -19,4 +19,12 @@ def find_card(module, search: str) -> Card:
     if search.lower() == 'random':
         return deepcopy(choice(list(available_cards.values())))
 
-    return deepcopy(available_cards[Card.sluggify_name(search)])
+    search_slug = Card.sluggify_name(search)
+    if search_slug in available_cards:
+        return deepcopy(available_cards[search_slug])
+
+    for slug, card in available_cards.items():
+        if slug.startswith(search_slug):
+            return deepcopy(card)
+
+    raise ValueError(f'cannot find a card for {search}')
