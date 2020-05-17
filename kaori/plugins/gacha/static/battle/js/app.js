@@ -77,3 +77,8 @@ const params = new URLSearchParams(window.location.search);
 const battleData = params.get('in');
 
 main(battleData);
+
+window.addEventListener('DOMContentLoaded', (event) => {
+  document.querySelectorAll('[data-preload-style]')
+    .forEach(link => link.rel = 'stylesheet')
+});
