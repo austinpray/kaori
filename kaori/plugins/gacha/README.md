@@ -13,6 +13,8 @@
     <br>
 </div>
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e50ac726-0216-4cab-8b71-92e2cf374668/deploy-status)](https://app.netlify.com/sites/peaceful-chandrasekhar-61e872/deploys)
+
 ## Core features
 
 ### Create cards
