@@ -6,15 +6,22 @@ export async function sleep(msec) {
   })
 }
 
-export async function animate(el, className, duration = '1s') {
+export async function animate(el, className, durationMs = 1000) {
   return new Promise(resolve => {
     let tokens = ['animate__animated', ...[className].flat(Infinity)];
     el.classList.add(...tokens);
-    el.style.setProperty('--animate-duration', duration)
-    el.addEventListener('animationend', () => {
+    el.style.setProperty('--animate-duration', `${durationMs}ms`)
+
+    const finish = () => {
       el.classList.remove(...tokens)
       resolve(el)
-    });
+    };
+
+    // fallthrough if animation never starts
+    const timeout = window.setTimeout(finish, durationMs)
+    el.addEventListener('animationstart', _ => window.clearTimeout(timeout));
+
+    el.addEventListener('animationend', finish);
   });
 }
 
