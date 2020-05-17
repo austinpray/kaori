@@ -41,7 +41,7 @@ leg_hair = Card(
 
 kim_jong_un_lil_sis = Card(
     name="Kim Jong Un's Little Sister",
-    image_url='https://storage.cloud.google.com/img.kaori.io/static/img/kju_lil_sis.png',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/kju_lil_sis.png',
     rarity=S,
     nature=(horny, baby),
     stupid=3,
@@ -54,7 +54,7 @@ kim_jong_un_lil_sis = Card(
 
 matt_morgan = Card(
     name="Matt Morgan",
-    image_url='https://storage.cloud.google.com/img.kaori.io/static/img/matt_morgan.jpg',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/matt_morgan.jpg',
     rarity=S,
     nature=(cursed, baby),
     stupid=2,
@@ -79,7 +79,7 @@ tlp = Card(
 
 hicock45 = Card(
     name="hicock45",
-    image_url='https://storage.cloud.google.com/img.kaori.io/static/img/hickock-45.png',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/hickock-45.png',
     rarity=B,
     nature=(horny, feral),
     stupid=2,
@@ -92,7 +92,7 @@ hicock45 = Card(
 
 the_rust_programming_language = Card(
     name="The Rust Programming Language",
-    image_url='https://storage.cloud.google.com/img.kaori.io/static/img/rust-social-wide.jpg',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/rust-social-wide.jpg',
     rarity=B,
     nature=(horny, feral),
     stupid=3,
@@ -107,7 +107,7 @@ _xss = "<script>alert('pwnd')</script>"
 
 xss = Card(
     name=f"XSS {_xss}",
-    image_url='https://storage.cloud.google.com/img.kaori.io/static/img/xss.png',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/xss.png',
     rarity=S,
     nature=(cursed, baby),
     stupid=2,
