@@ -8,10 +8,14 @@
         <a href="#core-features">core features</a>
         |
         <a href="#card-guide">card guide</a>
+        |
+        <a href="https://battle.kaori.io/">battle simulator</a>
     </p>
     <br>
     <br>
 </div>
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/e50ac726-0216-4cab-8b71-92e2cf374668/deploy-status)](https://app.netlify.com/sites/kaori-battle/deploys)
 
 ## Core features
 
