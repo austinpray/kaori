@@ -8,6 +8,8 @@
         <a href="#core-features">core features</a>
         |
         <a href="#card-guide">card guide</a>
+        |
+        <a href="https://battle.kaori.io/">battle simulator</a>
     </p>
     <br>
     <br>
