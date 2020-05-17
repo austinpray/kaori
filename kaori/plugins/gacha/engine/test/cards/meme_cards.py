@@ -117,3 +117,15 @@ xss = Card(
     cursed=6,
     feral=2,
 )
+sachiko = Card(
+    name='Koshimizu Sachiko',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/sachi_sketch.png',
+    rarity=S,
+    nature=(stupid, horny),
+    stupid=7,
+    baby=2,
+    clown=1,
+    horny=6,
+    cursed=2,
+    feral=2,
+)
