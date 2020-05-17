@@ -8,6 +8,7 @@ export async function sleep(msec) {
 
 export async function animate(el, className, duration = '1s') {
   return new Promise(resolve => {
+    console.log('wassup from animate')
     let tokens = ['animate__animated', ...[className].flat(Infinity)];
     el.classList.add(...tokens);
     el.style.setProperty('--animate-duration', duration)
@@ -15,6 +16,7 @@ export async function animate(el, className, duration = '1s') {
       el.classList.remove(...tokens)
       resolve(el)
     });
+    console.log('wassup from animate 2')
   });
 }
 

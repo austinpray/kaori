@@ -1,6 +1,7 @@
 import {animate, sleep, sanitizeHtml} from "./utils.js";
 import {renderCard} from "./card.js";
 import {relativeColor} from "./utils.js";
+import {_wrapRegExp} from "./babel.js"
 
 export function logItem({card, align = 'none'} = {}) {
   const el = document.createElement('div')
@@ -98,7 +99,10 @@ export async function startBattle(battle) {
   battleStart.log('Battle Start')
 
   battle.log.prepend(battleStart)
+  console.log('ayy')
   await animate(battleStart, 'animate__zoomIn', '300ms')
+  animate(battleStart, 'animate__zoomIn', '300ms').then(() => console.log("then lmao"))
+  console.log('lmao')
   await sleep(1000)
   await animate(battleStart, 'animate__zoomOut', '300ms')
   battle.log.removeChild(battleStart)
@@ -109,7 +113,6 @@ export async function startBattle(battle) {
   const announceAttacker = logItem({card: attacker, align: 'left'})
   announceAttacker.log(`<u>${sanitizeHtml(attacker.name)}</u> goes first due to higher speed.`);
   battle.log.prepend(announceAttacker)
-
   await sleep(500)
 
 
@@ -187,12 +190,17 @@ function turnMessage({turn, cards}) {
 
 export function hydrateTurns(string) {
 
-  const match = string.match(/(?<version>v\d+)\.(?<atk>\d+)x(?<def>\d+)(?<payload>.+)/i)
+  const match = string.match(_wrapRegExp(/(v[0-9]+)\.([0-9]+)x([0-9]+)(.+)/i, {
+    version: 1,
+    atk: 2,
+    def: 3,
+    payload: 4
+  }));
 
   if (!match) {
     throw new Error('invalid turn format')
   }
-
+  
   const cards = [match.groups['atk'], match.groups['def']].map(s => parseInt(s, 10));
 
   const results = {
@@ -205,7 +213,11 @@ export function hydrateTurns(string) {
   return match.groups['payload']
     .split('~')
     .map((str, index) => {
-      const m = str.match(/(?<result>[A-Z])(?<damage>\d+)?(?<crit>C)?/i)
+      const m = str.match(_wrapRegExp(/([A-Z])([0-9]+)?(C)?/i, {
+        result: 1,
+        damage: 2,
+        crit: 3
+      }))
       if (!m) {
         throw new Error('invalid turn format')
       }
