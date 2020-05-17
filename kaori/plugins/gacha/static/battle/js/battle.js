@@ -98,9 +98,9 @@ export async function startBattle(battle) {
   battleStart.log('Battle Start')
 
   battle.log.prepend(battleStart)
-  await animate(battleStart, 'animate__zoomIn', '300ms')
+  await animate(battleStart, 'animate__zoomIn', 300)
   await sleep(1000)
-  await animate(battleStart, 'animate__zoomOut', '300ms')
+  await animate(battleStart, 'animate__zoomOut', 300)
   battle.log.removeChild(battleStart)
 
 
@@ -126,7 +126,7 @@ export async function startBattle(battle) {
         card: attacker,
         align: attacker.id === firstAttacker ? 'left' : 'right'
       })
-      animate(li, 'animate__fadeInRight', '300ms')
+      animate(li, 'animate__fadeInRight', 300)
       li.log(turnMessage({turn, cards}))
       battle.log.prepend(li)
 
@@ -137,16 +137,16 @@ export async function startBattle(battle) {
       renderCard(defender, 'defending')
       renderAvatar(attacker)
       renderAvatar(defender)
-      animate(attacker.avatarNode, 'animate__tada', '1s')
+      animate(attacker.avatarNode, 'animate__tada', 1000)
       if (turn.result === 'evade') {
-        animate(defender.avatarNode, 'animate__slideOutDown', '1s')
+        animate(defender.avatarNode, 'animate__slideOutDown', 1000)
       }
       sleep(1100).then(() => {
         if (turn.result === 'kill') {
           animate(
             attacker.avatarNode,
             ['animate__bounce', 'animate__repeat-3'],
-            '1s'
+            1000
           )
         }
         renderCard(attacker, 'defending')
