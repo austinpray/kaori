@@ -187,13 +187,22 @@ function turnMessage({turn, cards}) {
 
 export function hydrateTurns(string) {
 
-  const match = string.match(/(?<version>v\d+)\.(?<atk>\d+)x(?<def>\d+)(?<payload>.+)/i)
+  // firefox can't into named groups :/
+  // const match = string.match(/(?<version>v\d+)\.(?<atk>\d+)x(?<def>\d+)(?<payload>.+)/i)
+  const match = string.match(/(v\d+)\.(\d+)x(\d+)(.+)/i)
 
   if (!match) {
     throw new Error('invalid turn format')
   }
 
-  const cards = [match.groups['atk'], match.groups['def']].map(s => parseInt(s, 10));
+  const groups = {
+    version: match[1],
+    atk: match[2],
+    def: match[3],
+    payload: match[4],
+  };
+
+  const cards = [groups['atk'], groups['def']].map(s => parseInt(s, 10));
 
   const results = {
     E: 'evade',
@@ -202,14 +211,20 @@ export function hydrateTurns(string) {
     S: 'standoff',
   }
 
-  return match.groups['payload']
+  return groups['payload']
     .split('~')
     .map((str, index) => {
-      const m = str.match(/(?<result>[A-Z])(?<damage>\d+)?(?<crit>C)?/i)
+      // no named groups in FF reee
+      // const m = str.match(/(?<result>[A-Z])(?<damage>\d+)?(?<crit>C)?/i)
+      const m = str.match(/([A-Z])(\d+)?(C)?/i)
       if (!m) {
         throw new Error('invalid turn format')
       }
-      return m.groups
+      return {
+        result: m[1],
+        damage: m[2],
+        crit: m[3],
+      }
     })
     .map((turn, turnNumber) => {
       turn['result'] = results[turn['result']] || turn['result']
