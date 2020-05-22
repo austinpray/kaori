@@ -129,3 +129,29 @@ sachiko = Card(
     cursed=2,
     feral=2,
 )
+
+c2 = Card(
+    name='Chris Carr',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/c2.png',
+    rarity=A,
+    nature=(cursed, clown),
+    stupid=1,
+    baby=2,
+    clown=6,
+    horny=2,
+    cursed=6,
+    feral=3,
+)
+
+geoff = Card(
+    name='Geoff Hawkes',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/geoff.png',
+    rarity=A,
+    nature=(feral, cursed),
+    stupid=5,
+    baby=1,
+    clown=1,
+    horny=1,
+    cursed=6,
+    feral=6,
+)
