@@ -168,3 +168,16 @@ mason = Card(
     cursed=6,
     feral=1,
 )
+
+jules = Card(
+    name='Jules',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/jules.png',
+    rarity=A,
+    nature=(horny, feral),
+    stupid=1,
+    baby=1,
+    clown=2,
+    horny=8,
+    cursed=1,
+    feral=7,
+)
