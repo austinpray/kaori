@@ -129,3 +129,55 @@ sachiko = Card(
     cursed=2,
     feral=2,
 )
+
+c2 = Card(
+    name='Chris Carr',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/c2.png',
+    rarity=A,
+    nature=(cursed, clown),
+    stupid=1,
+    baby=2,
+    clown=6,
+    horny=2,
+    cursed=6,
+    feral=3,
+)
+
+geoff = Card(
+    name='Geoff Hawkes',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/geoff.png',
+    rarity=A,
+    nature=(feral, cursed),
+    stupid=5,
+    baby=1,
+    clown=1,
+    horny=1,
+    cursed=6,
+    feral=6,
+)
+
+mason = Card(
+    name='Mason Towne',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/mason.png',
+    rarity=A,
+    nature=(cursed, horny),
+    stupid=3,
+    baby=2,
+    clown=2,
+    horny=6,
+    cursed=6,
+    feral=1,
+)
+
+jules = Card(
+    name='Jules',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/jules.png',
+    rarity=A,
+    nature=(horny, feral),
+    stupid=1,
+    baby=1,
+    clown=2,
+    horny=8,
+    cursed=1,
+    feral=7,
+)
