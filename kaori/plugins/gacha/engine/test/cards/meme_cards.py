@@ -155,3 +155,16 @@ geoff = Card(
     cursed=6,
     feral=6,
 )
+
+mason = Card(
+    name='Mason Towne',
+    image_url='https://storage.googleapis.com/img.kaori.io/static/img/mason.png',
+    rarity=A,
+    nature=(cursed, horny),
+    stupid=3,
+    baby=2,
+    clown=2,
+    horny=6,
+    cursed=6,
+    feral=1,
+)
