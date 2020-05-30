@@ -51,7 +51,7 @@ k.skills |= {
 }
 
 k.plugins |= {
-    kaori.plugins.chat,
+    #kaori.plugins.chat,
     kaori.plugins.clap,
     kaori.plugins.ping,
     kaori.plugins.users,
