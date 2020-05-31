@@ -16,7 +16,7 @@ import kaori.plugins.kkreds
 import kaori.plugins.ping
 import kaori.plugins.users
 from kaori.adapters.slack import SlackAdapter
-from kaori.skills import DB
+from kaori.skills import DB, LocalFileUploader
 from kaori.support import Kaori
 
 logging.basicConfig(level=logging.DEBUG)
@@ -49,6 +49,13 @@ k.adapters['slack'] = SlackAdapter(slack_client=sc)
 k.skills |= {
     DB(make_session=make_session),
 }
+
+if hasattr(config, 'GOOGLE_APPLICATION_CREDENTIALS') and config.GOOGLE_APPLICATION_CREDENTIALS:
+    pass
+elif config.KIZUNA_ENV == 'development':
+    k.skills.add(LocalFileUploader())
+else:
+    k.logger.warning('no file upload handler specified!')
 
 k.plugins |= {
     kaori.plugins.chat,
