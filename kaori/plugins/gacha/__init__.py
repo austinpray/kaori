@@ -202,7 +202,7 @@ class CreateCardCommand(SlackCommand):
             return
 
         # start a conversation
-        if not bot.understands(message, with_pattern=re.compile('create card$', re.I)):
+        if not bot.understands(message, with_pattern=re.compile(r'create\s+card|card\s+create$', re.I)):
             return
 
         if message.is_thread_reply:
