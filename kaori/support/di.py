@@ -1,4 +1,5 @@
 import inspect
+from abc import ABC
 from inspect import Parameter
 
 from typing import Dict, Any, Set, Callable
@@ -22,18 +23,27 @@ def needs_di(fn: Callable, component: object) -> bool:
 
 
 def build_di_args(components: Set, fn: Callable) -> Dict[str, Any]:
-    args_dict = {}
     params = inspect.signature(fn).parameters
 
-    components_dict = {component.__class__.__name__: component for component in components}
+    components_dict = {}
+    for component in components:
+        mro = component.__class__.mro()
+        for method in mro:
+            if method == object or method == ABC:
+                break
+            components_dict[method.__name__] = component
+
+    args_dict = {}
 
     param: Parameter
     for name, param in params.items():
         dep_name = param.annotation.__name__
         resolved = components_dict.get(dep_name)
-        if not resolved:
-            raise DependencyMissing(f'Do not know how to handle dependency "{dep_name}"',
-                                    dependency=dep_name)
-        args_dict[name] = resolved
+        if resolved:
+            args_dict[name] = resolved
+            continue
+
+        raise DependencyMissing(f'Do not know how to handle dependency "{dep_name}"',
+                                dependency=dep_name)
 
     return args_dict
