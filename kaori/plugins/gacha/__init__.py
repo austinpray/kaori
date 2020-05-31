@@ -11,7 +11,7 @@ from kaori.adapters.slack import SlackCommand, SlackMessage, SlackAdapter
 from kaori.plugins.gacha.models.Card import Card, InvalidCardName
 from kaori.plugins.gacha.models.Image import Image
 from kaori.plugins.users import User, UserNotFound
-from kaori.skills import DB
+from kaori.skills import DB, FileUploader
 
 tmp_prefix = 'tmp::'
 
@@ -267,7 +267,7 @@ class UpdateCardCommand(SlackCommand):
     """usage: {bot} update card properties"""
 
     @staticmethod
-    async def handle(message: SlackMessage, bot: SlackAdapter, db: DB):
+    async def handle(message: SlackMessage, bot: SlackAdapter, db: DB, file_uploader: FileUploader):
         if not bot.addressed_by(message) or not message.is_thread:
             return
 
@@ -304,7 +304,10 @@ class UpdateCardCommand(SlackCommand):
 
                 if card.creation_cursor == 'set_image':
                     if message.files:
-                        img = Image.from_slack_message(message, session)
+                        img = Image.from_slack_message(message=message,
+                                                       session=session,
+                                                       slack_adapter=bot,
+                                                       uploader=file_uploader)
                         card.image = img
                         card.creation_cursor = 'query_description'
                         bot.react(message, 'thumbsup')
