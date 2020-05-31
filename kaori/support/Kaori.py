@@ -34,12 +34,15 @@ class Kaori:
 
         return handleable
 
+    def get_base_components(self):
+        return self.skills | {adapter for adapter in self.adapters.values()}
+
     def handle(self, adapter_name: str, payload: dict):
         adapter: Adapter = self.adapters.get(adapter_name)
         event = adapter.convert_payload(payload)
         handleable = self.get_handleable(adapter)
 
-        components = {event} | self.skills | {adapter for adapter in self.adapters.values()}
+        components = {event} | self.get_base_components()
         for command in handleable:
             if needs_di(command.handle, event):
                 asyncio.run(command.handle(**build_di_args(components, command.handle)))
