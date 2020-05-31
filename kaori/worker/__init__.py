@@ -19,7 +19,7 @@ from kaori.adapters.slack import SlackAdapter
 from kaori.skills import DB
 from kaori.support import Kaori
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 # DEV_INFO = read_dev_info('./.dev-info.json')
 
