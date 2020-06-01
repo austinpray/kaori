@@ -17,7 +17,7 @@ class LocalFileUploader(FileUploader):
     """ Used for testing and such """
 
     def __init__(self,
-                 display_base='http://localhost:8081',
+                 display_base='https://kaori-img.ngrok.io',
                  upload_path='static/tmp/img') -> None:
         self.display_base = display_base
         self.upload_path = upload_path
