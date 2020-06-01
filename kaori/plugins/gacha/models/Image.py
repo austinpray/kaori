@@ -29,10 +29,10 @@ class Image(Base):
                            session: Session,
                            slack_adapter: SlackAdapter,
                            uploader: FileUploader) -> Image:
-        valid_filetypes = ['jpeg', 'jpg', 'png', 'gif']
         file = message.files[0]
-        if file['filetype'].lower() not in valid_filetypes:
-            raise RuntimeError(f"Invalid file type {file['filetype']}")
+
+        if not file:
+            raise RuntimeError('no file in message')
 
         user = User.get_by_slack_id(session, message.user)
         if not user:
