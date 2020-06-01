@@ -1,6 +1,6 @@
 import copy
 import re
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 from uuid import uuid4
 
 from slacktools.message import extract_mentions
@@ -193,6 +193,16 @@ def render_card(card: Card) -> dict:
     }
 
 
+def resume_card(session, thread_ts, user) -> Optional[Card]:
+    return session \
+        .query(Card) \
+        .join(User) \
+        .filter(Card.creation_thread_ts == thread_ts) \
+        .filter(Card.published == False) \
+        .filter(User.slack_id == user) \
+        .first()
+
+
 class CreateCardCommand(SlackCommand):
     """usage: {bot} create card - start card creation"""
 
@@ -215,10 +225,16 @@ class CreateCardCommand(SlackCommand):
                 if not user:
                     raise UserNotFound('cannot find user')
 
-                card = initialize_card(message, user)
+                # allow creation to recover from errors
+                card = resume_card(session,
+                                   thread_ts=message.thread_ts,
+                                   user=message.user)
 
-                session.add(card)
-                session.commit()
+                if not card:
+                    card = initialize_card(message, user)
+
+                    session.add(card)
+                    session.commit()
 
                 bot.reply(message,
                           blocks=instructions_blocks(bot_name=bot.mention_string),
@@ -274,13 +290,9 @@ class UpdateCardCommand(SlackCommand):
         try:
             session: Session
             with db.session_scope() as session:
-                card = session \
-                    .query(Card) \
-                    .join(User) \
-                    .filter(Card.creation_thread_ts == message.thread_ts) \
-                    .filter(Card.published == False) \
-                    .filter(User.slack_id == message.user) \
-                    .first()
+                card = resume_card(session,
+                                   thread_ts=message.thread_ts,
+                                   user=message.user)
 
                 # this thread is not related to a card creation, ignore
                 if not card:
