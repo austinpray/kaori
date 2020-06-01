@@ -207,7 +207,7 @@ class CreateCardCommand(SlackCommand):
     """usage: {bot} create card - start card creation"""
 
     @staticmethod
-    async def handle(message: SlackMessage, bot: SlackAdapter, db: DB):
+    async def handle(message: SlackMessage, bot: SlackAdapter, db: DB, file_uploader: FileUploader):
         if not bot.addressed_by(message):
             return
 
@@ -262,7 +262,7 @@ class CreateCardCommand(SlackCommand):
         message.is_thread = True
         message.thread_ts = message.ts
 
-        await UpdateCardCommand.handle(message=message, bot=bot, db=db)
+        await UpdateCardCommand.handle(message=message, bot=bot, db=db, file_uploader=file_uploader)
 
 
 def refresh_card_preview(card: Card, bot: SlackAdapter):
