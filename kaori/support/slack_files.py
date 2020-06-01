@@ -30,7 +30,6 @@ def download_slack_file(file_id: str, slack_client) -> Tuple[str, SpooledTempora
 
     with requests.get(url, headers=headers, stream=True) as resp:
         if resp.status_code != 200:
-            print(resp.text)
             raise RuntimeError('non-200 on image')
         content_type = resp.headers['content-type']
         if file_type not in content_type:
