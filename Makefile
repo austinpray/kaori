@@ -133,7 +133,8 @@ repl:
 	$(KIZ) python
 
 ngrok:
-	ngrok http -subdomain=kizuna 8001
+	ngrok start -config $$HOME/.ngrok2/ngrok.yml -config ./ngrok.yml\
+		kizuna kaori-img
 
 # check the project for pep8 compliance
 pep8:
