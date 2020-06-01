@@ -350,6 +350,40 @@ class UpdateCardCommand(SlackCommand):
             print(e)
 
 
+class CardDisplayCommand(SlackCommand):
+    """usage: {bot} show card {name}"""
+
+    @staticmethod
+    async def handle(message: SlackMessage, bot: SlackAdapter, db: DB):
+        if not bot.addressed_by(message):
+            return
+
+        show_card_pattern = '|'.join([
+            '(?:get|show|find) card'
+        ])
+        show_card_pattern = f'(?:{show_card_pattern})'
+        pattern = re.compile(f'{show_card_pattern} (.+)', re.I)
+        search = bot.understands(message, with_pattern=pattern)
+
+        if not search:
+            return
+
+        search = Card.sluggify_name(search[1])
+
+        with db.session_scope() as session:
+
+            card = session.query(Card) \
+                .filter(Card.published == True) \
+                .filter(Card.slug.ilike(f'%{search}%'))\
+                .first()
+
+            if not card:
+                bot.reply(message, 'no card with that name', create_thread=True)
+                return
+
+            bot.reply(message, create_thread=True, **render_card(card))
+
+
 def price_blocks():
     return [
         {
