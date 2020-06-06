@@ -49,6 +49,8 @@ class Card(Base):
 
     hit_points = sa.Column('hit_points', sa.Integer)
 
+    primary_nature = sa.Column('primary_nature', sa.UnicodeText)
+    secondary_nature = sa.Column('secondary_nature', sa.UnicodeText)
     stupid = sa.Column('stupid', sa.Integer)
     baby = sa.Column('baby', sa.Integer)
     cursed = sa.Column('cursed', sa.Integer)
