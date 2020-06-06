@@ -5,6 +5,7 @@ import sqlalchemy as sa
 import sqlalchemy.orm
 
 from kaori.support.models.Models import Base
+from ..engine.core import RarityName, Card as EngineCard, NatureName
 
 
 class InvalidCardName(RuntimeError):
@@ -35,17 +36,23 @@ class Card(Base):
 
     rarity = sa.Column('rarity', sa.Integer)
 
+    rarity_mapping = {
+        500: RarityName.S,
+        400: RarityName.A,
+        300: RarityName.B,
+        200: RarityName.C,
+        100: RarityName.F,
+    }
+    rarity_values = {v: k for k, v in rarity_mapping.items()}
+
     def rarity_string(self) -> str:
         if self.rarity is None:
             return 'None'
 
-        return [
-            'S',
-            'A',
-            'B',
-            'C',
-            'F',
-        ][self.rarity]
+        return str(self.rarity_mapping[self.rarity])
+
+    def set_rarity(self, rarity: RarityName):
+        self.rarity = self.rarity_values[rarity]
 
     hit_points = sa.Column('hit_points', sa.Integer)
 
@@ -81,18 +88,31 @@ class Card(Base):
     def sluggify_name(name: str) -> str:
         return '-'.join(name.strip().split()).lower().encode('idna').decode('utf-8')
 
+    # todo: too complicated
     @staticmethod
-    def rarity_prices() -> Dict[str, int]:
+    def rarity_prices() -> Dict[RarityName, int]:
         return {
-            'SS': 2000,
-            'S': 1000,
-            'A': 403,
-            'B': 181,
-            'C': 81,
-            'D': 36,
-            'E': 16,
-            'F': 7,
+            RarityName.S: 1000,
+            RarityName.A: 403,
+            RarityName.B: 181,
+            RarityName.C: 81,
+            RarityName.F: 7,
         }
+
+    def price(self) -> int:
+        return self.rarity_prices()[self.rarity_mapping[self.rarity]]
+
+    def roll_stats(self):
+        card = EngineCard.generate(self.name,
+                                   self.rarity_mapping[self.rarity],
+                                   [self.primary_nature, self.secondary_nature])
+        # todo: smelly
+        self.stupid = card.stupid
+        self.baby = card.baby
+        self.cursed = card.cursed
+        self.horny = card.horny
+        self.clown = card.clown
+        self.feral = card.feral
 
     def set_name(self, name):
         name = self.sanitize_name(name)
@@ -102,6 +122,20 @@ class Card(Base):
 
         self.name = name
         self.slug = self.sluggify_name(name)
+
+    @property
+    def engine(self) -> Optional[EngineCard]:
+        required_attrs = [self.id, self.name, self.rarity, self.primary_nature, self.secondary_nature]
+        for required_value in required_attrs:
+            if not required_value:
+                return None
+
+        return EngineCard(
+            card_id=self.id,
+            name=self.name,
+            rarity=self.rarity_mapping[self.rarity],
+            nature=(NatureName(self.primary_nature), NatureName(self.secondary_nature))
+        )
 
     def __repr__(self):
         return f"<Card(id='{self.id}', name='{self.name}' owner='{self.owner}')>"

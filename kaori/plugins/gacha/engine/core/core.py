@@ -46,6 +46,10 @@ class RarityName(Enum):
     def __str__(self):
         return self.value
 
+    @classmethod
+    def to_regex(cls) -> str:
+        return '|'.join([str(n) for n in cls])
+
 
 class Rarity:
 
@@ -66,6 +70,10 @@ class NatureName(Enum):
 
     def __str__(self):
         return self.value
+
+    @classmethod
+    def to_regex(cls) -> str:
+        return '|'.join([str(n) for n in cls])
 
 
 class Nature:
