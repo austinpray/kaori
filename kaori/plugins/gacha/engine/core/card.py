@@ -5,10 +5,10 @@ from io import StringIO
 from random import choice
 from typing import Tuple, Union
 
-# from rich.table import Table
-
 from .combat_strategies import CombatStrategyABC
 from .core import *
+
+# from rich.table import Table
 
 _default_image = 'https://storage.googleapis.com/img.kaori.io/static/present.png'
 
