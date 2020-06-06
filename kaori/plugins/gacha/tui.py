@@ -1,9 +1,16 @@
 from typing import List
 
+from .engine import NatureName, RarityName
 from .models.Card import Card
 from .utils import tmp_prefix
 
 _default_image = "https://storage.googleapis.com/img.kaori.io/static/present.png"
+
+_readme_url = 'https://github.com/austinpray/kaori/blob/master/kaori/plugins/gacha/README.md'
+
+_readme_link = f"<{_readme_url}|README>"
+
+_card_guide_link = f'<{_readme_url}#card-guide|Card Guide>'
 
 
 def render_card(card: Card) -> dict:
@@ -25,6 +32,7 @@ def render_card(card: Card) -> dict:
                     "type": "mrkdwn",
                     "text": '\n'.join([
                         f"*{'(no name)' if card.name.startswith(tmp_prefix) else card.name}*",
+                        f"_{card.engine.subtitle}_" if card.engine else '(stats pending)',
                         card.description if card.description else '_(no description)_'
                     ])
                 },
@@ -39,11 +47,11 @@ def render_card(card: Card) -> dict:
                 "fields": [
                     {
                         "type": "mrkdwn",
-                        "text": f"*Rarity:* {card.rarity}"
+                        "text": f"*Rarity:* {card.rarity_string()}"
                     },
                     {
                         "type": "mrkdwn",
-                        "text": f"*HP:* {card.hit_points}"
+                        "text": f"*Max HP:* {card.engine.max_hp}" if card.engine else '?'
                     },
                 ]
             },
@@ -82,7 +90,7 @@ def render_card(card: Card) -> dict:
 
 def instructions_blocks(bot_name: str) -> List[dict]:
     bullets = [
-        "• To avoid a fiasco *I will only respond to direct mentions* and I will only respond to you.",
+        f"• To avoid a fiasco *I will only respond to direct mentions* and I will only respond to you.",
         f"• *To quit card creation* just send `{bot_name} quit`",
         f"• *To start over* just send `{bot_name} start over`",
     ]
@@ -103,6 +111,15 @@ def instructions_blocks(bot_name: str) -> List[dict]:
                 "text": '\n'.join(bullets)
             }
         },
+        # TODO: beta notice
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Beta Notice:* cards are currently free to create. They might be cleared from the database "
+                        "at some point when the beta period ends."
+            },
+        },
     ]
 
 
@@ -110,13 +127,20 @@ def price_blocks():
     return [
         {
             "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Card price breakdown by rank:",
+            }
+        },
+        {
+            "type": "section",
             "fields": [
                 {
                     "type": "mrkdwn",
-                    "text": f"*{rank}:* {price}"
+                    "text": f"*{rank}:* {price} kkreds"
                 } for rank, price in Card.rarity_prices().items()
             ]
-        }
+        },
     ]
 
 
@@ -173,4 +197,47 @@ def help_blocks():
                 "text": f'Available commands:\n{commands}'
             },
         },
+    ]
+
+
+def query_nature_blocks():
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Choose two natures for your card:"
+            },
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"• {n}"
+                } for n in NatureName
+            ]
+        },
+    ]
+
+
+def query_rarity_blocks():
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "What rarity would you like your card to be? This will impact how expensive your card will be "
+                        "to create."
+            },
+        },
+        # TODO: beta notice
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Beta Notice:* card creation is free at the moment. You will not be charged."
+            },
+        },
+        *price_blocks(),
     ]

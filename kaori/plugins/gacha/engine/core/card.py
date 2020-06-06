@@ -125,7 +125,11 @@ class Card:
 
     @property
     def title(self):
-        return f"{self.name} ({self.rarity}-tier {humanize_nature(*self.nature)})"
+        return f"{self.name} ({self.subtitle})"
+
+    @property
+    def subtitle(self):
+        return f"{self.rarity}-tier {humanize_nature(*self.nature)}"
 
     @staticmethod
     def detect_standoff(a: Card, b: Card, debug: bool = False) -> bool:
@@ -235,7 +239,7 @@ class Card:
     def generate(name: str,
                  rarity: Union[RarityName, str],
                  natures: list) -> Card:
-        if not isinstance(rarity, StatName):
+        if not isinstance(rarity, RarityName):
             rarity: RarityName = {str(r): r for r in Card.combat_strat.rarities.keys()}[rarity]
 
         for i, nature_in in enumerate(natures):
