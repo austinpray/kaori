@@ -1,6 +1,7 @@
 import asyncio
 import inspect
 from typing import Dict
+import logging
 
 from kaori.adapters import Adapter
 from .di import build_di_args, DependencyMissing, needs_di
@@ -12,6 +13,7 @@ class Kaori:
         self.adapters: Dict[str, Adapter] = {}
         self.skills = set()
         self.plugins = set()
+        self.logger = logging.getLogger(__name__)
 
     @staticmethod
     def can_handle(adapter: Adapter, cls) -> bool:
