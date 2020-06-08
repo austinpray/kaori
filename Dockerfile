@@ -20,7 +20,7 @@ ENV PYTHONFAULTHANDLER=1 \
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.0.3
+    POETRY_VERSION=1.0.6
 
 # install poetry
 RUN wget -qO- https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python\
