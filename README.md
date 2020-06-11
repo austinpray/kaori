@@ -121,8 +121,8 @@ Note that if you are running docker-compose from IntelliJ it has a nice GUI for 
 
 Test coverage is reported to [Codecov](https://codecov.io/gh/austinpray/kaori).
 
-![coverage over time](https://codecov.io/gh/austinpray/kaori/branch/coverage/graphs/commits.svg)
-![test coverage](https://codecov.io/gh/austinpray/kaori/branch/coverage/graphs/icicle.svg)
+![coverage over time](https://codecov.io/gh/austinpray/kaori/branch/master/graphs/commits.svg)
+![test coverage](https://codecov.io/gh/austinpray/kaori/branch/master/graphs/icicle.svg)
 
 To run the tests:
 
