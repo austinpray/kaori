@@ -27,10 +27,10 @@ class EventsResource(object):
         body = req.bounded_stream.read().decode('utf8')
 
         try:
-            if not verify_signature(self.config.SLACK_SIGNING_SECRET,
-                                    int(req.get_header('X-Slack-Request-Timestamp')),
-                                    body,
-                                    req.get_header('X-Slack-Signature')):
+            if not verify_signature(signing_secret=self.config.SLACK_SIGNING_SECRET,
+                                    request_timestamp=int(req.get_header('X-Slack-Request-Timestamp')),
+                                    body=body,
+                                    signature=req.get_header('X-Slack-Signature')):
                 resp.status = falcon.HTTP_401
                 resp.body = go_away
                 return
