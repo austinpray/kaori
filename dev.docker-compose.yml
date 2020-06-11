@@ -2,10 +2,9 @@ version: '3.7'
 
 services:
   worker:
-    #command: ["dramatiq-gevent", "src.kaori.worker", "-p", "2", "-t", "8", "--watch", "./src"]
     stdin_open: true
     tty: true
-    command: ["dramatiq-gevent", "kaori.worker", "-p", "1", "-t", "1"]
+    command: ["dramatiq-gevent", "kaori.worker", "-p", "1", "-t", "1", "--watch", "./kaori"]
 
   api:
     stdin_open: true
