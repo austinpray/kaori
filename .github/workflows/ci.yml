@@ -27,6 +27,10 @@ jobs:
         CACHE_FROM_IMAGE: us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
     - name: Run the tests
       run: make test
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
     - name: Run the card sim
       run: make test-sims
     - name: Push to GCR
