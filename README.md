@@ -57,6 +57,8 @@ The most difficult part of this whole thing is literally just filling in the
 environment variables. Please PR this document or the `.env.example` file to
 make this easier for people who come after you.
 
+- [Need a debugger?](./docs/debugger.md)
+
 ### Run me
 
 1. You should probably create your own bot testbed slack if you don't already

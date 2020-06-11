@@ -10,6 +10,9 @@ from .events import EventsResource
 from .fax_messages import FaxMessagesResource, FaxMessageResource
 from .health_checks import HealthCheckResource
 from .slash_commands import SlashCommandsResource
+from ..support.debugger import maybe_instrument_debugger
+
+maybe_instrument_debugger()
 
 spec = importlib.util.spec_from_file_location("config.kaori", os.path.join(os.getcwd(), 'config/kaori.py'))
 config = importlib.util.module_from_spec(spec)

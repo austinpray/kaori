@@ -1,0 +1,33 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="docker-compose debug" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="envVars">
+          <list>
+            <DockerEnvVarImpl>
+              <option name="name" value="PYDEVD_PYCHARM_EGG" />
+              <option name="value" value="$APPLICATION_PLUGINS_DIR$/python/pydevd-pycharm.egg" />
+            </DockerEnvVarImpl>
+            <DockerEnvVarImpl>
+              <option name="name" value="DEBUGGER_HOST" />
+              <option name="value" value="10.0.1.22" />
+            </DockerEnvVarImpl>
+          </list>
+        </option>
+        <option name="secondarySourceFiles">
+          <list>
+            <option value="docker-compose-debug.yml" />
+          </list>
+        </option>
+        <option name="services">
+          <list>
+            <option value="worker" />
+            <option value="api" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="docker-compose.yml" />
+      </settings>
+    </deployment>
+    <method v="2" />
+  </configuration>
+</component>

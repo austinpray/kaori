@@ -18,8 +18,11 @@ import kaori.plugins.users
 from kaori.adapters.slack import SlackAdapter
 from kaori.skills import DB
 from kaori.support import Kaori
+from ..support.debugger import maybe_instrument_debugger
 
 logging.basicConfig(level=logging.DEBUG)
+
+maybe_instrument_debugger()
 
 # DEV_INFO = read_dev_info('./.dev-info.json')
 

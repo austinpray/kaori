@@ -1,0 +1,19 @@
+version: '3.7'
+
+x-debug:
+  &debugify
+  environment:
+    DEBUGGER_EGG: /pycharm/pydevd-pycharm.egg
+    DEBUGGER_HOST: ${DEBUGGER_HOST:-host.docker.internal}
+  volumes:
+    - ${PYDEVD_PYCHARM_EGG:?err}:/pycharm/pydevd-pycharm.egg
+
+services:
+  worker:
+    <<: *debugify
+
+  api:
+    <<: *debugify
+
+  test:
+    <<: *debugify
