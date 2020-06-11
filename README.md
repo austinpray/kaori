@@ -1,6 +1,7 @@
 # カオリ
 
 [![CI](https://github.com/austinpray/kaori/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/austinpray/kaori/actions?query=workflow%3ACI)
+[![codecov](https://codecov.io/gh/austinpray/kaori/branch/master/graph/badge.svg)](https://codecov.io/gh/austinpray/kaori)
 
 Hi there! I am a slack bot with functionality that ranges from "useless" to "pretty neat".
 
@@ -83,6 +84,63 @@ We aren't out of the woods yet. Now we have to let slack make requests to our AP
    [http://127.0.0.1:4040]()
 
 NOW you should be up and running.
+
+### Development / Debug mode
+
+If you want:
+
+- Your code to automatically reload when changed
+- Debugger friendly settings (long timeouts, no concurrency)
+
+```
+docker-compose -f docker-compose.yml -f dev.docker-compose.yml up
+```
+
+Note that this deviates from production quite a bit. You should still test PRs using the non-debug docker-compose.
+
+You can easily set a debugger breakpoint now.
+
+```
+docker ps
+# look for your desired container ID
+docker attach $YOUR_CONTAINER_ID
+```
+
+Set breakpoints in your file.
+
+```python
+breakpoint()
+```
+
+You should get a pdb shell in your attached TTY. Exit your attached shell with 
+`CTRL-p CTRL-q`.
+[More info on `docker attach`](https://docs.docker.com/engine/reference/commandline/attach/).
+Note that if you are running docker-compose from IntelliJ it has a nice GUI for attaching a shell to a running container without having to copy IDs around and such.
+
+### Tests
+
+Test coverage is reported to [Codecov](https://codecov.io/gh/austinpray/kaori).
+
+![coverage over time](https://codecov.io/gh/austinpray/kaori/branch/coverage/graphs/commits.svg)
+![test coverage](https://codecov.io/gh/austinpray/kaori/branch/coverage/graphs/icicle.svg)
+
+To run the tests:
+
+```bash
+make test
+```
+
+or
+
+```bash
+docker-compose run test
+```
+
+If you want an interactive shell to run tests in:
+
+```bash
+docker-compose run test sh -l
+```
 
 [ngrok]: https://ngrok.com/
 
