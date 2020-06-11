@@ -49,7 +49,7 @@ def verify_signature(signing_secret: str,
 
 
 def make_signature(signing_secret: str, request_timestamp: int, body: str) -> str:
-    sig_basestring = "v0:{}:{}".format(request_timestamp, body)
+    sig_basestring = f"v0:{request_timestamp}:{body}"
     return 'v0=' + hmac.new(
         signing_secret.encode(),
         sig_basestring.encode(),
