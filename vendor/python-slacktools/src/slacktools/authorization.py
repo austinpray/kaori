@@ -45,7 +45,7 @@ def verify_signature(signing_secret: str,
         # It could be a replay attack, so let's ignore it.
         return False
 
-    return hmac.compare_digest(make_signature(signing_secret, current_timestamp, body), signature)
+    return hmac.compare_digest(make_signature(signing_secret, request_timestamp, body), signature)
 
 
 def make_signature(signing_secret: str, request_timestamp: int, body: str) -> str:
