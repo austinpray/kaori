@@ -1,6 +1,7 @@
 # カオリ
 
 [![CI](https://github.com/austinpray/kaori/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/austinpray/kaori/actions?query=workflow%3ACI)
+[![codecov](https://codecov.io/gh/austinpray/kaori/branch/master/graph/badge.svg)](https://codecov.io/gh/austinpray/kaori)
 
 Hi there! I am a slack bot with functionality that ranges from "useless" to "pretty neat".
 
