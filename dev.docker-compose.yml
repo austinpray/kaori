@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  worker:
+    #command: ["dramatiq-gevent", "src.kaori.worker", "-p", "2", "-t", "8", "--watch", "./src"]
+    stdin_open: true
+    tty: true
+    command: ["dramatiq-gevent", "kaori.worker", "-p", "1", "-t", "1"]
+
+  api:
+    stdin_open: true
+    tty: true
+    command: ["gunicorn", "--config", "python:config.gunicorn_api", "-w", "1", "-k", "sync", "-t", "9001", "--reload", "kaori.api:app"]
