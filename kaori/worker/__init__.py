@@ -58,7 +58,7 @@ else:
     k.logger.warning('no file upload handler specified!')
 
 k.plugins |= {
-    kaori.plugins.chat,
+    # kaori.plugins.chat,
     kaori.plugins.clap,
     kaori.plugins.ping,
     kaori.plugins.users,

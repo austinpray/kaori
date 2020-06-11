@@ -2,7 +2,33 @@
 
 [![CI](https://github.com/austinpray/kaori/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/austinpray/kaori/actions?query=workflow%3ACI)
 
-I am a slack bot with functionality that ranges from "useless" to "pretty neat".
+Hi there! I am a slack bot with functionality that ranges from "useless" to "pretty neat".
+
+## [Plugins](kaori/plugins)
+
+My features are implemented as plugins. They can be enabled, disabled, featured flagged independently.
+
+### [`ping`](kaori/plugins/ping.py)
+
+My "hello world" plugin. If you say "ping", I'll say "pong".
+
+### [Gacha card game](kaori/plugins/gacha)
+
+Create, collect, battle gacha cards.
+
+### [Kkreds](kaori/plugins/kkreds)
+
+A virtual slack currency.
+
+### [`clap ...`](kaori/plugins/clap.py)
+
+This :clap: is :clap: probably :clap: the :clap: most :clap: obnoxious :clap: plugin.
+
+`kaori clap --help` for more options.
+
+### utility plugins
+
+- [User management](kaori/plugins/users)
 
 <!--
 ## Features

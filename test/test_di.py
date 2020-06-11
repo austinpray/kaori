@@ -52,3 +52,4 @@ def test_di():
     assert cat_girl in explicit.values()
     implied = build_di_args(components, _handle_cute)
     assert cat_girl in implied.values()
+    assert car not in implied.values()
