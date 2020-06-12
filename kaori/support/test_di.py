@@ -1,6 +1,6 @@
 from abc import ABC
 
-from kaori.support.di import build_di_args
+from .di import build_di_args
 
 
 # abc zone

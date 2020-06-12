@@ -34,18 +34,19 @@ def run_battle_simulator(card_a_name: str,
         return results
 
     o = out_format
-    if o == 'cli':
-        for result in results:
-            print(result)
-    elif o.startswith('web'):
-        for result in results:
-            payload = ujson.dumps(result.serialize_min())
-            if o == 'web_raw':
-                print(payload)
-                continue
-            else:
-                print('http://localhost:8080/battle/?in=' + urllib.parse.quote_plus(payload))
-    else:
-        raise RuntimeError(f"unknown output format '{out_format}'")
+    if o:
+        if o == 'cli':
+            for result in results:
+                print(result)
+        elif o.startswith('web'):
+            for result in results:
+                payload = ujson.dumps(result.serialize_min())
+                if o == 'web_raw':
+                    print(payload)
+                    continue
+                else:
+                    print('http://localhost:8080/battle/?in=' + urllib.parse.quote_plus(payload))
+        else:
+            raise RuntimeError(f"unknown output format '{out_format}'")
 
     return results
