@@ -13,6 +13,7 @@ x-kaori:
   env_file: .env
   environment:
     DATABASE_URL: postgresql://kaori:kaori@db:5432/kaori
+    RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/%2F
   volumes:
     - .:/app
 
