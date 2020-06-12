@@ -2,6 +2,8 @@ feature/gacha:
    - kaori/plugins/gacha/*
    - kaori/plugins/gacha/**/*
 
+tests:
+   - ./**/test_*.py
 docs:
    - ./**/*.md
    - ./*.md
