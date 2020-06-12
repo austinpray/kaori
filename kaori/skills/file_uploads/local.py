@@ -1,16 +1,10 @@
-from abc import ABC, abstractmethod
 from os import path
 from secrets import token_urlsafe
 from shutil import copyfileobj
 from tempfile import SpooledTemporaryFile
 from urllib.parse import urljoin
 
-
-class FileUploader(ABC):
-
-    @abstractmethod
-    def upload(self, remote_name: str, file: SpooledTemporaryFile) -> str:
-        raise NotImplementedError
+from .abc import FileUploader
 
 
 class LocalFileUploader(FileUploader):
