@@ -1,5 +1,6 @@
 [run]
 source = kaori
+omit = kaori/plugins/gacha/engine/test/*
 branch = True
 
 [report]
