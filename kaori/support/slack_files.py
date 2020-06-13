@@ -16,9 +16,6 @@ def download_slack_file(file_id: str, slack_client) -> Tuple[str, SpooledTempora
     file_name = os.path.basename(urlparse(url).path)
     file_type = guess_type(url)[0]
 
-    pprint(file_name, stream=sys.stderr)
-    pprint(file_type)
-
     max_chunk = int(1e6)  # 1MiB
 
     tmp = SpooledTemporaryFile(suffix=file_name, mode='w+b', max_size=max_chunk)
