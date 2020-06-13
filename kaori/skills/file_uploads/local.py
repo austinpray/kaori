@@ -1,6 +1,7 @@
 from os import path
 from secrets import token_urlsafe
 from shutil import copyfileobj
+from pathlib import Path
 from tempfile import SpooledTemporaryFile
 from urllib.parse import urljoin
 
@@ -18,6 +19,7 @@ class LocalFileUploader(FileUploader):
 
     def upload(self, remote_name: str, file: SpooledTemporaryFile) -> str:
         file_name = f'{token_urlsafe()}-{remote_name}'
+        Path(self.upload_path).mkdir(parents=True, exist_ok=True)
         file_path = path.join(self.upload_path, file_name)
         with open(file_path, 'w+b') as dest:
             copyfileobj(file, dest)
