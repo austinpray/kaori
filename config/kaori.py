@@ -1,19 +1,24 @@
 import os
 
-API_KEY = os.environ.get('KIZUNA_API_KEY', None)
-DATABASE_URL = os.environ.get('DATABASE_URL', 'postgresql://kaori:kaori@db:5432/kaori')
-KIZUNA_ENV = os.environ.get('KIZUNA_ENV', 'development')
-KIZUNA_HOME_CHANNEL = os.environ.get('KIZUNA_HOME_CHANNEL', '#kaori-home')
-MAIN_CHANNEL = os.environ.get('MAIN_CHANNEL', '#banter')
-SENTRY_URL = os.environ.get('SENTRY_URL', None)
-SLACK_API_TOKEN = os.environ.get('SLACK_API_TOKEN', None)
-SLACK_VERIFICATION_TOKEN = os.environ.get('SLACK_VERIFICATION_TOKEN', None)
-SLACK_SIGNING_SECRET = os.environ.get('SLACK_SIGNING_SECRET', None)
 
-RABBITMQ_URL = os.environ.get('RABBITMQ_URL', 'amqp://guest:guest@rabbitmq:5672/%2F')
+def _env(*args, **kwargs):
+    return os.environ.get(*args, **kwargs)
 
 
-def get_slack_webhook_tokens(verification_token, webhook_tokens_string):
+API_KEY = _env('KIZUNA_API_KEY', None)
+DATABASE_URL = _env('DATABASE_URL', 'postgresql://kaori:kaori@db:5432/kaori')
+KIZUNA_ENV = _env('KIZUNA_ENV', 'development')
+KIZUNA_HOME_CHANNEL = _env('KIZUNA_HOME_CHANNEL', '#kaori-home')
+MAIN_CHANNEL = _env('MAIN_CHANNEL', '#banter')
+SENTRY_URL = _env('SENTRY_URL', None)
+SLACK_API_TOKEN = _env('SLACK_API_TOKEN', None)
+SLACK_VERIFICATION_TOKEN = _env('SLACK_VERIFICATION_TOKEN', None)
+SLACK_SIGNING_SECRET = _env('SLACK_SIGNING_SECRET', None)
+
+RABBITMQ_URL = _env('RABBITMQ_URL', 'amqp://guest:guest@rabbitmq:5672/%2F')
+
+
+def _get_slack_webhook_tokens(verification_token, webhook_tokens_string):
     tokens = [verification_token]
     if not webhook_tokens_string:
         return tokens
@@ -22,5 +27,5 @@ def get_slack_webhook_tokens(verification_token, webhook_tokens_string):
     return tokens + webhook_tokens
 
 
-SLACK_WEBHOOK_TOKENS = get_slack_webhook_tokens(SLACK_VERIFICATION_TOKEN,
-                                                os.environ.get('SLACK_WEBHOOK_TOKENS', None))
+SLACK_WEBHOOK_TOKENS = _get_slack_webhook_tokens(SLACK_VERIFICATION_TOKEN,
+                                                 _env('SLACK_WEBHOOK_TOKENS', None))

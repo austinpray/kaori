@@ -18,14 +18,11 @@ import kaori.plugins.users
 from kaori.adapters.slack import SlackAdapter
 from kaori.skills import DB
 from kaori.support import Kaori
+from kaori.support.config import get_config
 
 logging.basicConfig(level=logging.DEBUG)
 
-# DEV_INFO = read_dev_info('./.dev-info.json')
-
-spec = importlib.util.spec_from_file_location("config.kaori", os.path.join(os.getcwd(), 'config/kaori.py'))
-config = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(config)
+config = get_config(os.path.join(os.getcwd(), 'config/kaori.py'))
 
 sentry = Client(config.SENTRY_URL,
                 # release=DEV_INFO.get('revision'),
