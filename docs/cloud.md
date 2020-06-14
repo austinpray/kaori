@@ -13,5 +13,3 @@ See [the file uploads skill](../kaori/skills/file_uploads).
 
 Set the `GCLOUD_SERVICE_ACCOUNT_INFO` environment variable to a 
 base64 encoded JSON service account key. See [the annotated default config file](../config/kaori.py) for instructions.
-
-<!-- TODO: document exact minimum GCP permissions kaori needs for full functionality -->
