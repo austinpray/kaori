@@ -19,6 +19,12 @@ jobs:
         service_account_key: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
         export_default_credentials: true
     - run: gcloud auth configure-docker
+    - name: Create a .env file
+      env:
+        SLACK_API_TOKEN: ${{secrets.SLACK_API_TOKEN}}
+        SLACK_SIGNING_SECRET: ${{secrets.SLACK_SIGNING_SECRET}}
+        SLACK_VERIFICATION_TOKEN: ${{secrets.SLACK_VERIFICATION_TOKEN}}
+      run: ./scripts/create-dotenv-from.py .env.example > .env
     - name: Build the Docker image
       run: |
         docker pull $CACHE_FROM_IMAGE || true

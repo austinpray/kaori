@@ -3,7 +3,13 @@
 [![CI](https://github.com/austinpray/kaori/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/austinpray/kaori/actions?query=workflow%3ACI)
 [![codecov](https://codecov.io/gh/austinpray/kaori/branch/master/graph/badge.svg)](https://codecov.io/gh/austinpray/kaori)
 
-Hi there! I am a slack bot with functionality that ranges from "useless" to "pretty neat".
+
+<p align="center">
+<img width="216" src="static/images/kaori.png" alt="kaori!">
+<br>
+Hi there! I'm Kaori! I'm a slack bot with functionality that ranges from “useless” to “pretty neat”.
+</p>
+
 
 ## [Plugins](kaori/plugins)
 
