@@ -24,6 +24,8 @@ jobs:
         SLACK_API_TOKEN: ${{secrets.SLACK_API_TOKEN}}
         SLACK_SIGNING_SECRET: ${{secrets.SLACK_SIGNING_SECRET}}
         SLACK_VERIFICATION_TOKEN: ${{secrets.SLACK_VERIFICATION_TOKEN}}
+        GCLOUD_SERVICE_ACCOUNT_INFO: ${{secrets.GCLOUD_SERVICE_ACCOUNT_INFO}}
+        IMAGES_BUCKET_GCLOUD: ${{secrets.IMAGES_BUCKET_GCLOUD}}
       run: ./scripts/create-dotenv-from.py .env.example > .env
     - name: Build the Docker image
       run: |
@@ -31,14 +33,6 @@ jobs:
         make
       env:
         CACHE_FROM_IMAGE: us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
-    - name: Create a .env file
-      env:
-        SLACK_API_TOKEN: ${{secrets.SLACK_API_TOKEN}}
-        SLACK_SIGNING_SECRET: ${{secrets.SLACK_SIGNING_SECRET}}
-        SLACK_VERIFICATION_TOKEN: ${{secrets.SLACK_VERIFICATION_TOKEN}}
-        GCLOUD_SERVICE_ACCOUNT_INFO: ${{secrets.GCLOUD_SERVICE_ACCOUNT_INFO}}
-        IMAGES_BUCKET_GCLOUD: ${{secrets.IMAGES_BUCKET_GCLOUD}}
-      run: ./scripts/create-dotenv-from.py .env.example > .env
     - name: Run the tests
       run: ./scripts/run.sh
     - name: Upload coverage to Codecov
