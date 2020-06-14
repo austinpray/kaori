@@ -28,7 +28,7 @@ KIZ = docker-compose run --rm worker
 .PHONY: test dev_info
 
 test:
-	./scripts/test.sh
+	./tests/run.sh
 
 .PHONY: test-sims
 test-sims:
