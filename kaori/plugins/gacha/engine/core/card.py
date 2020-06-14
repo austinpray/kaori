@@ -239,7 +239,7 @@ class Card:
     def generate(name: str,
                  rarity: Union[RarityName, str],
                  natures: list) -> Card:
-        if not isinstance(rarity, StatName):
+        if not isinstance(rarity, RarityName):
             rarity: RarityName = {str(r): r for r in Card.combat_strat.rarities.keys()}[rarity]
 
         for i, nature_in in enumerate(natures):
