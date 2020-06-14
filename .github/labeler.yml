@@ -4,3 +4,7 @@ feature/gacha:
 
 tests:
    - ./**/test_*.py
+
+docs:
+   - ./**/*.md
+   - ./*.md
