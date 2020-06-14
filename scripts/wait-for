@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# TODO: Delete shell-based wait-for and rewrite it in python
+# BODY: this is stolen from https://github.com/eficode/wait-for. I should just write this in python.
+
 TIMEOUT=15
 QUIET=0
 
