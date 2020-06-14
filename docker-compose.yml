@@ -7,6 +7,7 @@ x-kaori:
     target: production
     cache_from: 
       - ${CACHE_FROM_IMAGE:-austinpray/kaori/kaori:master-latest}
+      - austinpray/kaori/debug
       - austinpray/kaori/kaori
   image: austinpray/kaori/kaori
   env_file: .env
@@ -54,8 +55,9 @@ services:
       context: .
       target: development
       cache_from: 
-        - ${CACHE_FROM_IMAGE:-austinpray/kaori/kaori}
+        - ${CACHE_FROM_IMAGE:-austinpray/kaori/kaori:master-latest}
         - austinpray/kaori/debug
+        - austinpray/kaori/kaori
     command: ["pytest"]
 
   gsim:
