@@ -4,6 +4,8 @@ import os
 
 import dramatiq
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
+from google.cloud import storage
+from google.oauth2 import service_account
 from raven import Client
 from slackclient import SlackClient
 from sqlalchemy import create_engine
@@ -16,7 +18,7 @@ import kaori.plugins.kkreds
 import kaori.plugins.ping
 import kaori.plugins.users
 from kaori.adapters.slack import SlackAdapter
-from kaori.skills import DB, LocalFileUploader
+from kaori.skills import DB, LocalFileUploader, GCloudStorageUploader
 from kaori.support import Kaori
 from kaori.support.config import get_config
 
@@ -47,7 +49,14 @@ k.skills |= {
     DB(make_session=make_session),
 }
 
-if config.KIZUNA_ENV == 'development':
+if hasattr(config, 'USE_GCLOUD_STORAGE') and config.USE_GCLOUD_STORAGE:
+    creds = service_account.Credentials.from_service_account_info(config.GCLOUD_SERVICE_ACCOUNT_INFO)
+    bucket = storage.Client(project=creds.project_id, credentials=creds).bucket(config.IMAGES_BUCKET_GCLOUD)
+
+    k.skills.add(GCloudStorageUploader(bucket=bucket,
+                                       base_path=config.IMAGES_BUCKET_PATH))
+
+elif config.KIZUNA_ENV == 'development':
     k.skills.add(LocalFileUploader())
 else:
     k.logger.warning('no file upload handler specified!')
