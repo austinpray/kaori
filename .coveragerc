@@ -1,6 +1,8 @@
 [run]
 source = kaori
-omit = kaori/plugins/gacha/engine/test/*
+omit =
+    kaori/plugins/gacha/engine/test/*
+    **/test_*.py
 branch = True
 
 [report]
