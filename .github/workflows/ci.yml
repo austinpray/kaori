@@ -32,7 +32,7 @@ jobs:
       env:
         CACHE_FROM_IMAGE: us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
     - name: Run the tests
-      run: make test
+      run: ./tests/run.sh
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
       with:

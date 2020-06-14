@@ -7,6 +7,5 @@ from kaori.worker import k
 def test_di():
     fake_slack = SlackMessage({'event': {}})
     components = {fake_slack} | k.get_base_components()
-    print(components)
     to_di = build_di_args(components, UpdateCardCommand.handle)
     assert fake_slack in to_di.values()
