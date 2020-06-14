@@ -4,6 +4,8 @@ import os
 
 import dramatiq
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
+from google.cloud import storage
+from google.oauth2 import service_account
 from raven import Client
 from slackclient import SlackClient
 from sqlalchemy import create_engine
@@ -16,16 +18,13 @@ import kaori.plugins.kkreds
 import kaori.plugins.ping
 import kaori.plugins.users
 from kaori.adapters.slack import SlackAdapter
-from kaori.skills import DB, LocalFileUploader
+from kaori.skills import DB, LocalFileUploader, GCloudStorageUploader
 from kaori.support import Kaori
+from kaori.support.config import get_config
 
 logging.basicConfig(level=logging.INFO)
 
-# DEV_INFO = read_dev_info('./.dev-info.json')
-
-spec = importlib.util.spec_from_file_location("config.kaori", os.path.join(os.getcwd(), 'config/kaori.py'))
-config = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(config)
+config = get_config(os.path.join(os.getcwd(), 'config/kaori.py'))
 
 sentry = Client(config.SENTRY_URL,
                 # release=DEV_INFO.get('revision'),
@@ -50,8 +49,13 @@ k.skills |= {
     DB(make_session=make_session),
 }
 
-if hasattr(config, 'GOOGLE_APPLICATION_CREDENTIALS') and config.GOOGLE_APPLICATION_CREDENTIALS:
-    pass
+if hasattr(config, 'USE_GCLOUD_STORAGE') and config.USE_GCLOUD_STORAGE:
+    creds = service_account.Credentials.from_service_account_info(config.GCLOUD_SERVICE_ACCOUNT_INFO)
+    bucket = storage.Client(project=creds.project_id, credentials=creds).bucket(config.IMAGES_BUCKET_GCLOUD)
+
+    k.skills.add(GCloudStorageUploader(bucket=bucket,
+                                       base_path=config.IMAGES_BUCKET_PATH))
+
 elif config.KIZUNA_ENV == 'development':
     k.skills.add(LocalFileUploader())
 else:
