@@ -88,3 +88,12 @@ services:
     command: ["python", "-m", "http.server"]
     ports:
       - 8080:8000
+
+  img:
+    <<: *test
+    working_dir: /www
+    volumes:
+      - ./static/tmp/img:/www:ro
+    command: ["python", "-m", "http.server"]
+    ports:
+      - 8081:8000

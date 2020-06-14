@@ -1,0 +1,9 @@
+tunnels:
+  kizuna:
+    proto: http
+    addr: 8001
+    subdomain: kizuna
+  kaori-img:
+    proto: http
+    addr: 8081
+    subdomain: kaori-img
