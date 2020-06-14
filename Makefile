@@ -3,11 +3,8 @@
 .PHONY: clean ci_%
 
 #build: api worker web
-build: .env
+build:
 	docker-compose build
-
-.env: .env.example
-	cp .env.example .env
 
 clean: perms docker_clean
 	git clean -fdx -e .idea -e .env
