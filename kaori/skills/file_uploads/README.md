@@ -15,3 +15,15 @@ This is useful for testing my file handling capabilities offline without real cl
 1. Your `KIZUNA_ENV` is set to `development`
 2. You do not have any other providers enabled.
 
+## Google Cloud Storage
+
+I can also upload stuff to [Google Cloud Storage][gcloud upload] via the [`GCloudStorageUploader`](./gcloud.py).
+However, I need to be [configured with Google Cloud credentials](../../../docs/cloud.md).
+
+## Implement your own
+
+It's pretty easy to teach me how to upload files to new places. Just implement the
+[`FileUploader`](./abc.py) ABC.
+
+[gcloud upload]: https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-code-sample
+

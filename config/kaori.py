@@ -1,3 +1,5 @@
+import base64
+import json
 import os
 
 
@@ -16,6 +18,23 @@ SLACK_VERIFICATION_TOKEN = _env('SLACK_VERIFICATION_TOKEN', None)
 SLACK_SIGNING_SECRET = _env('SLACK_SIGNING_SECRET', None)
 
 RABBITMQ_URL = _env('RABBITMQ_URL', 'amqp://guest:guest@rabbitmq:5672/%2F')
+
+# To authorize GCP you need to have a service account key.
+# https://console.cloud.google.com/iam-admin/serviceaccounts
+# The environment variable is a Base64 encoded JSON service account key.
+# To encode a JSON file use: base64 -w0 ~/<account_id>.json
+GCLOUD_SERVICE_ACCOUNT_INFO = _env('GCLOUD_SERVICE_ACCOUNT_INFO', None)
+
+if GCLOUD_SERVICE_ACCOUNT_INFO:
+    GCLOUD_SERVICE_ACCOUNT_INFO = json.loads(base64.b64decode(GCLOUD_SERVICE_ACCOUNT_INFO, validate=True))
+
+IMAGES_BUCKET_GCLOUD = _env('IMAGES_BUCKET_GCLOUD', None)
+IMAGES_BUCKET_PATH = '/usr/img'
+
+USE_GCLOUD_STORAGE = bool(
+    GCLOUD_SERVICE_ACCOUNT_INFO and
+    IMAGES_BUCKET_GCLOUD
+)
 
 
 def _get_slack_webhook_tokens(verification_token, webhook_tokens_string):
