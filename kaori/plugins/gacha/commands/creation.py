@@ -183,8 +183,8 @@ def initialize_card(message: SlackMessage, user: User) -> Card:
 # This is essentially a state machine.
 # Right now this is spaghetti code for prototyping purposes.
 # TODO: Once the functionality is totally built out we can break this into multiple functions etc.
-# TODO: oh god break this into some functions please, this should be a dispatcher or sthn
-# TODO: this function is now officially out of control
+# BODY: Oh god break this into some functions please, this should be a dispatcher or something.
+# This function is now officially out of control
 def next_card_creation_step(card: Card,
                             session: Session,
                             user_input: str) -> Tuple[Card, List[Union[str, dict]]]:
