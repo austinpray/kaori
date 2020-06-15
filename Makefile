@@ -22,7 +22,7 @@ registry_prefix ?= us.gcr.io/kizuna-188702
 DRUN = docker run -it --rm -v $(shell pwd):/app -w /app
 KIZ = docker-compose run --rm worker
 
-.PHONY: test dev_info
+.PHONY: test
 
 test:
 	./tests/run.sh
@@ -30,11 +30,6 @@ test:
 .PHONY: test-sims
 test-sims:
 	docker-compose run --rm --no-deps gsim
-
-# make a dev-info file so kaori knows what commit she's on
-dev_info:
-	bin/generate-dev-info.py --revision $(TRAVIS_COMMIT) > .dev-info.json
-
 
 # push all the images to gcloud registry
 .PHONY: registry_pull_% registry_pull image_% registry_push_% kube_deploy_% docker_clean
