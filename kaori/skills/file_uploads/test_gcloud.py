@@ -29,4 +29,6 @@ def test_gcloud_upload():
     assert public.startswith('http')
     assert public.endswith('kaori.png')
 
-    pass
+    with pytest.raises(RuntimeError):
+        uploader.upload('very.based', f)
+

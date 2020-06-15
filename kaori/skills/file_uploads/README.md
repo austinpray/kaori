@@ -7,7 +7,7 @@ a database.
 
 ## Local Filesystem
 
-The simplest example is my [`LocalfileUploader`](./local.py).
+The simplest example is my [`LocalFileUploader`](./local.py).
 This just takes a file and saves it to the local filesystem.
 This is useful for testing my file handling capabilities offline without real cloud storage credentials.
 
