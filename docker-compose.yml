@@ -82,7 +82,9 @@ services:
 
   gweb:
     <<: *test
-    working_dir: /app/kaori/plugins/gacha/static
+    working_dir: /www
+    volumes:
+      - ./kaori/plugins/gacha/static:/www:ro
     command: ["python", "-m", "http.server"]
     ports:
       - 8080:8000
