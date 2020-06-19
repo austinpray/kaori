@@ -52,6 +52,8 @@ def upgrade():
 
         sa.Column('hit_points', sa.Integer),
 
+        sa.Column('primary_nature', sa.UnicodeText),
+        sa.Column('secondary_nature', sa.UnicodeText),
         sa.Column('stupid', sa.Integer),
         sa.Column('baby', sa.Integer),
         sa.Column('cursed', sa.Integer),
