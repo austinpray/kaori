@@ -15,7 +15,7 @@
     <br>
 </div>
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/e50ac726-0216-4cab-8b71-92e2cf374668/deploy-status)](https://app.netlify.com/sites/kaori-battle/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/90133b6c-5ad9-42b8-99dd-f59e04f8938c/deploy-status)](https://app.netlify.com/sites/battle-kaori/deploys)
 
 ## Core features
 
