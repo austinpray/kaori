@@ -50,7 +50,7 @@ class CardIndexCommand(SlackCommand):
             return
 
         show_card_pattern = '|'.join([
-            '(?:get|gimme|show|find|list) ?(?:my|muh)? cardo?s?'
+            '(?:get|gimme|show|find|list) ?(?:my|muh)? cardo?s'
         ])
         if not bot.understands(message, with_pattern=re.compile(show_card_pattern, re.I)):
             return
