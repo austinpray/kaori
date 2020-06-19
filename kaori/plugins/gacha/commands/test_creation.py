@@ -95,4 +95,30 @@ def test_card_creation_state_happy():
         assert card.name == name
         assert card.creation_cursor == 'set_image'
 
-        # TODO: finish these tests!
+        # TODO skipping over image uploading lmao
+        card.creation_cursor = 'set_description'
+        session.commit()
+
+        handle(user_message(text=f'@kaori ubu uwu', thread_ts=initial_ts))
+
+        session.refresh(card)
+        assert card.description == 'ubu uwu'
+
+        handle(user_message(text=f'@kaori stupid feral', thread_ts=initial_ts))
+
+        session.refresh(card)
+        assert card.primary_nature == 'stupid'
+        assert card.secondary_nature == 'feral'
+
+        handle(user_message(text=f'@kaori S', thread_ts=initial_ts))
+
+        session.refresh(card)
+        assert card.rarity_string() == 'S'
+
+        assert card.published is False
+
+        handle(user_message(text=f'@kaori yes', thread_ts=initial_ts))
+
+        session.refresh(card)
+        assert card.published is True
+        assert card.creation_cursor == 'done'
