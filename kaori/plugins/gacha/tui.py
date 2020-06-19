@@ -206,7 +206,7 @@ def query_nature_blocks():
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "Choose two natures for your card (ex. \"stupid baby\" or \"feral horny\")"
+                "text": "Choose two natures for your card (ex. `stupid baby` or `feral horny`)"
             },
         },
         {
