@@ -8,7 +8,7 @@ metadata:
   namespace: kaori
   annotations:
     fluxcd.io/automated: "true"
-    fluxcd.io/tag.worker: glob:master-*
+    fluxcd.io/tag.api: glob:master-*
 spec:
   replicas: 3
   selector:
