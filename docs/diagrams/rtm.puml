@@ -1,0 +1,10 @@
+@startuml
+actor User
+participant "Slack RTM API" as Slack
+entity Kizuna
+Kizuna -> Kizuna : Busy waits for events
+User -> Slack : Send a **message**
+Kizuna -> Slack : any events?
+Slack -> Kizuna : yep I got a **message**
+Kizuna -> User : response to **message**
+@enduml
