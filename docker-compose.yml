@@ -6,7 +6,7 @@ x-kaori:
     context: .
     target: production
     cache_from: 
-      - ${CACHE_FROM_IMAGE:-austinpray/kaori/kaori:master-latest}
+      - ${CACHE_FROM_IMAGE:-austinpray/kaori/kaori:master}
       - austinpray/kaori/debug
       - austinpray/kaori/kaori
   image: austinpray/kaori/kaori
@@ -70,7 +70,7 @@ services:
       context: .
       target: development
       cache_from: 
-        - ${CACHE_FROM_IMAGE:-austinpray/kaori/kaori:master-latest}
+        - ${CACHE_FROM_IMAGE:-austinpray/kaori/kaori:master}
         - austinpray/kaori/debug
         - austinpray/kaori/kaori
     command: ["pytest"]
