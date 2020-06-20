@@ -9,7 +9,7 @@ jobs:
 
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu
 
     steps:
     - uses: actions/checkout@v2
@@ -32,7 +32,7 @@ jobs:
         docker pull $CACHE_FROM_IMAGE || true
         make
       env:
-        CACHE_FROM_IMAGE: us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
+        CACHE_FROM_IMAGE: us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master
     - name: Run the tests
       run: ./tests/run.sh
     - name: Upload coverage to Codecov
@@ -45,7 +45,6 @@ jobs:
       if: github.ref == 'refs/heads/master'
       run: |
         docker tag austinpray/kaori/kaori us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-${{github.sha}}
-        docker tag austinpray/kaori/kaori us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
+        docker tag austinpray/kaori/kaori us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master
+        docker push us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master
         docker push us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-${{github.sha}}
-        docker push us.gcr.io/${{secrets.GCLOUD_PROJECT_ID}}/kaori/kaori:master-latest
-      
