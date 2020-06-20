@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: api
+  name: api
+  namespace: kaori
+  annotations:
+    fluxcd.io/automated: "true"
+    fluxcd.io/tag.api: glob:master-*
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: api
+    spec:
+      containers:
+      - command:
+          - gunicorn
+        args:
+          - --config
+          - python:config.gunicorn_api
+          - kaori.api:app
+        envFrom:
+          - configMapRef:
+              name: web-config
+        image: us.gcr.io/kizuna-188702/kaori/kaori:master-16ff20a99b11f5891eeee093eef24ac7005e253a
+        imagePullPolicy: Always
+        name: api
+        ports:
+        - containerPort: 8001
+      restartPolicy: Always
