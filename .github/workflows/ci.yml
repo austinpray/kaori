@@ -3,6 +3,9 @@ name: CI
 on:
   push:
     branches: [ master ]
+    paths-ignore:
+      - workloads/**
+      - fluxcd/**
   pull_request:
 
 jobs:
