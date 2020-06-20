@@ -1,5 +1,4 @@
 from os import path
-from secrets import token_urlsafe
 from shutil import copyfileobj
 from pathlib import Path
 from tempfile import SpooledTemporaryFile
@@ -18,10 +17,9 @@ class LocalFileUploader(FileUploader):
         self.upload_path = upload_path
 
     def upload(self, remote_name: str, file: SpooledTemporaryFile) -> str:
-        file_name = f'{token_urlsafe()}-{remote_name}'
         Path(self.upload_path).mkdir(parents=True, exist_ok=True)
-        file_path = path.join(self.upload_path, file_name)
+        file_path = path.join(self.upload_path, remote_name)
         with open(file_path, 'w+b') as dest:
             copyfileobj(file, dest)
 
-        return urljoin(self.display_base, file_name)
+        return urljoin(self.display_base, remote_name)
