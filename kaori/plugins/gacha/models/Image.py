@@ -25,6 +25,7 @@ class Image(Base):
 
     owner = sa.Column('owner', sa.Integer, sa.ForeignKey('users.id'), nullable=False)
 
+    # TODO: on second thought, this method should not be in this class
     @staticmethod
     def from_slack_message(message: SlackMessage,
                            session: Session,
