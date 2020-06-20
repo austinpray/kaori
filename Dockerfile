@@ -11,7 +11,7 @@ RUN apk add --update --no-cache --virtual .build-deps \
     libffi-dev \
     musl-dev \
     postgresql-dev \
-    python-dev \
+    python3-dev \
  && echo ':^)'
 
 ENV PYTHONFAULTHANDLER=1 \
