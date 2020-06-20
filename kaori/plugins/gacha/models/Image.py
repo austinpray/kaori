@@ -10,6 +10,7 @@ from kaori.support.models.Models import Base
 from kaori.plugins.users import User, UserNotFound
 from kaori.skills import FileUploader
 
+from kaori.support.files import hashed_file_name, file_digest
 
 from kaori.support.slack_files import download_slack_file
 
@@ -25,11 +26,13 @@ class Image(Base):
 
     owner = sa.Column('owner', sa.Integer, sa.ForeignKey('users.id'), nullable=False)
 
+    # TODO: on second thought, this method should not be in this class
     @staticmethod
     def from_slack_message(message: SlackMessage,
                            session: Session,
                            slack_adapter: SlackAdapter,
-                           uploader: FileUploader) -> Image:
+                           uploader: FileUploader,
+                           slack_file_downloader=download_slack_file) -> Image:
         file = message.files[0]
 
         if not file:
@@ -39,8 +42,11 @@ class Image(Base):
         if not user:
             raise UserNotFound('no user, try refreshing users')
 
-        name, downloaded_file = download_slack_file(file['id'], slack_client=slack_adapter.client)
-        url = uploader.upload(name, downloaded_file)
+        name, downloaded_file = slack_file_downloader(file['id'], slack_client=slack_adapter.client)
+
+        digest = file_digest(downloaded_file)
+
+        url = uploader.upload(hashed_file_name(name, file_hash=digest), downloaded_file)
 
         return Image(slack_file_id=file['id'],
                      owner=user.id,
