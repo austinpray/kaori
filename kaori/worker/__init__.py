@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 
 import kaori.plugins.chat
 import kaori.plugins.clap
-# import kaori.plugins.gacha
+import kaori.plugins.gacha
 import kaori.plugins.kkreds
 import kaori.plugins.ping
 import kaori.plugins.users
@@ -67,7 +67,7 @@ k.plugins |= {
     kaori.plugins.ping,
     kaori.plugins.users,
     kaori.plugins.kkreds,
-    # kaori.plugins.gacha,
+    kaori.plugins.gacha,
 }
 
 
