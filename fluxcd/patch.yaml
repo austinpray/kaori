@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flux
+  namespace: flux
+spec:
+  template:
+    spec:
+      containers:
+        - name: flux
+          args:
+            - --manifest-generation=true
+            - --memcached-hostname=memcached.flux
+            - --memcached-service=
+            - --ssh-keygen-dir=/var/fluxd/keygen
+            - --git-branch=master
+            - --git-path=workloads
+            - --git-user=kaori-chan
+            - --git-email=kaori-chan@users.noreply.github.com
+            - --git-url=git@github.com:austinpray/kaori
