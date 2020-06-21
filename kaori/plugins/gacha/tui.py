@@ -69,7 +69,7 @@ def render_card(card: Card) -> dict:
                     },
                     {
                         "type": "mrkdwn",
-                        "text": f"*Cursed:* {card.cursed}"
+                        "text": f"*Clown:* {card.clown}"
                     },
                     {
                         "type": "mrkdwn",
@@ -77,7 +77,7 @@ def render_card(card: Card) -> dict:
                     },
                     {
                         "type": "mrkdwn",
-                        "text": f"*Clown:* {card.clown}"
+                        "text": f"*Cursed:* {card.cursed}"
                     },
                     {
                         "type": "mrkdwn",
