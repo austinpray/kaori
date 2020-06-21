@@ -24,6 +24,7 @@ gunicorn = "^19.9"
 gevent = "^1.4"
 raven = "^6.10"
 google-cloud-storage = "^1.29.0"
+furl = "^2.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.1"

@@ -48,3 +48,5 @@ def _get_slack_webhook_tokens(verification_token, webhook_tokens_string):
 
 SLACK_WEBHOOK_TOKENS = _get_slack_webhook_tokens(SLACK_VERIFICATION_TOKEN,
                                                  _env('SLACK_WEBHOOK_TOKENS', None))
+
+GACHA_BATTLE_URL_BASE = _env('GACHA_BATTLE_URL_BASE', None)

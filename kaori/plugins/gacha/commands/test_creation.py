@@ -15,6 +15,7 @@ from kaori.plugins.users import User
 from kaori.skills import DB, LocalFileUploader
 from kaori.support import Kaori
 from .creation import user_extract_rarity
+from ..skills import CardBattler
 
 
 def test_rarity_extract():
@@ -53,6 +54,7 @@ def test_card_creation_state_happy():
 
     k.skills |= {
         db,
+        CardBattler(player_url_base='https://battle.kaori.io/')
     }
 
     k.skills.add(LocalFileUploader())

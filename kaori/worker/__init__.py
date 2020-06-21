@@ -1,4 +1,3 @@
-import importlib.util
 import logging
 import os
 
@@ -21,6 +20,7 @@ from kaori.adapters.slack import SlackAdapter
 from kaori.skills import DB, LocalFileUploader, GCloudStorageUploader
 from kaori.support import Kaori
 from kaori.support.config import get_config
+from kaori.plugins.gacha.skills import CardBattler
 
 logging.basicConfig(level=logging.INFO)
 
@@ -60,6 +60,13 @@ elif config.KIZUNA_ENV == 'development':
     k.skills.add(LocalFileUploader())
 else:
     k.logger.warning('no file upload handler specified!')
+
+if hasattr(config, 'GACHA_BATTLE_URL_BASE') and config.GACHA_BATTLE_URL_BASE:
+    k.skills.add(CardBattler(player_url_base=config.GACHA_BATTLE_URL_BASE))
+elif config.KIZUNA_ENV == 'development':
+    k.skills.add(CardBattler(player_url_base='http://localhost:8080/battle/'))
+else:
+    k.logger.warning('No gacha battle url set!')
 
 k.plugins |= {
     # kaori.plugins.chat,
