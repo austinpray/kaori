@@ -50,14 +50,14 @@ class CreateCardCommand(SlackCommand):
                     session.add(card)
                     session.commit()
 
-                bot.reply(message,
-                          blocks=instructions_blocks(bot_name=bot.mention_string),
-                          create_thread=True)
-
                 draft_message = bot.reply(message,
                                           **render_card(card=card),
                                           create_thread=True,
                                           reply_broadcast=True)
+
+                bot.reply(message,
+                          blocks=instructions_blocks(bot_name=bot.mention_string),
+                          create_thread=True)
 
                 if not draft_message.get('ok'):
                     print(draft_message)
