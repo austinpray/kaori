@@ -168,6 +168,8 @@ def help_blocks():
         'Create a card: `kaori create card`',
         'List your cards: `kaori show cards`',
         'Show a full card: `kaori show card NAME`',
+        'Battle cards: `kaori battle NAME vs. NAME`',
+        'Show card creation prices: `kaori card prices`',
     ]
     commands = "\n".join([f'• {command}' for command in commands])
     return [
