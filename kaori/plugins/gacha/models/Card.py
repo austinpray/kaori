@@ -123,18 +123,26 @@ class Card(Base):
         self.name = name
         self.slug = self.sluggify_name(name)
 
+    # TODO get rid of this optional somehow
     @property
     def engine(self) -> Optional[EngineCard]:
         required_attrs = [self.id, self.name, self.rarity, self.primary_nature, self.secondary_nature]
         for required_value in required_attrs:
             if not required_value:
+                # returning none is a very dumb API
                 return None
 
         return EngineCard(
             card_id=self.id,
             name=self.name,
             rarity=self.rarity_mapping[self.rarity],
-            nature=(NatureName(self.primary_nature), NatureName(self.secondary_nature))
+            nature=(NatureName(self.primary_nature), NatureName(self.secondary_nature)),
+            stupid=self.stupid,
+            baby=self.baby,
+            clown=self.clown,
+            horny=self.horny,
+            cursed=self.cursed,
+            feral=self.feral,
         )
 
     def __repr__(self):
