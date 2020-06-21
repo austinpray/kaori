@@ -14,9 +14,75 @@ _readme_link = f"<{_readme_url}|README>"
 _card_guide_link = f'<{_readme_url}#card-guide|Card Guide>'
 
 
-def render_card(card: Card) -> dict:
-    return {
-        'blocks': [
+def render_card(card: Card, preview_header=False) -> dict:
+    blocks = [
+        {
+            "type": "image",
+            "image_url": card.image.url if card.image else _default_image,
+            "alt_text": card.name if not card.description else card.description
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": '\n'.join([
+                    f"*{'(no name)' if card.name.startswith(tmp_prefix) else card.name}*",
+                    f"_{card.engine.subtitle}_" if card.engine else '(stats pending)',
+                    card.description if card.description else '_(no description)_'
+                ])
+            },
+            # "accessory": {
+            #     "type": "image",
+            #     "image_url": card.image.url if card.image else _default_image,
+            #     "alt_text": card.name if not card.description else card.description
+            # },
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Rarity:* {card.rarity_string()}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Max HP:* {card.engine.max_hp}" if card.engine else '?'
+                },
+            ]
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Stupid:* {card.stupid}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Baby:* {card.baby}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Clown:* {card.clown}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Horny:* {card.horny}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Cursed:* {card.cursed}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Feral:* {card.feral}"
+                },
+            ],
+        },
+    ]
+
+    if preview_header:
+        blocks = [
             {
                 "type": "section",
                 "text": {
@@ -27,65 +93,11 @@ def render_card(card: Card) -> dict:
             {
                 "type": "divider"
             },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": '\n'.join([
-                        f"*{'(no name)' if card.name.startswith(tmp_prefix) else card.name}*",
-                        f"_{card.engine.subtitle}_" if card.engine else '(stats pending)',
-                        card.description if card.description else '_(no description)_'
-                    ])
-                },
-                "accessory": {
-                    "type": "image",
-                    "image_url": card.image.url if card.image else _default_image,
-                    "alt_text": card.name if not card.description else card.description
-                }
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Rarity:* {card.rarity_string()}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Max HP:* {card.engine.max_hp}" if card.engine else '?'
-                    },
-                ]
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Stupid:* {card.stupid}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Baby:* {card.baby}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Clown:* {card.clown}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Horny:* {card.horny}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Cursed:* {card.cursed}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Feral:* {card.feral}"
-                    },
-                ],
-            },
+            *blocks,
         ]
+
+    return {
+        'blocks': blocks
     }
 
 

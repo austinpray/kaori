@@ -55,7 +55,7 @@ class CreateCardCommand(SlackCommand):
                           create_thread=True)
 
                 draft_message = bot.reply(message,
-                                          **render_card(card=card),
+                                          **render_card(card=card, preview_header=True),
                                           create_thread=True,
                                           reply_broadcast=True)
 
@@ -161,7 +161,7 @@ def refresh_card_preview(card: Card, bot: SlackAdapter):
                 'channel': card.creation_thread_channel
             }
         }),
-        **render_card(card)
+        **render_card(card, preview_header=True)
     )
     if not res['ok']:
         print(res)
@@ -291,7 +291,7 @@ def next_card_creation_step(card: Card,
                                 "*Are you sure* you want to create this card?"
                     },
                 },
-                *render_card(card)['blocks']
+                *render_card(card, preview_header=True)['blocks']
             ]})
             cursor = 'set_confirm_price'
 
