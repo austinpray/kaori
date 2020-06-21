@@ -241,15 +241,12 @@ def next_card_creation_step(card: Card,
                 replies.append('You need to specify some natures.')
 
         elif cursor == 'set_rarity':
-            pattern = f'({RarityName.to_regex()})(?:-tier)?'
-            match = None
-            for token in user_input.split():
-                match = re.match(pattern, token)
-                if match:
-                    card.set_rarity(RarityName(match.group(1)))
-                    replies.append(':+1:')
-                    cursor = 'do_stats_roll'
-            if not match:
+            rarity = user_extract_rarity(user_input)
+            if rarity:
+                card.set_rarity(rarity)
+                replies.append(':+1:')
+                cursor = 'do_stats_roll'
+            else:
                 replies.append('Need to specify a rarity')
         elif cursor == 'set_confirm_price':
             # todo: make utility for capturing english affirmatives
@@ -313,3 +310,15 @@ def resume_card(session, thread_ts, user) -> Optional[Card]:
         .filter(Card.published == False) \
         .filter(User.slack_id == user) \
         .first()
+
+
+def user_extract_rarity(user_input: str) -> Optional[RarityName]:
+    pattern = f'^({RarityName.to_regex()})(?:-tier)?$'
+    # we scan the user input right to left because english is a subject, verb, object language
+    # the rarity is the object we want so it will always come last in typical speech
+    for token in reversed(user_input.split()):
+        match = re.match(pattern, token, re.I)
+        if match:
+            return RarityName(match.group(1).upper())
+
+    return None
