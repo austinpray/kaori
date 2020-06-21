@@ -2,6 +2,7 @@ from secrets import token_hex
 from time import time
 from unittest.mock import Mock, MagicMock
 
+from kaori.plugins.gacha.engine import RarityName
 from slackclient import SlackClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
@@ -13,6 +14,22 @@ from kaori.plugins.gacha.models.Card import Card
 from kaori.plugins.users import User
 from kaori.skills import DB, LocalFileUploader
 from kaori.support import Kaori
+from .creation import user_extract_rarity
+
+
+def test_rarity_extract():
+    assert user_extract_rarity('yeah this is bogus') is None
+    assert user_extract_rarity("Yeah i'm thinkin S-tier card") is RarityName.S
+    assert user_extract_rarity("Yeah i'm thinkin B card") is RarityName.B
+    assert user_extract_rarity("B") is RarityName.B
+    assert user_extract_rarity("b") is RarityName.B
+    assert user_extract_rarity("    B     ") is RarityName.B
+
+    # tricky
+    #                          "this should be AN F card" is correct english afaik.
+    #                          Gonna let the dummies slide regardless
+    assert user_extract_rarity("this should be a F card") is RarityName.F
+    assert user_extract_rarity("I'm thinking a S-tier card") is RarityName.S
 
 
 def test_card_creation_state_happy():
