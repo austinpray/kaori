@@ -3,6 +3,7 @@ from typing import List
 from .engine import NatureName, RarityName
 from .models.Card import Card
 from .utils import tmp_prefix
+from slacktools.message import format_url
 
 _default_image = "https://storage.googleapis.com/img.kaori.io/static/present.png"
 
@@ -240,4 +241,25 @@ def query_rarity_blocks():
             },
         },
         *price_blocks(),
+    ]
+
+
+def battle_blocks(battle_url: str):
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"Let's go!"
+            },
+            "accessory": {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Start Battle",
+                },
+                "style": "primary",
+                "url": battle_url,
+            }
+        },
     ]

@@ -123,7 +123,7 @@ class Card(Base):
         self.name = name
         self.slug = self.sluggify_name(name)
 
-    # TODO get rid of this optional somehow
+    # TODO get rid of this optional return type somehow
     @property
     def engine(self) -> Optional[EngineCard]:
         required_attrs = [self.id, self.name, self.rarity, self.primary_nature, self.secondary_nature]
@@ -132,6 +132,12 @@ class Card(Base):
                 # returning none is a very dumb API
                 return None
 
+        maybe = {}
+
+        if self.image and self.image.url:
+            maybe['image_url'] = self.image.url
+
+        # todo: this is sorta out of control
         return EngineCard(
             card_id=self.id,
             name=self.name,
@@ -143,6 +149,7 @@ class Card(Base):
             horny=self.horny,
             cursed=self.cursed,
             feral=self.feral,
+            **maybe,
         )
 
     def __repr__(self):
