@@ -241,8 +241,8 @@ def query_rarity_blocks():
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "*What rarity would you like your card to be?*\nThis will impact how expensive your card will be "
-                        "to create."
+                "text": "*What rarity would you like your card to be?*\n"
+                        "(ex. `@kaori C`)"
             },
         },
     ]
@@ -265,5 +265,22 @@ def battle_blocks(battle_url: str):
                 "style": "primary",
                 "url": battle_url,
             }
+        },
+    ]
+
+
+def create_are_you_sure_blocks(card):
+    return [
+        *render_card(card)['blocks'],
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                # TODO beta notice
+                "text": f"~This card will cost {card.price()} kkreds~ "
+                        "Cards are free to create during the beta!\n"
+                        "*Are you sure you want to create this card?*\n"
+                        "(ex. `@kaori yes`)"
+            },
         },
     ]
