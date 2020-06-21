@@ -8,3 +8,15 @@ tests:
 docs:
    - ./**/*.md
    - ./*.md
+   
+deploy:
+   - ./.github/workflows/ci.yml
+   - workloads/*
+   - workloads/**
+   - fluxcd/*
+   - fluxcd/**
+
+docker:
+   - ./.dockerignore
+   - ./Dockerfile
+   - ./*docker-compose.yml
