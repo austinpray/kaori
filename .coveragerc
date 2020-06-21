@@ -3,6 +3,7 @@ source = kaori
 omit =
     kaori/plugins/gacha/engine/test/*
     **/test_*.py
+    **/conftest.py
 branch = True
 
 [report]

@@ -1,10 +1,16 @@
 import re
+from typing import Optional, Match
 
 from kaori.adapters.slack import SlackCommand, SlackMessage, SlackAdapter
 from kaori.skills import DB
 from ..models.Card import Card
 from ..skills import CardBattler
 from ..tui import battle_blocks
+
+
+def _user_requesting_battle(message: SlackMessage, bot: SlackAdapter) -> Optional[Match]:
+    pattern = re.compile(r'battle\s+(.+)\s+vs?\.?\s+(.+)', re.I)
+    return bot.understands(message, with_pattern=pattern)
 
 
 class CardBattleCommand(SlackCommand):
@@ -15,15 +21,15 @@ class CardBattleCommand(SlackCommand):
         if not bot.addressed_by(message):
             return
 
-        pattern = re.compile(r'battle\s+(.+)\s+vs?\.?\s+(.+)', re.I)
-        search = bot.understands(message, with_pattern=pattern)
+        requested_battle = _user_requesting_battle(message=message,
+                                                   bot=bot)
 
-        if not search:
+        if not requested_battle:
             return
 
-        attacker_search = search[1]
+        attacker_search = requested_battle[1]
         attacker_slug = Card.sluggify_name(attacker_search)
-        defender_search = search[2]
+        defender_search = requested_battle[2]
         defender_slug = Card.sluggify_name(defender_search)
 
         with db.session_scope() as session:
@@ -36,6 +42,7 @@ class CardBattleCommand(SlackCommand):
             if not attacker:
                 bot.reply(message, f'no card named "{attacker_search}"', create_thread=True)
                 return
+
 
             defender = session.query(Card) \
                 .filter(Card.published == True) \
