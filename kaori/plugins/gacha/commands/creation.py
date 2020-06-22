@@ -13,7 +13,7 @@ from kaori.skills import DB, FileUploader
 from ..engine.core import RarityName, NatureName
 from ..models.Card import InvalidCardName, Card
 from ..models.Image import Image
-from ..tui import render_card, instructions_blocks, query_rarity_blocks, query_nature_blocks
+from ..tui import render_card, instructions_blocks, query_rarity_blocks, query_nature_blocks, create_are_you_sure_blocks
 from ..utils import tmp_prefix
 
 
@@ -50,14 +50,14 @@ class CreateCardCommand(SlackCommand):
                     session.add(card)
                     session.commit()
 
-                bot.reply(message,
-                          blocks=instructions_blocks(bot_name=bot.mention_string),
-                          create_thread=True)
-
                 draft_message = bot.reply(message,
                                           **render_card(card=card),
                                           create_thread=True,
                                           reply_broadcast=True)
+
+                bot.reply(message,
+                          blocks=instructions_blocks(bot_name=bot.mention_string),
+                          create_thread=True)
 
                 if not draft_message.get('ok'):
                     print(draft_message)
@@ -282,17 +282,8 @@ def next_card_creation_step(card: Card,
             replies.append({'blocks': query_rarity_blocks()})
             cursor = 'set_rarity'
         elif cursor == 'query_confirm_price':
-            replies.append({'blocks': [
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"This card will cost {card.price()}\n"
-                                "*Are you sure* you want to create this card?"
-                    },
-                },
-                *render_card(card)['blocks']
-            ]})
+            are_you_sure_blocks = create_are_you_sure_blocks(card)
+            replies.append({'blocks': are_you_sure_blocks})
             cursor = 'set_confirm_price'
 
     if cursor == 'done':
