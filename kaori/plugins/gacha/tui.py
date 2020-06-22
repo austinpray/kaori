@@ -296,7 +296,7 @@ def battle_blocks(attacker: Card, defender: Card, battle_url: str):
                 "type": "button",
                 "text": {
                     "type": "plain_text",
-                    "text": "Start Battle",
+                    "text": "Watch Battle",
                 },
                 "style": "primary",
                 "url": battle_url,
