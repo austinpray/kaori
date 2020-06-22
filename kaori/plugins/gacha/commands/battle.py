@@ -56,4 +56,6 @@ class CardBattleCommand(SlackCommand):
             battle_url = battler.get_battle_url(attacker.engine, defender.engine)
             bot.reply(message,
                       create_thread=True,
-                      blocks=battle_blocks(battle_url=battle_url))
+                      blocks=battle_blocks(attacker=attacker,
+                                           defender=defender,
+                                           battle_url=battle_url))
