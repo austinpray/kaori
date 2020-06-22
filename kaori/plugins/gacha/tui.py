@@ -13,6 +13,28 @@ _readme_link = f"<{_readme_url}|README>"
 
 _card_guide_link = f'<{_readme_url}#card-guide|Card Guide>'
 
+def card_meta_block(card: Card, with_image=True):
+    block = {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": '\n'.join([
+                f"*{'(no name)' if card.name.startswith(tmp_prefix) else card.name}*",
+                f"_{card.engine.subtitle}_" if card.engine else '(stats pending)',
+                card.description if card.description else '_(no description)_'
+            ])
+        },
+    }
+
+    if with_image:
+        block['accessory'] = {
+            "type": "image",
+            "image_url": card.image.url if card.image else _default_image,
+            "alt_text": card.name if not card.description else card.description
+        }
+
+    return block
+
 
 def render_card(card: Card) -> dict:
     return {
@@ -27,22 +49,7 @@ def render_card(card: Card) -> dict:
             {
                 "type": "divider"
             },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": '\n'.join([
-                        f"*{'(no name)' if card.name.startswith(tmp_prefix) else card.name}*",
-                        f"_{card.engine.subtitle}_" if card.engine else '(stats pending)',
-                        card.description if card.description else '_(no description)_'
-                    ])
-                },
-                "accessory": {
-                    "type": "image",
-                    "image_url": card.image.url if card.image else _default_image,
-                    "alt_text": card.name if not card.description else card.description
-                }
-            },
+            card_meta_block(card, with_image=True),
             {
                 "type": "section",
                 "fields": [
@@ -147,18 +154,7 @@ def price_blocks():
 
 def card_index_blocks(cards: List[Card]):
     return [
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": f"*{card.name}*\n"
-            },
-            "accessory": {
-                "type": "image",
-                "image_url": card.image.url if card.image else _default_image,
-                "alt_text": card.name if not card.description else card.description
-            }
-        } for card in cards
+        card_meta_block(card) for card in cards
     ]
 
 
@@ -246,8 +242,20 @@ def query_rarity_blocks():
     ]
 
 
-def battle_blocks(battle_url: str):
+def battle_blocks(attacker: Card, defender: Card, battle_url: str):
     return [
+        card_meta_block(attacker),
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "🆚"
+            },
+        },
+        card_meta_block(defender),
+        {
+            "type": "divider"
+        },
         {
             "type": "section",
             "text": {
@@ -258,7 +266,7 @@ def battle_blocks(battle_url: str):
                 "type": "button",
                 "text": {
                     "type": "plain_text",
-                    "text": "Start Battle",
+                    "text": "Watch Battle",
                 },
                 "style": "primary",
                 "url": battle_url,
