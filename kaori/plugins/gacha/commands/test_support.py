@@ -8,7 +8,7 @@ from .support import CardHelpCommand, CardPriceCommand
 
 
 @pytest.mark.asyncio
-async def test_battle_cmd(fake_slack_msg_factory,
+async def test_help_command(fake_slack_msg_factory,
                           fake_slack_adapter: SlackAdapter):
 
     bogus_message = fake_slack_msg_factory(text=f'@kaori asldfkjslkdjf')
@@ -40,4 +40,4 @@ async def test_battle_cmd(fake_slack_msg_factory,
     )
 
     ehhhh = ujson.dumps(fake_slack_adapter.reply.call_args[1])
-    assert 'price breakdown by rank' in ehhhh
+    assert 'price breakdown' in ehhhh

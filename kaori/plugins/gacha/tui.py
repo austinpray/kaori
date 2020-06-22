@@ -1,9 +1,9 @@
 from typing import List
 
-from .engine import NatureName, RarityName
+import random
+from .engine import NatureName
 from .models.Card import Card
 from .utils import tmp_prefix
-from slacktools.message import format_url
 
 _default_image = "https://storage.googleapis.com/img.kaori.io/static/present.png"
 
@@ -76,7 +76,7 @@ def render_card(card: Card) -> dict:
                     },
                     {
                         "type": "mrkdwn",
-                        "text": f"*Cursed:* {card.cursed}"
+                        "text": f"*Clown:* {card.clown}"
                     },
                     {
                         "type": "mrkdwn",
@@ -84,7 +84,7 @@ def render_card(card: Card) -> dict:
                     },
                     {
                         "type": "mrkdwn",
-                        "text": f"*Clown:* {card.clown}"
+                        "text": f"*Cursed:* {card.cursed}"
                     },
                     {
                         "type": "mrkdwn",
@@ -101,10 +101,11 @@ def instructions_blocks(bot_name: str) -> List[dict]:
         f"• To avoid a fiasco *I will only respond to direct mentions* and I will only respond to you.",
         f"• *To quit card creation* just send `{bot_name} quit`",
         f"• *To start over* just send `{bot_name} start over`",
+        # TODO: beta notice
+        "• *Beta Notice:* cards are currently free to create.",
     ]
 
     return [
-
         {
             "type": "section",
             "text": {
@@ -119,35 +120,35 @@ def instructions_blocks(bot_name: str) -> List[dict]:
                 "text": '\n'.join(bullets)
             }
         },
-        # TODO: beta notice
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*Beta Notice:* cards are currently free to create. They might be cleared from the database "
-                        "at some point when the beta period ends."
-            },
-        },
     ]
 
 
 def price_blocks():
+    prices = [
+        {
+            "type": "mrkdwn",
+            # "text": f"*{rank}:* {price} kkreds",
+            "text": f"*{rank}:* ~{price} kkreds~ _free_",
+        } for rank, price in Card.rarity_prices().items()
+    ]
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "Card price breakdown by rank:",
+                "text": "Card price breakdown by rarity:"
             }
         },
         {
             "type": "section",
-            "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*{rank}:* {price} kkreds"
-                } for rank, price in Card.rarity_prices().items()
-            ]
+            "fields": prices,
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "_Card creation is free during the beta_",
+            }
         },
     ]
 
@@ -200,14 +201,8 @@ def help_blocks():
 
 
 def query_nature_blocks():
+    examples = get_nature_examples()
     return [
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "Choose two natures for your card (ex. `@kaori stupid baby` or `@kaori feral horny`)"
-            },
-        },
         {
             "type": "section",
             "fields": [
@@ -217,28 +212,35 @@ def query_nature_blocks():
                 } for n in NatureName
             ]
         },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"*Choose two natures for your card.*\n(ex. {' or '.join(examples)})"
+            },
+        },
     ]
+
+
+def get_nature_examples():
+    examples = [
+        f"`@kaori {' '.join(random.sample([str(n) for n in NatureName], 2))}`"
+        for _ in range(2)
+    ]
+    return examples
 
 
 def query_rarity_blocks():
     return [
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "What rarity would you like your card to be? This will impact how expensive your card will be "
-                        "to create."
-            },
-        },
-        # TODO: beta notice
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*Beta Notice:* card creation is free at the moment. You will not be charged."
-            },
-        },
         *price_blocks(),
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*What rarity would you like your card to be?*\n"
+                        "(ex. `@kaori C`)"
+            },
+        },
     ]
 
 
@@ -271,5 +273,22 @@ def battle_blocks(attacker: Card, defender: Card, battle_url: str):
                 "style": "primary",
                 "url": battle_url,
             }
+        },
+    ]
+
+
+def create_are_you_sure_blocks(card):
+    return [
+        *render_card(card)['blocks'],
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                # TODO beta notice
+                "text": f"~This card will cost {card.price()} kkreds~ "
+                        "Cards are free to create during the beta!\n"
+                        "*Are you sure you want to create this card?*\n"
+                        "(ex. `@kaori yes`)"
+            },
         },
     ]
