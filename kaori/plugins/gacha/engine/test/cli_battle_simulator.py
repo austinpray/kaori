@@ -5,7 +5,7 @@ from rich.progress import track
 from rich.table import Table
 
 from . import cards as card_pool
-from .utils import find_card
+from .utils import find_card, card_table
 from .. import Card
 from ..core.battle import Battle
 
@@ -45,7 +45,7 @@ def print_battle_table(card_a: Card, card_b: Card, console: Console):
                          show_header=False)
     battle_table.add_column(card_a.title, justify="center")
     battle_table.add_column(card_b.title, justify="center")
-    battle_table.add_row(card_a.to_rich_table(card_a_style), card_b.to_rich_table(card_b_style))
+    battle_table.add_row(card_table(card_a, card_a_style), card_table(card_b, card_b_style))
 
     console.print(battle_table)
 
