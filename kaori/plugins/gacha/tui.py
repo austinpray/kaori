@@ -233,13 +233,6 @@ def query_nature_blocks():
     return [
         {
             "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "Choose two natures for your card (ex. `@kaori stupid baby` or `@kaori feral horny`)"
-            },
-        },
-        {
-            "type": "section",
             "fields": [
                 {
                     "type": "mrkdwn",
