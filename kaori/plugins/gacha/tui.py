@@ -1,10 +1,9 @@
+import random
 from typing import List
 
-import random
-from .engine import NatureName, RarityName
+from .engine import NatureName
 from .models.Card import Card
 from .utils import tmp_prefix
-from slacktools.message import format_url
 
 _default_image = "https://storage.googleapis.com/img.kaori.io/static/present.png"
 
@@ -13,6 +12,7 @@ _readme_url = 'https://github.com/austinpray/kaori/blob/master/kaori/plugins/gac
 _readme_link = f"<{_readme_url}|README>"
 
 _card_guide_link = f'<{_readme_url}#card-guide|Card Guide>'
+
 
 def card_meta_block(card: Card, with_image=True):
     block = {
@@ -165,18 +165,6 @@ def price_blocks():
         {
             "type": "section",
             "fields": prices,
-        },
-    ]
-
-
-def card_index_blocks(cards: List[Card]):
-    return [
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "_Card creation is free during the beta_",
-            }
         },
     ]
 
