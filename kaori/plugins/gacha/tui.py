@@ -1,6 +1,6 @@
+import random
 from typing import List
 
-import random
 from .engine import NatureName
 from .models.Card import Card
 from .utils import tmp_prefix
@@ -12,6 +12,7 @@ _readme_url = 'https://github.com/austinpray/kaori/blob/master/kaori/plugins/gac
 _readme_link = f"<{_readme_url}|README>"
 
 _card_guide_link = f'<{_readme_url}#card-guide|Card Guide>'
+
 
 def card_meta_block(card: Card, with_image=True):
     block = {
@@ -36,9 +37,60 @@ def card_meta_block(card: Card, with_image=True):
     return block
 
 
-def render_card(card: Card) -> dict:
-    return {
-        'blocks': [
+def render_card(card: Card, preview_header=False) -> dict:
+    blocks = [
+        {
+            "type": "image",
+            "image_url": card.image.url if card.image else _default_image,
+            "alt_text": card.name if not card.description else card.description
+        },
+        card_meta_block(card, with_image=False),
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Rarity:* {card.rarity_string()}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Max HP:* {card.engine.max_hp}" if card.engine else '?'
+                },
+            ]
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Stupid:* {card.stupid}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Baby:* {card.baby}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Clown:* {card.clown}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Horny:* {card.horny}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Cursed:* {card.cursed}"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*Feral:* {card.feral}"
+                },
+            ],
+        },
+    ]
+
+    if preview_header:
+        blocks = [
             {
                 "type": "section",
                 "text": {
@@ -49,50 +101,11 @@ def render_card(card: Card) -> dict:
             {
                 "type": "divider"
             },
-            card_meta_block(card, with_image=True),
-            {
-                "type": "section",
-                "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Rarity:* {card.rarity_string()}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Max HP:* {card.engine.max_hp}" if card.engine else '?'
-                    },
-                ]
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Stupid:* {card.stupid}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Baby:* {card.baby}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Clown:* {card.clown}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Horny:* {card.horny}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Cursed:* {card.cursed}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Feral:* {card.feral}"
-                    },
-                ],
-            },
+            *blocks,
         ]
+
+    return {
+        'blocks': blocks
     }
 
 
@@ -106,6 +119,7 @@ def instructions_blocks(bot_name: str) -> List[dict]:
     ]
 
     return [
+
         {
             "type": "section",
             "text": {
@@ -119,6 +133,15 @@ def instructions_blocks(bot_name: str) -> List[dict]:
                 "type": "mrkdwn",
                 "text": '\n'.join(bullets)
             }
+        },
+        # TODO: beta notice
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Beta Notice:* cards are currently free to create. They might be cleared from the database "
+                        "at some point when the beta period ends."
+            },
         },
     ]
 
@@ -142,13 +165,6 @@ def price_blocks():
         {
             "type": "section",
             "fields": prices,
-        },
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "_Card creation is free during the beta_",
-            }
         },
     ]
 

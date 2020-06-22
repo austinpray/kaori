@@ -51,7 +51,7 @@ class CreateCardCommand(SlackCommand):
                     session.commit()
 
                 draft_message = bot.reply(message,
-                                          **render_card(card=card),
+                                          **render_card(card=card, preview_header=True),
                                           create_thread=True,
                                           reply_broadcast=True)
 
@@ -161,7 +161,7 @@ def refresh_card_preview(card: Card, bot: SlackAdapter):
                 'channel': card.creation_thread_channel
             }
         }),
-        **render_card(card)
+        **render_card(card, preview_header=True)
     )
     if not res['ok']:
         print(res)
