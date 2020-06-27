@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import re
-from typing import Tuple, Optional, Dict
+from typing import Tuple, Optional, Dict, List
 
 import sqlalchemy as sa
 import sqlalchemy.orm
+from sqlalchemy.orm import Session
 
 from kaori.support.models.Models import Base
 from ..engine.core import RarityName, Card as EngineCard, NatureName
@@ -159,6 +162,32 @@ class Card(Base):
             feral=self.feral,
             **maybe,
         )
+
+    @classmethod
+    def fuzzy_find(cls, session: Session, search: str) -> List[Card]:
+        slug = cls.sluggify_name(search)
+        return session.query(cls) \
+            .filter(cls.published == True) \
+            .filter(cls.slug.ilike(f'%{slug}%')) \
+            .all()
+
+    @classmethod
+    def fuzzy_find_one(cls, session: Session, search: str) -> Optional[Card]:
+        slug = cls.sluggify_name(search)
+
+        results = cls.fuzzy_find(session, search)
+
+        if not results:
+            return None
+
+        # return exact match if it exists
+        for result in results:
+            if result.slug == slug:
+                return result
+
+        # return shortest match
+        results.sort(key=lambda card: len(card.slug))
+        return results[0]
 
     def __repr__(self):
         return f"<Card(id='{self.id}', name='{self.name}' owner='{self.owner}')>"

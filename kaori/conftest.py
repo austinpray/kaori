@@ -2,8 +2,10 @@ import os
 from secrets import token_hex
 from time import time
 from unittest.mock import Mock, MagicMock
+from uuid import uuid4
 
 import pytest
+from kaori.plugins.users import User
 from slackclient import SlackClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
@@ -66,3 +68,18 @@ def fake_slack_adapter() -> SlackAdapter:
     adapter._cached_bot_id = token_hex(2)
 
     return adapter
+
+
+@pytest.fixture()
+def fake_user(test_db: DB) -> User:
+    with test_db.session_scope() as session:
+        name = str(uuid4())
+
+        u = User(name=f'{name}-user',
+                 slack_id=f'{name}-slack-id',
+                 api_key=str(uuid4()))
+
+        session.add(u)
+        session.commit()
+
+        return u
