@@ -18,6 +18,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
+        version: '297.0.1'
         project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
         service_account_key: ${{secrets.GOOGLE_APPLICATION_CREDENTIALS}}
         export_default_credentials: true
