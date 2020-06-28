@@ -119,15 +119,6 @@ def test_card_search(fake_user: User, db_session: Session):
 
     db_session.add(fake_user)
 
-    card_tim = Card(name=uniq1,
-                    slug=uniq1,
-                    owner=fake_user.id,
-                    published=True,
-                    creation_thread_channel=f'ch-{uniq1}',
-                    creation_thread_ts=f'ts-{uniq1}')
-
-    card_tim.set_name(name_tim)
-
     card_time = Card(name=uniq2,
                      slug=uniq2,
                      owner=fake_user.id,
@@ -137,8 +128,18 @@ def test_card_search(fake_user: User, db_session: Session):
 
     card_time.set_name(name_time)
 
-    db_session.add(card_tim)
+    card_tim = Card(name=uniq1,
+                    slug=uniq1,
+                    owner=fake_user.id,
+                    published=True,
+                    creation_thread_channel=f'ch-{uniq1}',
+                    creation_thread_ts=f'ts-{uniq1}')
+
+    card_tim.set_name(name_tim)
+
+
     db_session.add(card_time)
+    db_session.add(card_tim)
     db_session.commit()
 
     found = Card.search_for_one(db_session, 'tim')
