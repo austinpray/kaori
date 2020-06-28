@@ -89,7 +89,9 @@ class Card(Base):
 
     @staticmethod
     def sluggify_name(name: str) -> str:
-        # oof: using idna was a mistake, it's limited to 63 character chunks
+        # TODO: oof: using idna was a mistake, it's limited to 63 character chunks
+        # this is gonna cause undefined behavior at the chunk boundaries with multibyte characters.
+        # also good luck generating n-grams for search.
         parts = [
             ''.join([
                 chunk.encode('idna').decode('utf-8')
