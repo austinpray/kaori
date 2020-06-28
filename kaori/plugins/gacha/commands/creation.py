@@ -3,7 +3,7 @@ import re
 from typing import Tuple, List, Optional, Union
 from uuid import uuid4
 
-from slacktools.message import extract_mentions
+from kaori.support.slacktools.message import extract_mentions
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 

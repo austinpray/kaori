@@ -789,20 +789,6 @@ websocket-client = ">=0.35,<0.55.0"
 
 [[package]]
 category = "main"
-description = "Toolbelt for Slack API clients for Web API and RTM API"
-develop = true
-name = "slacktools"
-optional = false
-python-versions = "*"
-version = "0.0.4"
-
-[package.source]
-reference = ""
-type = "directory"
-url = "vendor/python-slacktools"
-
-[[package]]
-category = "main"
 description = "Database Abstraction Library"
 name = "sqlalchemy"
 optional = false
@@ -918,7 +904,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "3cccb4dc310acf5f499a1d0e9488cbda32ecb10485baaf3a577bc256acb3a3a1"
+content-hash = "6c97ab26b9546413fbb563f5d118633c9c4ecbefe1f074d511380a11403955de"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1394,7 +1380,6 @@ six = [
 slackclient = [
     {file = "slackclient-1.3.2.tar.gz", hash = "sha256:2623a76d9b94671d34c258366a1b726ba6e9499931bf1e515e4a61fea9855445"},
 ]
-slacktools = []
 sqlalchemy = [
     {file = "SQLAlchemy-1.3.6.tar.gz", hash = "sha256:217e7fc52199a05851eee9b6a0883190743c4fb9c8ac4313ccfceaffd852b0ff"},
 ]

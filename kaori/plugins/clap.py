@@ -1,7 +1,7 @@
 import re
 from argparse import REMAINDER
 
-from slacktools.arguments import SlackArgumentParserException, SlackArgumentParser
+from kaori.support.slacktools.arguments import SlackArgumentParserException, SlackArgumentParser
 
 from kaori.adapters.slack import SlackCommand, SlackMessage, SlackAdapter
 from kaori.support.strings import random_insult
