@@ -28,26 +28,17 @@ class CardBattleCommand(SlackCommand):
             return
 
         attacker_search = requested_battle[1]
-        attacker_slug = Card.sluggify_name(attacker_search)
         defender_search = requested_battle[2]
-        defender_slug = Card.sluggify_name(defender_search)
 
         with db.session_scope() as session:
 
-            attacker = session.query(Card) \
-                .filter(Card.published == True) \
-                .filter(Card.slug.ilike(f'%{attacker_slug}%')) \
-                .first()
+            attacker = Card.search_for_one(session, attacker_search)
 
             if not attacker:
                 bot.reply(message, f'no card named "{attacker_search}"', create_thread=True)
                 return
 
-
-            defender = session.query(Card) \
-                .filter(Card.published == True) \
-                .filter(Card.slug.ilike(f'%{defender_slug}%')) \
-                .first()
+            defender = Card.search_for_one(session, defender_search)
 
             if not defender:
                 bot.reply(message, f'no card named "{defender_search}"', create_thread=True)

@@ -104,3 +104,57 @@ def test_image_from_slack(db_session: Session):
     assert img.owner == user.id
 
     db_session.flush()
+
+
+def test_card_search(fake_user: User, db_session: Session):
+    uniq1 = str(uuid4())
+    uniq2 = str(uuid4())
+    name_tim = f'Tim-{__name__}'
+    name_time = f'Time-{__name__}'
+
+    db_session.query(Card).filter(Card.name.in_((name_tim, name_time))).delete(synchronize_session=False)
+
+
+    db_session.commit()
+
+    db_session.add(fake_user)
+
+    card_time = Card(name=uniq2,
+                     slug=uniq2,
+                     owner=fake_user.id,
+                     published=True,
+                     creation_thread_channel=f'ch-{uniq2}',
+                     creation_thread_ts=f'ts-{uniq2}')
+
+    card_time.set_name(name_time)
+
+    card_tim = Card(name=uniq1,
+                    slug=uniq1,
+                    owner=fake_user.id,
+                    published=True,
+                    creation_thread_channel=f'ch-{uniq1}',
+                    creation_thread_ts=f'ts-{uniq1}')
+
+    card_tim.set_name(name_tim)
+
+
+    db_session.add(card_time)
+    db_session.add(card_tim)
+    db_session.commit()
+
+    found = Card.search_for_one(db_session, 'ti')
+
+    assert found.name == name_tim
+
+    found = Card.search_for_one(db_session, 'tim')
+
+    assert found.name == name_tim
+
+    found = Card.search_for_one(db_session, 'time')
+
+    assert found.name == name_time
+
+    found = Card.search_for_one(db_session, uniq1 + uniq2)
+
+    assert found is None
+
