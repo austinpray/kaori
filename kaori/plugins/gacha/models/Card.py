@@ -166,7 +166,7 @@ class Card(Base):
         )
 
     @classmethod
-    def fuzzy_find(cls, session: Session, search: str) -> List[Card]:
+    def search_for(cls, session: Session, search: str) -> List[Card]:
         slug = cls.sluggify_name(search)
         return session.query(cls) \
             .filter(cls.published == True) \
@@ -174,10 +174,10 @@ class Card(Base):
             .all()
 
     @classmethod
-    def fuzzy_find_one(cls, session: Session, search: str) -> Optional[Card]:
+    def search_for_one(cls, session: Session, search: str) -> Optional[Card]:
         slug = cls.sluggify_name(search)
 
-        results = cls.fuzzy_find(session, search)
+        results = cls.search_for(session, search)
 
         if not results:
             return None

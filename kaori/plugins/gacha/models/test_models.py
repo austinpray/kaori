@@ -141,15 +141,15 @@ def test_card_search(fake_user: User, db_session: Session):
     db_session.add(card_time)
     db_session.commit()
 
-    found = Card.fuzzy_find_one(db_session, 'tim')
+    found = Card.search_for_one(db_session, 'tim')
 
     assert found.name == name_tim
 
-    found = Card.fuzzy_find_one(db_session, 'time')
+    found = Card.search_for_one(db_session, 'time')
 
     assert found.name == name_time
 
-    found = Card.fuzzy_find_one(db_session, uniq1 + uniq2)
+    found = Card.search_for_one(db_session, uniq1 + uniq2)
 
     assert found is None
 
