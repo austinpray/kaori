@@ -5,7 +5,7 @@ from random import randint
 
 import arrow
 from arrow import Arrow
-from slacktools.message import is_user_mention, extract_user_id_from_mention
+from kaori.support.slacktools.message import is_user_mention, extract_user_id_from_mention
 from sqlalchemy import func
 
 from kaori.adapters.slack import SlackAdapter, SlackMessage, SlackCommand

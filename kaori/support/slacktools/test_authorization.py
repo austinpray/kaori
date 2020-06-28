@@ -1,5 +1,5 @@
 import pytest
-from slacktools.authorization import verify_signature, make_signature, SignatureVersionException
+from kaori.support.slacktools.authorization import verify_signature, make_signature, SignatureVersionException
 from time import time
 
 def test_verify_signature():

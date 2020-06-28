@@ -12,7 +12,6 @@ alembic = "^1.0"
 arrow = "^0.15.5"
 backoff = "^1.8"
 boto3 = "^1.9"
-slacktools = {path = "./vendor/python-slacktools/"}
 dramatiq = {version = "^1.6", extras = ["rabbitmq", "watch"]}
 falcon = "^2.0"
 psycopg2-binary = "^2.8"
