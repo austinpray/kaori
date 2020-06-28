@@ -4,7 +4,7 @@ import ujson as json
 import falcon
 from dramatiq.message import Message
 from falcon import Request
-from slacktools.authorization import verify_signature
+from kaori.support.slacktools.authorization import verify_signature
 
 
 class EventsResource(object):

@@ -12,7 +12,6 @@ alembic = "^1.0"
 arrow = "^0.15.5"
 backoff = "^1.8"
 boto3 = "^1.9"
-slacktools = {path = "./vendor/python-slacktools/"}
 dramatiq = {version = "^1.6", extras = ["rabbitmq", "watch"]}
 falcon = "^2.0"
 psycopg2-binary = "^2.8"
@@ -31,7 +30,7 @@ pytest = "^5.1"
 mdv = "^1.7.4"
 rich = "^1.0.0"
 pytest-cov = "^2.9.0"
-pytest-asyncio = "^0.12.0"
+pytest-asyncio = "^0.14.0"
 
 [build-system]
 requires = ["poetry>=0.12"]

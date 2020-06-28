@@ -1,5 +1,5 @@
 import pytest
-from slacktools.arguments import SlackArgumentParser, SlackArgumentParserException
+from kaori.support.slacktools.arguments import SlackArgumentParser, SlackArgumentParserException
 
 def test_arguments():
     """haha what a useless test"""

@@ -5,8 +5,8 @@ from types import SimpleNamespace
 from typing import Pattern, Callable, Optional
 
 from slackclient import SlackClient
-from slacktools.chat import send, send_ephemeral
-from slacktools.message import format_slack_mention
+from kaori.support.slacktools.chat import send, send_ephemeral
+from kaori.support.slacktools.message import format_slack_mention
 
 from kaori.support.utils import strip_tokens
 from . import Adapter
