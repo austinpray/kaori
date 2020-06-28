@@ -16,5 +16,8 @@ def test_sluggify():
 
     assert Card.sluggify_name('👩🏿‍🍳') == 'xn--qj8hxirk'
 
+    # note that this test case is basically undefined behavior
+    # assert Card.sluggify_name('👩🏿‍🍳'*50) == ''
+
     assert Card.sluggify_name('Iñtërnâtiônàlizætiøn☃💪') == 'xn--itrntinliztin-vdb0a5exd8ewcyey495hncp2g'
 
