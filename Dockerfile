@@ -27,8 +27,7 @@ RUN wget -qO- https://raw.githubusercontent.com/python-poetry/poetry/master/get-
  && echo 'export PATH=$PATH:$HOME/.poetry/bin' > /etc/profile.d/poetry.sh\
  && $HOME/.poetry/bin/poetry config virtualenvs.create false
 
-COPY pyproject.toml ./
-COPY poetry.lock ./
+COPY pyproject.toml poetry.lock ./
 RUN mkdir -p kaori/ && touch kaori/__init__.py \
  && $HOME/.poetry/bin/poetry install --no-dev
 
