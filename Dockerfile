@@ -28,7 +28,8 @@ RUN wget -qO- https://raw.githubusercontent.com/python-poetry/poetry/master/get-
  && $HOME/.poetry/bin/poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock ./
-RUN mkdir -p kaori/ && touch kaori/__init__.py \
+RUN mkdir -p kaori/ \
+ && touch kaori/__init__.py \
  && $HOME/.poetry/bin/poetry install --no-dev
 
 FROM base as production
