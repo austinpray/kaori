@@ -55,14 +55,6 @@ tests = ["coverage", "hypothesis", "pympler", "pytest", "six", "zope.interface"]
 
 [[package]]
 category = "main"
-description = "Function decoration for backoff and retry"
-name = "backoff"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.8.0"
-
-[[package]]
-category = "main"
 description = "Extensible memoizing collections and decorators"
 name = "cachetools"
 optional = false
@@ -844,7 +836,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "83468fbe22c86565be13f283bc84a36739a83dd6a0d0901590ac0b7bbcf7aa79"
+content-hash = "bcbfcafbc4cb685702d35bd20f412edccb3a58960501e8343fbb30751d382a1d"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -866,10 +858,6 @@ atomicwrites = [
 attrs = [
     {file = "attrs-19.1.0-py2.py3-none-any.whl", hash = "sha256:69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79"},
     {file = "attrs-19.1.0.tar.gz", hash = "sha256:f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"},
-]
-backoff = [
-    {file = "backoff-1.8.0-py2.py3-none-any.whl", hash = "sha256:d340bb6f36d025c04214b8925112d8456970e5f28dda46e4f1133bf5c622cb0a"},
-    {file = "backoff-1.8.0.tar.gz", hash = "sha256:c7187f15339e775aec926dc6e5e42f8a3ad7d3c2b9a6ecae7b535000f70cd838"},
 ]
 cachetools = [
     {file = "cachetools-4.1.0-py3-none-any.whl", hash = "sha256:de5d88f87781602201cde465d3afe837546663b168e8b39df67411b0bf10cefc"},
