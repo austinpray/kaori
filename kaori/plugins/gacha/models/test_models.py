@@ -142,6 +142,10 @@ def test_card_search(fake_user: User, db_session: Session):
     db_session.add(card_tim)
     db_session.commit()
 
+    found = Card.search_for_one(db_session, 'ti')
+
+    assert found.name == name_tim
+
     found = Card.search_for_one(db_session, 'tim')
 
     assert found.name == name_tim
