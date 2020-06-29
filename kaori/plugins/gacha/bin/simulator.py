@@ -5,7 +5,7 @@ import sys
 from rich.console import Console
 
 from kaori.plugins.gacha.engine import Card
-from kaori.plugins.gacha.engine.test import run_card_simulator, run_battle_simulator2, run_cli_battle_simulator
+from kaori.plugins.gacha.engine.test import run_card_simulator, run_web_battle_simulator, run_cli_battle_simulator, card_table
 
 card_command = argparse.ArgumentParser(description='Simulate cards and their values.')
 card_command.add_argument('--raw',
@@ -80,17 +80,17 @@ def main():
                              rarity=args.rarity,
                              natures=args.natures)
         card.is_valid_card()
-        console.print(card.to_rich_table())
+        console.print(card_table(card))
         return
 
     if command == 'battle':
         args = battle_command.parse_args(sys.argv[2:])
 
         if args.format.startswith('web'):
-            run_battle_simulator2(card_a_name=args.card_A,
-                                  card_b_name=args.card_B,
-                                  repeat=args.repeat,
-                                  out_format=args.format)
+            run_web_battle_simulator(card_a_name=args.card_A,
+                                     card_b_name=args.card_B,
+                                     repeat=args.repeat,
+                                     out_format=args.format)
             return
 
         if args.format.startswith('cli'):

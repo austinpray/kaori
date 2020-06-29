@@ -1,10 +1,16 @@
+import os
 from copy import deepcopy
 from random import choice
 from typing import List, Dict
 from rich.table import Table
 from io import StringIO
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, sessionmaker
+
+from kaori.skills import DB
 from ..core import stupid, baby, clown, horny, cursed, feral, EVA, CRIT, SPEED, Card
+from ...models.Card import Card as CardModel
 
 
 def collect_cards(module) -> Dict[str, Card]:
@@ -16,6 +22,11 @@ def collect_cards(module) -> Dict[str, Card]:
 
 
 def find_card(module, search: str) -> Card:
+    with db().session_scope() as session:
+        card = CardModel.search_for_one(session, search)
+        if card:
+            return card.engine
+
     available_cards = collect_cards(module)
 
     if search.lower() == 'random':
@@ -30,6 +41,22 @@ def find_card(module, search: str) -> Card:
             return deepcopy(card)
 
     raise ValueError(f'cannot find a card for {search}')
+
+
+def db_session() -> Session:
+    make_session = db_sessionmaker()
+    session = make_session()
+    return session
+
+
+def db_sessionmaker():
+    db_engine = create_engine(os.getenv('GSIM_DATABASE_URL') or os.getenv('DATABASE_URL'))
+    make_session = sessionmaker(bind=db_engine)
+    return make_session
+
+
+def db() -> DB:
+    return DB(make_session=db_sessionmaker())
 
 
 def card_table(card: Card, title_style="bold underline yellow") -> Table:
