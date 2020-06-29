@@ -42,7 +42,7 @@ def run_web_battle_simulator(card_a_name: str,
                 continue
             else:
                 print('http://localhost:8080/battle/?in=' + urllib.parse.quote_plus(payload))
-        else:
-            raise RuntimeError(f"unknown output format '{out_format}'")
+    else:
+        raise RuntimeError(f"unknown output format '{out_format}'")
 
     return results
