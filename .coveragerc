@@ -1,6 +1,7 @@
 [run]
 source = kaori
 omit =
+    kaori/plugins/gacha/bin/simulator.py # until we have proper e2e tests
     kaori/plugins/gacha/engine/test/**
     **/test_*.py
     **/conftest.py
