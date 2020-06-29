@@ -76,18 +76,8 @@ services:
     command: ["pytest"]
 
   gsim:
-    image: austinpray/kaori/debug
+    <<: *test
     entrypoint: ["bin/gsim"]
-    env_file: .env
-    build:
-      context: .
-      target: development
-      cache_from:
-        - ${CACHE_FROM_IMAGE:-austinpray/kaori/kaori:master}
-        - austinpray/kaori/debug
-        - austinpray/kaori/kaori
-    volumes:
-      - .:/app
     command: ["cards"]
 
   gweb:

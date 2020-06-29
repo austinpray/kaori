@@ -50,7 +50,7 @@ def db_session() -> Session:
 
 
 def db_sessionmaker():
-    db_engine = create_engine(os.getenv('DATABASE_URL'))
+    db_engine = create_engine(os.getenv('GSIM_DATABASE_URL'))
     make_session = sessionmaker(bind=db_engine)
     return make_session
 
