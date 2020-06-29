@@ -10,8 +10,6 @@ python = "^3.7"
 sqlalchemy = "^1.3"
 alembic = "^1.0"
 arrow = "^0.15.5"
-backoff = "^1.8"
-boto3 = "^1.9"
 dramatiq = {version = "^1.6", extras = ["rabbitmq", "watch"]}
 falcon = "^2.0"
 psycopg2-binary = "^2.8"

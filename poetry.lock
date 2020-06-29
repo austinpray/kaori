@@ -55,47 +55,6 @@ tests = ["coverage", "hypothesis", "pympler", "pytest", "six", "zope.interface"]
 
 [[package]]
 category = "main"
-description = "Function decoration for backoff and retry"
-name = "backoff"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-version = "1.8.0"
-
-[[package]]
-category = "main"
-description = "The AWS SDK for Python"
-name = "boto3"
-optional = false
-python-versions = "*"
-version = "1.9.198"
-
-[package.dependencies]
-botocore = ">=1.12.198,<1.13.0"
-jmespath = ">=0.7.1,<1.0.0"
-s3transfer = ">=0.2.0,<0.3.0"
-
-[[package]]
-category = "main"
-description = "Low-level, data-driven core of boto 3."
-name = "botocore"
-optional = false
-python-versions = "*"
-version = "1.12.198"
-
-[package.dependencies]
-docutils = ">=0.10,<0.15"
-jmespath = ">=0.7.1,<1.0.0"
-
-[package.dependencies.python-dateutil]
-python = ">=2.7"
-version = ">=2.1,<3.0.0"
-
-[package.dependencies.urllib3]
-python = ">=3.4"
-version = ">=1.20,<1.26"
-
-[[package]]
-category = "main"
 description = "Extensible memoizing collections and decorators"
 name = "cachetools"
 optional = false
@@ -159,14 +118,6 @@ version = "5.1"
 
 [package.extras]
 toml = ["toml"]
-
-[[package]]
-category = "main"
-description = "Docutils -- Python Documentation Utilities"
-name = "docutils"
-optional = false
-python-versions = "*"
-version = "0.14"
 
 [[package]]
 category = "main"
@@ -376,14 +327,6 @@ zipp = ">=0.5"
 [package.extras]
 docs = ["sphinx", "rst.linker"]
 testing = ["importlib-resources"]
-
-[[package]]
-category = "main"
-description = "JSON Matching Expressions"
-name = "jmespath"
-optional = false
-python-versions = "*"
-version = "0.9.4"
 
 [[package]]
 category = "main"
@@ -740,17 +683,6 @@ pyasn1 = ">=0.1.3"
 
 [[package]]
 category = "main"
-description = "An Amazon S3 Transfer Manager"
-name = "s3transfer"
-optional = false
-python-versions = "*"
-version = "0.2.1"
-
-[package.dependencies]
-botocore = ">=1.12.36,<2.0.0"
-
-[[package]]
-category = "main"
 description = "Python client for Sentry (https://getsentry.com)"
 name = "sentry-sdk"
 optional = false
@@ -904,7 +836,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "46a9173c8d02b8944b077970a397723718743bf9d9d1c098d501388cfcb7ff76"
+content-hash = "bcbfcafbc4cb685702d35bd20f412edccb3a58960501e8343fbb30751d382a1d"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -926,18 +858,6 @@ atomicwrites = [
 attrs = [
     {file = "attrs-19.1.0-py2.py3-none-any.whl", hash = "sha256:69c0dbf2ed392de1cb5ec704444b08a5ef81680a61cb899dc08127123af36a79"},
     {file = "attrs-19.1.0.tar.gz", hash = "sha256:f0b870f674851ecbfbbbd364d6b5cbdff9dcedbc7f3f5e18a6891057f21fe399"},
-]
-backoff = [
-    {file = "backoff-1.8.0-py2.py3-none-any.whl", hash = "sha256:d340bb6f36d025c04214b8925112d8456970e5f28dda46e4f1133bf5c622cb0a"},
-    {file = "backoff-1.8.0.tar.gz", hash = "sha256:c7187f15339e775aec926dc6e5e42f8a3ad7d3c2b9a6ecae7b535000f70cd838"},
-]
-boto3 = [
-    {file = "boto3-1.9.198-py2.py3-none-any.whl", hash = "sha256:d4a09a2e221815c9ef770ceca2cdbf5a7f058d973cdbd85067fe98704f499d71"},
-    {file = "boto3-1.9.198.tar.gz", hash = "sha256:897d65775d8009adf5e680199b75f9f09f27c779a093c3d97929c924e723300c"},
-]
-botocore = [
-    {file = "botocore-1.12.198-py2.py3-none-any.whl", hash = "sha256:5c0c2336be8076c27db7be05ede324f5df6b694b821859512e5368fbe7162273"},
-    {file = "botocore-1.12.198.tar.gz", hash = "sha256:769cd3b24ce9c483e9ec278528f0eb7874b4f31619af0e4644174201a08579fa"},
 ]
 cachetools = [
     {file = "cachetools-4.1.0-py3-none-any.whl", hash = "sha256:de5d88f87781602201cde465d3afe837546663b168e8b39df67411b0bf10cefc"},
@@ -1021,11 +941,6 @@ coverage = [
     {file = "coverage-5.1-cp39-cp39-win32.whl", hash = "sha256:a82b92b04a23d3c8a581fc049228bafde988abacba397d57ce95fe95e0338ab4"},
     {file = "coverage-5.1-cp39-cp39-win_amd64.whl", hash = "sha256:bb28a7245de68bf29f6fb199545d072d1036a1917dca17a1e75bbb919e14ee8e"},
     {file = "coverage-5.1.tar.gz", hash = "sha256:f90bfc4ad18450c80b024036eaf91e4a246ae287701aaa88eaebebf150868052"},
-]
-docutils = [
-    {file = "docutils-0.14-py2-none-any.whl", hash = "sha256:7a4bd47eaf6596e1295ecb11361139febe29b084a87bf005bf899f9a42edc3c6"},
-    {file = "docutils-0.14-py3-none-any.whl", hash = "sha256:02aec4bd92ab067f6ff27a38a38a41173bf01bed8f89157768c1573f53e474a6"},
-    {file = "docutils-0.14.tar.gz", hash = "sha256:51e64ef2ebfb29cae1faa133b3710143496eca21c530f3f71424d77687764274"},
 ]
 dramatiq = [
     {file = "dramatiq-1.6.1-py3-none-any.whl", hash = "sha256:ce612dcc5a7fb51283be365b6e6bf4346f8a24ec1ce5b714088d388a82bad41d"},
@@ -1135,10 +1050,6 @@ idna = [
 importlib-metadata = [
     {file = "importlib_metadata-0.19-py2.py3-none-any.whl", hash = "sha256:80d2de76188eabfbfcf27e6a37342c2827801e59c4cc14b0371c56fed43820e3"},
     {file = "importlib_metadata-0.19.tar.gz", hash = "sha256:23d3d873e008a513952355379d93cbcab874c58f4f034ff657c7a87422fa64e8"},
-]
-jmespath = [
-    {file = "jmespath-0.9.4-py2.py3-none-any.whl", hash = "sha256:3720a4b1bd659dd2eecad0666459b9788813e032b83e7ba58578e48254e0a0e6"},
-    {file = "jmespath-0.9.4.tar.gz", hash = "sha256:bde2aef6f44302dfb30320115b17d030798de8c4110e28d5cf6cf91a7a31074c"},
 ]
 mako = [
     {file = "Mako-1.0.14.tar.gz", hash = "sha256:f5a642d8c5699269ab62a68b296ff990767eb120f51e2e8f3d6afb16bdb57f4b"},
@@ -1365,10 +1276,6 @@ rich = [
 rsa = [
     {file = "rsa-4.6-py3-none-any.whl", hash = "sha256:6166864e23d6b5195a5cfed6cd9fed0fe774e226d8f854fcb23b7bbef0350233"},
     {file = "rsa-4.6.tar.gz", hash = "sha256:109ea5a66744dd859bf16fe904b8d8b627adafb9408753161e766a92e7d681fa"},
-]
-s3transfer = [
-    {file = "s3transfer-0.2.1-py2.py3-none-any.whl", hash = "sha256:b780f2411b824cb541dbcd2c713d0cb61c7d1bcadae204cdddda2b35cef493ba"},
-    {file = "s3transfer-0.2.1.tar.gz", hash = "sha256:6efc926738a3cd576c2a79725fed9afde92378aa5c6a957e3af010cb019fac9d"},
 ]
 sentry-sdk = [
     {file = "sentry-sdk-0.10.2.tar.gz", hash = "sha256:d491aa6399eaa3eded433972751a9770180730fd8b4c225b0b7f49c4fa2af70b"},
