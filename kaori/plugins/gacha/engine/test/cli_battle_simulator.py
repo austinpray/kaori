@@ -9,6 +9,8 @@ from .utils import find_card, card_table
 from .. import Card
 from ..core.battle import Battle
 
+card_a_style = "bold bright_cyan"
+card_b_style = "bold yellow1"
 
 def run_cli_battle_simulator(card_a_name: str,
                              card_b_name: str,
@@ -39,8 +41,7 @@ def run_cli_battle_simulator(card_a_name: str,
 
 
 def print_battle_table(card_a: Card, card_b: Card, console: Console):
-    card_a_style = "bold royal_blue1"
-    card_b_style = "bold yellow1"
+
     battle_table = Table(title=f"[{card_a_style}]{card_a.title}[/] [bold]VS.[/] [{card_b_style}]{card_b.title}[/]",
                          show_header=False)
     battle_table.add_column(card_a.title, justify="center")
@@ -52,6 +53,6 @@ def print_battle_table(card_a: Card, card_b: Card, console: Console):
 
 def print_results(card_a: Card, card_b: Card, results: List[Battle], console: Console):
     card_a_wins = [r for r in results if r.winner.id == card_a.id]
-    console.print(f"card_a wins: {len(card_a_wins)}")
+    console.print(f"[{card_a_style}]{card_a.title}[/] won {len(card_a_wins)} times")
     card_b_wins = [r for r in results if r.winner.id == card_b.id]
-    console.print(f"card_b wins: {len(card_b_wins)}")
+    console.print(f"[{card_b_style}]{card_b.title}[/] won {len(card_b_wins)} times")
