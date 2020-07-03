@@ -15,6 +15,11 @@ spec = importlib.util.spec_from_file_location("config.kaori", os.path.join(os.ge
 config = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(config)
 
+if hasattr(config, 'SENTRY_URL') and config.SENTRY_URL:
+    import sentry_sdk
+    sentry_sdk.init(dsn=config.SENTRY_URL,
+                    environment=config.KIZUNA_ENV)
+
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)
 
