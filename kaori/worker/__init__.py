@@ -25,8 +25,9 @@ logging.basicConfig(level=logging.INFO)
 
 config = get_config(os.path.join(os.getcwd(), 'config/kaori.py'))
 
-if hasattr(config, 'SENTRY_URL') and config.SENTRY_URL:
+if hasattr(config, 'SENTRY_URL') and config.SENTRY_URL:  # pragma: no cover
     import sentry_sdk
+
     sentry_sdk.init(dsn=config.SENTRY_URL,
                     environment=config.KIZUNA_ENV)
 

@@ -15,8 +15,9 @@ spec = importlib.util.spec_from_file_location("config.kaori", os.path.join(os.ge
 config = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(config)
 
-if hasattr(config, 'SENTRY_URL') and config.SENTRY_URL:
+if hasattr(config, 'SENTRY_URL') and config.SENTRY_URL:  # pragma: no cover
     import sentry_sdk
+
     sentry_sdk.init(dsn=config.SENTRY_URL,
                     environment=config.KIZUNA_ENV)
 
