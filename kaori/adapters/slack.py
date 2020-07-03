@@ -61,6 +61,7 @@ class SlackMessage(SlackEvent):
         event = payload.get('event')
         self.channel = event.get('channel')
         self.text: str = event.get('text')
+        self.ts: str = event.get('ts')
         self.files: Optional[list] = event.get('files')
 
 

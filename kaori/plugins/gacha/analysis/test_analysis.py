@@ -1,9 +1,32 @@
-def test_analysis_commands():
-    from ..engine.test.cards import sachiko, matt_morgan
+from pandas import DataFrame
 
-    data = [sachiko, matt_morgan]
+from kaori.plugins.gacha.engine import NatureName, RarityName
 
-    return 
+from .natures import get_nature_matrix, natures_heatmap
+from pathlib import Path
+
+from .rarity import get_rarity_dist, rarity_histogram
 
 
+def test_analysis(project_root: Path):
+    from ..engine.test.cards import sachiko, matt_morgan, ubu, xss, balanced_S, low_dmg
 
+    data = [sachiko, matt_morgan, ubu, ubu, xss, balanced_S, low_dmg]
+
+    matrix = get_nature_matrix(data)
+
+    assert matrix[NatureName.stupid][NatureName.stupid] == 0
+    assert matrix[NatureName.feral][NatureName.cursed] == 2
+
+    hm = natures_heatmap(matrix)
+
+    hm.savefig(str(project_root.joinpath('static/tmp/test-natures-breakdown.png')))
+
+    rdist = get_rarity_dist(data)
+
+    assert rdist[RarityName.S] == 4
+    assert rdist[RarityName.A] == 0
+
+    hist = rarity_histogram(rdist)
+
+    hist.savefig(str(project_root.joinpath('static/tmp/test-rarity-breakdown.png')))

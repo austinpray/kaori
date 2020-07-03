@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from secrets import token_hex
 from time import time
 from unittest.mock import Mock, MagicMock
@@ -83,3 +84,8 @@ def fake_user(test_db: DB) -> User:
         session.commit()
 
         return u
+
+
+@pytest.fixture()
+def project_root() -> Path:
+    return Path(__file__).parent.parent
