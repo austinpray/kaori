@@ -86,6 +86,16 @@ def fake_user(test_db: DB) -> User:
         return u
 
 
+_project_root = Path(__file__).parent.parent
+
+
 @pytest.fixture()
 def project_root() -> Path:
-    return Path(__file__).parent.parent
+    return _project_root
+
+
+@pytest.fixture()
+def project_tmp() -> Path:
+    tmp = _project_root.joinpath('static/tmp')
+    tmp.mkdir(parents=True, exist_ok=True)
+    return tmp

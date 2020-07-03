@@ -8,7 +8,7 @@ from pathlib import Path
 from .rarity import get_rarity_dist, rarity_histogram
 
 
-def test_analysis(project_root: Path):
+def test_analysis(project_tmp: Path):
     from ..engine.test.cards import sachiko, matt_morgan, ubu, xss, balanced_S, low_dmg
 
     data = [sachiko, matt_morgan, ubu, ubu, xss, balanced_S, low_dmg]
@@ -20,7 +20,7 @@ def test_analysis(project_root: Path):
 
     hm = natures_heatmap(matrix)
 
-    hm.savefig(str(project_root.joinpath('static/tmp/test-natures-breakdown.png')))
+    hm.savefig(str(project_tmp.joinpath('test-natures-breakdown.png')))
 
     rdist = get_rarity_dist(data)
 
@@ -29,4 +29,4 @@ def test_analysis(project_root: Path):
 
     hist = rarity_histogram(rdist)
 
-    hist.savefig(str(project_root.joinpath('static/tmp/test-rarity-breakdown.png')))
+    hist.savefig(str(project_tmp.joinpath('test-rarity-breakdown.png')))
