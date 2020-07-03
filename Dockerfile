@@ -2,18 +2,6 @@ FROM python:3.7.3 as base
 
 WORKDIR /app
 
-RUN apk add --update --no-cache \
-    postgresql \
- && echo ':^)'
-
-RUN apk add --update --no-cache --virtual .build-deps \
-    gcc \
-    libffi-dev \
-    musl-dev \
-    postgresql-dev \
-    python-dev \
- && echo ':^)'
-
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
@@ -33,8 +21,6 @@ RUN mkdir -p kaori/ \
  && $HOME/.poetry/bin/poetry install --no-dev
 
 FROM base as production
-
-RUN apk del .build-deps
 
 COPY . .
 
