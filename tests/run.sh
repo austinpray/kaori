@@ -2,9 +2,15 @@
 
 set -ex
 
+cleanup() {
+  docker-compose stop db-test rabbitmq-test
+}
+
 docker-compose up -d db-test rabbitmq-test
 
-docker-compose run --rm test ./scripts/wait-for db-test:5432 -- echo "db up!"
-docker-compose run --rm test ./scripts/wait-for rabbitmq-test:5672 -- echo "rabbitmq up!"
+trap cleanup EXIT
+
+docker-compose run --rm test ./scripts/wait-for.py DATABASE_URL
+docker-compose run --rm test ./scripts/wait-for.py RABBITMQ_URL
 docker-compose run --rm test alembic upgrade head
 docker-compose run --rm test
