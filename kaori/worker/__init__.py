@@ -5,7 +5,6 @@ import dramatiq
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 from google.cloud import storage
 from google.oauth2 import service_account
-from raven import Client
 from slackclient import SlackClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -26,9 +25,10 @@ logging.basicConfig(level=logging.INFO)
 
 config = get_config(os.path.join(os.getcwd(), 'config/kaori.py'))
 
-sentry = Client(config.SENTRY_URL,
-                # release=DEV_INFO.get('revision'),
-                environment=config.KIZUNA_ENV) if config.SENTRY_URL else None
+if hasattr(config, 'SENTRY_URL') and config.SENTRY_URL:
+    import sentry_sdk
+    sentry_sdk.init(dsn=config.SENTRY_URL,
+                    environment=config.KIZUNA_ENV)
 
 rabbitmq_broker = RabbitmqBroker(url=config.RABBITMQ_URL)
 dramatiq.set_broker(rabbitmq_broker)
