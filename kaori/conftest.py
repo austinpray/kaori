@@ -99,3 +99,26 @@ def project_tmp() -> Path:
     tmp = _project_root.joinpath('static/tmp')
     tmp.mkdir(parents=True, exist_ok=True)
     return tmp
+
+
+@pytest.fixture()
+def find_nested_text():
+    def _fn(d) -> str:
+        text = []
+
+        if type(d) == list:
+            d = enumerate(d)
+
+        if type(d) == dict:
+            d = d.items()
+
+        for k, v in d:
+            if k == 'text' and type(v) == str:
+                text.append(v)
+
+            if type(v) == dict:
+                text.append(_fn(v))
+
+        return "\n".join(text)
+
+    return _fn
