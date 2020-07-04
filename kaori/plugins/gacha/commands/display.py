@@ -34,7 +34,6 @@ class CardDisplayCommand(SlackCommand):
                 return
 
             res = bot.reply(message, **render_card(card))
-            print(res)
 
 
 class CardIndexCommand(SlackCommand):
