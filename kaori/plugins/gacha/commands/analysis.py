@@ -7,9 +7,9 @@ from typing.io import IO
 from kaori.adapters.slack import SlackCommand, SlackMessage, SlackAdapter
 from kaori.plugins.gacha.analysis import rarity_histogram, get_rarity_dist, natures_heatmap, get_nature_matrix
 from kaori.plugins.gacha.engine.core.card import Card as GameCard
-from kaori.plugins.gacha.models.Card import Card
 from kaori.plugins.gacha.tui import card_stats_blocks
 from kaori.skills import DB
+from kaori.plugins.gacha.models.Card import get_game_cards
 
 
 def generate_report_charts(game_cards: List[GameCard]) -> Dict[str, IO]:
@@ -51,15 +51,11 @@ class CardStatsCommand(SlackCommand):
 
         with db.session_scope() as session:
 
-            cards = session.query(Card) \
-                .filter(Card.published == True) \
-                .all()
+            game_cards = get_game_cards(session)
 
-            if not cards:
+            if not game_cards:
                 bot.reply(message, "No cards", create_thread=True)
                 return
-
-            game_cards: List[GameCard] = [card.engine for card in cards]
 
         bot.reply(message,
                   blocks=card_stats_blocks(card_total=len(game_cards)),
