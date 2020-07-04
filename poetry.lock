@@ -706,13 +706,13 @@ description = "Render rich text, tables, progress bars, syntax highlighting, mar
 name = "rich"
 optional = false
 python-versions = ">=3.6,<4.0"
-version = "1.0.0"
+version = "3.0.3"
 
 [package.dependencies]
-colorama = ">=0.4.3,<0.5.0"
+colorama = ">=0.4.0,<0.5.0"
 commonmark = ">=0.9.0,<0.10.0"
 pprintpp = ">=0.4.0,<0.5.0"
-pygments = ">=2.6.1,<3.0.0"
+pygments = ">=2.6.0,<3.0.0"
 typing-extensions = ">=3.7.4,<4.0.0"
 
 [[package]]
@@ -916,7 +916,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["pathlib2", "contextlib2", "unittest2"]
 
 [metadata]
-content-hash = "351882d69dc4b8bb1e7338e32c37e35f8048986daae455473d7c0a9d1f185806"
+content-hash = "b3a10005788761160072858e83ef9adfcc5274784d00be6f15e47d82687a42dc"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -1434,8 +1434,8 @@ requests = [
     {file = "requests-2.22.0.tar.gz", hash = "sha256:11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4"},
 ]
 rich = [
-    {file = "rich-1.0.0-py3-none-any.whl", hash = "sha256:fc6fd0e8840f359fcb6a0f0d88be408a4d5f07fca0e90fd9c938640e5290b560"},
-    {file = "rich-1.0.0.tar.gz", hash = "sha256:c1751e6f5c10f42a2248a3badd2fd496b92cf3b6febcdc80ee1df9f0bc6875f7"},
+    {file = "rich-3.0.3-py3-none-any.whl", hash = "sha256:c76ab7f90aadf97e911b1f7831619538dd2acc92b65e5de591d019949e41e673"},
+    {file = "rich-3.0.3.tar.gz", hash = "sha256:34293d4a083b04bf2685f698c7192a500ffa538b7fc7bab3bedb06eea9546442"},
 ]
 rsa = [
     {file = "rsa-4.6-py3-none-any.whl", hash = "sha256:6166864e23d6b5195a5cfed6cd9fed0fe774e226d8f854fcb23b7bbef0350233"},
