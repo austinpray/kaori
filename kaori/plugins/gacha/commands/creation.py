@@ -13,7 +13,8 @@ from kaori.skills import DB, FileUploader
 from ..engine.core import RarityName, NatureName
 from ..models.Card import InvalidCardName, Card
 from ..models.Image import Image
-from ..tui import render_card, instructions_blocks, query_rarity_blocks, query_nature_blocks, create_are_you_sure_blocks
+from ..tui import render_card, instructions_blocks, query_rarity_blocks, query_nature_blocks, \
+    create_are_you_sure_blocks, create_confirmation_blocks
 from ..utils import tmp_prefix
 
 
@@ -185,6 +186,7 @@ def initialize_card(message: SlackMessage, user: User) -> Card:
 # TODO: Once the functionality is totally built out we can break this into multiple functions etc.
 # BODY: Oh god break this into some functions please, this should be a dispatcher or something.
 # This function is now officially out of control
+# TODO: AGAIN, this is wayyyy out of control. It's got good test coverage but FFS
 def next_card_creation_step(card: Card,
                             session: Session,
                             user_input: str) -> Tuple[Card, List[Union[str, dict]]]:
@@ -245,14 +247,14 @@ def next_card_creation_step(card: Card,
             if rarity:
                 card.set_rarity(rarity)
                 replies.append(':+1:')
-                cursor = 'do_stats_roll'
+                cursor = 'query_confirm_price'
             else:
                 replies.append('Need to specify a rarity')
         elif cursor == 'set_confirm_price':
             # todo: make utility for capturing english affirmatives
             if re.search(r'yes+|yep+|ye+|yeah+', user_input, re.IGNORECASE):
-                card.published = True
-                cursor = 'done'
+                replies.append(':+1:')
+                cursor = 'do_stats_roll'
             # todo: make utility for capturing english negatives
             elif re.search(r'no+|nope+|', user_input, re.IGNORECASE):
                 replies.append("Okay. If you change your mind:\n"
@@ -263,7 +265,8 @@ def next_card_creation_step(card: Card,
 
     if cursor == 'do_stats_roll':
         card.roll_stats()
-        cursor = 'query_confirm_price'
+        card.published = True
+        cursor = 'done'
 
     if cursor.startswith('query_'):
         if cursor == 'query_name':
@@ -287,7 +290,8 @@ def next_card_creation_step(card: Card,
             cursor = 'set_confirm_price'
 
     if cursor == 'done':
-        replies.append('*Congrats!* Your card is created. Enjoy.')
+        are_you_sure_blocks = create_confirmation_blocks(card)
+        replies.append({'blocks': are_you_sure_blocks})
 
     card.creation_cursor = cursor
     return card, replies

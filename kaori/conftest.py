@@ -10,6 +10,7 @@ from slackclient import SlackClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
+from kaori.plugins.kkreds import KKredsTransaction
 from kaori.plugins.users import User
 from .adapters.slack import SlackMessage, SlackAdapter
 from .skills import DB
@@ -89,6 +90,7 @@ def fake_user(test_db: DB) -> User:
 @pytest.fixture()
 def make_fake_user(test_db: DB) -> callable:
     def make_user():
+        session: Session
         with test_db.session_scope() as session:
             name = str(uuid4())
 
@@ -98,10 +100,23 @@ def make_fake_user(test_db: DB) -> callable:
 
             session.add(u)
             session.commit()
+            session.refresh(u)
+            session.expunge(u)
 
             return u
 
     return make_user
+
+
+@pytest.fixture()
+def grant_kkreds(test_db: DB) -> callable:
+    def fn(user: User, kkreds: int):
+        session: Session
+        with test_db.session_scope() as session:
+            session.add(KKredsTransaction(to_user=user, amount=kkreds))
+            session.commit()
+
+    return fn
 
 
 _project_root = Path(__file__).parent.parent
