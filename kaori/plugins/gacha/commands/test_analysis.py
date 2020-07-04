@@ -1,5 +1,7 @@
-from .analysis import generate_report_charts
 import os
+
+from .analysis import generate_report_charts
+
 
 def test_report():
     from ..engine.test.cards import sachiko, matt_morgan, ubu, xss, balanced_S, low_dmg
@@ -13,6 +15,3 @@ def test_report():
 
     assert report['rarity'].tell() > 0
     assert report['natures'].tell() > 0
-
-
-

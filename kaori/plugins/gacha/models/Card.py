@@ -8,6 +8,7 @@ import sqlalchemy.orm
 from sqlalchemy.orm import Session
 
 from kaori.support.models.Models import Base
+from ..engine import Card as GameCard
 from ..engine.core import RarityName, Card as EngineCard, NatureName
 
 
@@ -193,3 +194,14 @@ class Card(Base):
 
     def __repr__(self):
         return f"<Card(id='{self.id}', name='{self.name}' owner='{self.owner}')>"
+
+
+def get_game_cards(session: Session) -> List[GameCard]:
+    cards = session.query(Card) \
+        .filter(Card.published == True) \
+        .all()
+
+    if not cards:
+        return []
+
+    return [card.engine for card in cards if card.engine]

@@ -1,16 +1,15 @@
 import re
 from pathlib import Path
 from unittest.mock import Mock
+from uuid import uuid4
+
 from sqlalchemy.orm import Session
 
-from kaori.plugins.users import User
-
-from kaori.skills import LocalFileUploader
-
 from kaori.adapters.slack import SlackMessage, SlackAdapter
-from .Image import Image
+from kaori.plugins.users import User
+from kaori.skills import LocalFileUploader
 from .Card import Card
-from uuid import uuid4
+from .Image import Image
 
 
 def test_card_hydration(db_session: Session):
@@ -114,7 +113,6 @@ def test_card_search(fake_user: User, db_session: Session):
 
     db_session.query(Card).filter(Card.name.in_((name_tim, name_time))).delete(synchronize_session=False)
 
-
     db_session.commit()
 
     db_session.add(fake_user)
@@ -136,7 +134,6 @@ def test_card_search(fake_user: User, db_session: Session):
                     creation_thread_ts=f'ts-{uniq1}')
 
     card_tim.set_name(name_tim)
-
 
     db_session.add(card_time)
     db_session.add(card_tim)
