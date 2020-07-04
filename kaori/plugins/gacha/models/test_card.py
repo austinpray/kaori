@@ -1,10 +1,9 @@
 from uuid import uuid4
 
-from kaori.plugins.gacha.engine import RarityName
 from sqlalchemy.orm import Session
 
+from kaori.plugins.gacha.engine import RarityName
 from .Card import Card, get_game_cards
-from ...users import User
 
 
 def test_sluggify():
@@ -28,7 +27,7 @@ def test_sluggify():
     assert Card.sluggify_name('Iñtërnâtiônàlizætiøn☃💪') == 'xn--itrntinliztin-vdb0a5exd8ewcyey495hncp2g'
 
 
-def test_get_game_cards(fake_user: User, db_session: Session):
+def test_get_game_cards(make_fake_user, db_session: Session):
     uniq1 = str(uuid4())
     uniq2 = str(uuid4())
     name_a = f'a-{__name__}'
@@ -37,6 +36,8 @@ def test_get_game_cards(fake_user: User, db_session: Session):
     db_session.query(Card).filter(Card.name.in_((name_a, name_b))).delete(synchronize_session=False)
 
     db_session.commit()
+
+    fake_user = make_fake_user()
 
     db_session.add(fake_user)
 
@@ -61,7 +62,6 @@ def test_get_game_cards(fake_user: User, db_session: Session):
     card_a.set_rarity(RarityName.S)
     card_b.set_rarity(RarityName.S)
 
-
     db_session.add(card_a)
     db_session.add(card_b)
     db_session.commit()
@@ -69,6 +69,30 @@ def test_get_game_cards(fake_user: User, db_session: Session):
     game_cards = get_game_cards(db_session)
 
     assert game_cards
+
+    assert uniq1 in [gc.name for gc in game_cards]
+    assert uniq2 in [gc.name for gc in game_cards]
+
+    game_cards = get_game_cards(db_session, user=fake_user.id)
+
+    assert game_cards
+    assert len(game_cards) == 2
+
+    assert uniq1 in [gc.name for gc in game_cards]
+    assert uniq2 in [gc.name for gc in game_cards]
+
+    game_cards = get_game_cards(db_session, user=fake_user)
+
+    assert game_cards
+    assert len(game_cards) == 2
+
+    assert uniq1 in [gc.name for gc in game_cards]
+    assert uniq2 in [gc.name for gc in game_cards]
+
+    game_cards = get_game_cards(db_session, user_slack_id=fake_user.slack_id)
+
+    assert game_cards
+    assert len(game_cards) == 2
 
     assert uniq1 in [gc.name for gc in game_cards]
     assert uniq2 in [gc.name for gc in game_cards]

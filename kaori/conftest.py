@@ -6,11 +6,11 @@ from unittest.mock import Mock, MagicMock
 from uuid import uuid4
 
 import pytest
-from kaori.plugins.users import User
 from slackclient import SlackClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
+from kaori.plugins.users import User
 from .adapters.slack import SlackMessage, SlackAdapter
 from .skills import DB
 
@@ -84,6 +84,24 @@ def fake_user(test_db: DB) -> User:
         session.commit()
 
         return u
+
+
+@pytest.fixture()
+def make_fake_user(test_db: DB) -> callable:
+    def make_user():
+        with test_db.session_scope() as session:
+            name = str(uuid4())
+
+            u = User(name=f'{name}-user',
+                     slack_id=f'{name}-slack-id',
+                     api_key=str(uuid4()))
+
+            session.add(u)
+            session.commit()
+
+            return u
+
+    return make_user
 
 
 _project_root = Path(__file__).parent.parent

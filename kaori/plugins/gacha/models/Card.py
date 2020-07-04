@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Tuple, Optional, Dict, List
+from typing import Tuple, Optional, Dict, List, Union
 
 import sqlalchemy as sa
 import sqlalchemy.orm
@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from kaori.support.models.Models import Base
 from ..engine import Card as GameCard
 from ..engine.core import RarityName, Card as EngineCard, NatureName
+from ...users import User
 
 
 class InvalidCardName(RuntimeError):
@@ -196,10 +197,25 @@ class Card(Base):
         return f"<Card(id='{self.id}', name='{self.name}' owner='{self.owner}')>"
 
 
-def get_game_cards(session: Session) -> List[GameCard]:
-    cards = session.query(Card) \
-        .filter(Card.published == True) \
-        .all()
+_user_identity = Union[User, int]
+
+
+def get_game_cards(session: Session,
+                   user: _user_identity = None,
+                   user_slack_id: str = None) -> List[GameCard]:
+    cards = session.query(Card).join(User).filter(Card.published == True)
+
+    if user:
+        if isinstance(user, User):
+            cards = cards.filter(User.id == user.id)
+        elif isinstance(user, int):
+            cards = cards.filter(User.id == user)
+        else:
+            raise ValueError("Don't know how to handle this user param")
+    elif user_slack_id:
+        cards = cards.filter(User.slack_id == user_slack_id)
+
+    cards = cards.all()
 
     if not cards:
         return []
