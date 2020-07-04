@@ -31,7 +31,7 @@ spec:
         envFrom:
         - configMapRef:
             name: web-config
-        image: us.gcr.io/kizuna-188702/kaori/kaori:master-5d71d21594f53e019eead8bdb9de649649bc131e
+        image: us.gcr.io/kizuna-188702/kaori/kaori:master-f72c55d7bb0fca9c88d963ed7a67e3f2c9180ed5
         imagePullPolicy: Always
         name: api
         ports:
