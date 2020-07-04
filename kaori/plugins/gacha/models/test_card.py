@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from kaori.plugins.gacha.engine import RarityName
 from sqlalchemy.orm import Session
 
 from .Card import Card, get_game_cards
@@ -56,6 +57,9 @@ def test_get_game_cards(fake_user: User, db_session: Session):
                   secondary_nature='baby',
                   creation_thread_channel=f'ch-{uniq1}',
                   creation_thread_ts=f'ts-{uniq1}')
+
+    card_a.set_rarity(RarityName.S)
+    card_b.set_rarity(RarityName.S)
 
 
     db_session.add(card_a)
