@@ -183,6 +183,7 @@ def help_blocks():
         'Show a full card: `kaori show card NAME`',
         'Battle cards: `kaori battle NAME vs. NAME`',
         'Show card creation prices: `kaori card prices`',
+        'Show card statistics: `kaori card stats`',
     ]
     commands = "\n".join([f'• {command}' for command in commands])
     return [
@@ -305,6 +306,18 @@ def create_are_you_sure_blocks(card):
                         "Cards are free to create during the beta!\n"
                         "*Are you sure you want to create this card?*\n"
                         "(ex. `@kaori yes`)"
+            },
+        },
+    ]
+
+
+def card_stats_blocks(card_total: int):
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"We have a total of {card_total} card{'' if card_total == 1 else 's'} created so far!"
             },
         },
     ]
