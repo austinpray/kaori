@@ -40,6 +40,8 @@ def natures_heatmap(matrix: nature_matrix, ts=datetime.now()):
     fig, ax = plt.subplots()
     hm = sns.heatmap(df.pivot('n1', 'n2', 'count'), annot=True, ax=ax)
 
+    ax.set(xlabel='', ylabel='')
+
     hm.set_title(f'Nature Combinations Heatmap ({ts.strftime("%Y-%m-%d")})')
 
     return hm.get_figure()
