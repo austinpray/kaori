@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+import pytest
 from sqlalchemy.orm import Session
 
 from kaori.plugins.gacha.engine import RarityName
@@ -96,3 +97,10 @@ def test_get_game_cards(make_fake_user, db_session: Session):
 
     assert uniq1 in [gc.name for gc in game_cards]
     assert uniq2 in [gc.name for gc in game_cards]
+
+    game_cards = get_game_cards(db_session, user_slack_id=str(uuid4()))
+
+    assert not game_cards
+
+    with pytest.raises(ValueError):
+        get_game_cards(db_session, user=str(uuid4()))
