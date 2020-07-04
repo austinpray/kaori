@@ -1,5 +1,6 @@
 from typing import List, Dict
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 from pandas import DataFrame
 
@@ -20,11 +21,11 @@ def get_rarity_dist(cards: List[GameCard]) -> _dist:
     return hist
 
 
-def rarity_histogram(dist: _dist):
+def rarity_histogram(dist: _dist, ts=datetime.now()):
     df = DataFrame([[rarity, count] for rarity, count in dist.items()], columns=['rarity', 'count'])
     fig, ax = plt.subplots()
     bar = sns.barplot(x='rarity', y='count', data=df, ax=ax)
 
-    bar.set_title("Rarity Counts")
+    bar.set_title(f"Rarity Counts ({ts.strftime('%Y-%m-%d')})")
 
     return bar.get_figure()

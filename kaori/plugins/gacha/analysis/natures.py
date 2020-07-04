@@ -1,5 +1,6 @@
 from typing import List, Dict
 import matplotlib.pyplot as plt
+from datetime import datetime
 
 from kaori.plugins.gacha.engine import NatureName
 
@@ -28,11 +29,11 @@ def get_nature_matrix(cards: List[GameCard]) -> nature_matrix:
     return matrix
 
 
-def natures_heatmap(matrix: nature_matrix):
+def natures_heatmap(matrix: nature_matrix, ts=datetime.now()):
     df = DataFrame(matrix)
     fig, ax = plt.subplots()
     hm = sns.heatmap(df, annot=True, ax=ax)
 
-    hm.set_title('Nature Combinations Heatmap')
+    hm.set_title(f'Nature Combinations Heatmap ({ts.strftime("%Y-%m-%d")})')
 
     return hm.get_figure()
