@@ -3,8 +3,10 @@
 set -ex
 
 cleanup() {
-  docker-compose stop db-test rabbitmq-test
+  docker-compose rm -fsv db-test rabbitmq-test
 }
+
+cleanup
 
 docker-compose up -d db-test rabbitmq-test
 
