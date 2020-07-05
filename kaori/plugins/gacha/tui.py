@@ -14,6 +14,10 @@ _readme_link = f"<{_readme_url}|README>"
 _card_guide_link = f'<{_readme_url}#card-guide|Card Guide>'
 
 
+def _percent(number) -> str:
+    return f'{round(number * 100)}%'
+
+
 def card_meta_block(card: Card, with_image=True):
     block = {
         "type": "section",
@@ -22,6 +26,7 @@ def card_meta_block(card: Card, with_image=True):
             "text": '\n'.join([
                 f"*{'(no name)' if card.name.startswith(tmp_prefix) else card.name}*",
                 f"_{card.engine.subtitle}_" if card.engine else '(stats pending)',
+                "\n",
                 card.description if card.description else '_(no description)_'
             ])
         },
@@ -37,7 +42,42 @@ def card_meta_block(card: Card, with_image=True):
     return block
 
 
+def render_stats_blocks(card: Card) -> List[dict]:
+    if not card.is_complete:
+        return [{
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"_stats pending..._"
+                },
+            ]
+        }]
+
+    eng = card.engine
+
+    return [
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f'*{title}*\n`{text[0]:<4} {"(" + text[1] + ")":>11}`'
+                } for title, text in {
+                    'HP':  (eng.max_hp, f'{card.stupid} stupid'),
+                    'EVA': (_percent(eng.evasion), f'{card.baby} baby'),
+                    'AMR': (eng.armor, f'{card.clown} clown'),
+                    'DMG': (eng.dmg, f'{card.horny} horny'),
+                    'CRT': (_percent(eng.crit), f'{card.cursed} cursed'),
+                    'SPD': (round(eng.speed, 2), f'{card.feral} feral'),
+                }.items()
+            ],
+        },
+    ]
+
+
 def render_card(card: Card, preview_header=False) -> dict:
+    stats_blocks = render_stats_blocks(card)
     blocks = [
         {
             "type": "image",
@@ -45,48 +85,8 @@ def render_card(card: Card, preview_header=False) -> dict:
             "alt_text": card.name if not card.description else card.description
         },
         card_meta_block(card, with_image=False),
-        {
-            "type": "section",
-            "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Rarity:* {card.rarity_string()}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Max HP:* {card.engine.max_hp}" if card.engine else '?'
-                },
-            ]
-        },
-        {
-            "type": "section",
-            "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Stupid:* {card.stupid}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Baby:* {card.baby}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Clown:* {card.clown}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Horny:* {card.horny}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Cursed:* {card.cursed}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Feral:* {card.feral}"
-                },
-            ],
-        },
+        {"type": "divider"},
+        *stats_blocks,
     ]
 
     if preview_header:
