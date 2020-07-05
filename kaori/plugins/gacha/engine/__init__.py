@@ -2,7 +2,7 @@ import os
 
 from .core import *
 
-HP_MAX = 100
+HP_MAX = 200
 EVA_MAX = 0.9
 ARMOR_MAX = 10
 DAMAGE_MAX = 100
