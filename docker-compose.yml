@@ -47,6 +47,7 @@ services:
   worker:
     <<: *kaori
     command: ["dramatiq-gevent", "kaori.worker", "-p", "2", "-t", "8"]
+    restart: on-failure
     depends_on:
       - db
       - rabbitmq
@@ -54,6 +55,7 @@ services:
   api:
     <<: *kaori
     command: ["gunicorn", "--config", "python:config.gunicorn_api", "kaori.api:app"]
+    restart: on-failure
     depends_on:
       - db
       - rabbitmq
