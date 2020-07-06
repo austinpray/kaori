@@ -296,7 +296,6 @@ def battle_blocks(attacker: Card, defender: Card, battle_url: str):
 
 def create_are_you_sure_blocks(card):
     return [
-        *render_card(card)['blocks'],
         {
             "type": "section",
             "text": {
@@ -306,6 +305,19 @@ def create_are_you_sure_blocks(card):
                         "Cards are free to create during the beta!\n"
                         "*Are you sure you want to create this card?*\n"
                         "(ex. `@kaori yes`)"
+            },
+        },
+    ]
+
+
+def create_confirmation_blocks(card):
+    return [
+        *render_card(card)['blocks'],
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Congrats!* Your card was created. Enjoy."
             },
         },
     ]
