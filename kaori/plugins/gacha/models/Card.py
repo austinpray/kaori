@@ -138,9 +138,32 @@ class Card(Base):
         self.name = name
         self.slug = self.sluggify_name(name)
 
+    @property
+    def is_complete(self) -> bool:
+        required_attrs = [
+            self.id,
+            self.name,
+            self.rarity,
+            self.primary_nature,
+            self.secondary_nature,
+            self.stupid,
+            self.baby,
+            self.clown,
+            self.horny,
+            self.cursed,
+            self.feral,
+        ]
+        for required_value in required_attrs:
+            if not required_value:
+                return False
+
+        return True
+
     # TODO get rid of this optional return type somehow
     @property
     def engine(self) -> Optional[EngineCard]:
+
+        # TODO: make this use self.is_complete
         required_attrs = [self.id, self.name, self.rarity, self.primary_nature, self.secondary_nature]
         for required_value in required_attrs:
             if not required_value:
