@@ -33,7 +33,7 @@ class CardDisplayCommand(SlackCommand):
                 bot.reply(message, 'no card with that name', create_thread=True)
                 return
 
-            res = bot.reply(message, **render_card(card))
+            bot.reply(message, **render_card(card))
 
 
 class CardIndexCommand(SlackCommand):
