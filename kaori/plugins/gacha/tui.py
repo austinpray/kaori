@@ -26,7 +26,6 @@ def card_meta_block(card: Card, with_image=True):
             "text": '\n'.join([
                 f"*{'(no name)' if card.name.startswith(tmp_prefix) else card.name}*",
                 f"_{card.engine.subtitle}_" if card.engine else '(stats pending)',
-                "\n",
                 card.description if card.description else '_(no description)_'
             ])
         },
