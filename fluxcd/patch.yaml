@@ -13,7 +13,7 @@ spec:
             - --memcached-hostname=memcached.flux
             - --memcached-service=
             - --ssh-keygen-dir=/var/fluxd/keygen
-            - --git-branch=master
+            - --git-branch=gitops
             - --git-path=workloads
             - --git-user=kaori-chan
             - --git-email=kaori-chan@users.noreply.github.com
