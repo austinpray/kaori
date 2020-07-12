@@ -108,10 +108,14 @@ class Card(Base):
     def rarity_prices() -> Dict[RarityName, int]:
         return {
             RarityName.S: 1000,
-            RarityName.A: 403,
-            RarityName.B: 181,
-            RarityName.C: 81,
-            RarityName.F: 7,
+            RarityName.A: 0,
+            RarityName.B: 0,
+            RarityName.C: 0,
+            RarityName.F: 0,
+            # RarityName.A: 403,
+            # RarityName.B: 181,
+            # RarityName.C: 81,
+            # RarityName.F: 7,
         }
 
     def price(self) -> int:
