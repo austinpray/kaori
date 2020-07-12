@@ -1,7 +1,7 @@
 # カオリ
 
 [![CI](https://github.com/austinpray/kaori/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/austinpray/kaori/actions?query=workflow%3ACI+event%3Apush+branch%3Amaster)
-[![gitops](https://img.shields.io/badge/gitops-enabled-success.svg)](https://github.com/austinpray/kaori-gitops)
+[![gitops](https://img.shields.io/badge/GitOps-enabled-success.svg)](https://github.com/austinpray/kaori-gitops)
 [![codecov](https://codecov.io/gh/austinpray/kaori/branch/master/graph/badge.svg)](https://codecov.io/gh/austinpray/kaori)
 
 
