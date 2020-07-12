@@ -1,5 +1,0 @@
-namespace: kaori
-resources:
-  - namespace.yml
-  - api-deployment.yaml
-  - worker-deployment.yaml

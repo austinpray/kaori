@@ -1,6 +1,7 @@
 # カオリ
 
 [![CI](https://github.com/austinpray/kaori/workflows/CI/badge.svg?branch=master&event=push)](https://github.com/austinpray/kaori/actions?query=workflow%3ACI+event%3Apush+branch%3Amaster)
+[![gitops](https://img.shields.io/badge/gitops-enabled-success.svg)](https://github.com/austinpray/kaori-gitops)
 [![codecov](https://codecov.io/gh/austinpray/kaori/branch/master/graph/badge.svg)](https://codecov.io/gh/austinpray/kaori)
 
 
@@ -148,5 +149,14 @@ If you want an interactive shell to run tests in:
 docker-compose run test sh -l
 ```
 
-[ngrok]: https://ngrok.com/
+## Deployment
 
+In general, I am not too picky about where or how I am deployed.
+All my services are [twelve-factor apps](https://12factor.net/). So they should be easy to run anywhere!
+
+I currently run inside a Kubernetes cluster as [a set of deployments](https://github.com/austinpray/kaori-gitops/tree/master/workloads).
+I manage continuous delivery and the state of the Kubernetes cluster GitOps-style through [fluxcd][].
+My production GitOps repo is available over at: [austinpray/kaori-gitops](https://github.com/austinpray/kaori-gitops).
+
+[ngrok]: https://ngrok.com/
+[fluxcd]: https://github.com/fluxcd/flux
