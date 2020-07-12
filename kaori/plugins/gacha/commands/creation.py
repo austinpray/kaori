@@ -187,6 +187,7 @@ def initialize_card(message: SlackMessage, user: User) -> Card:
 # BODY: Oh god break this into some functions please, this should be a dispatcher or something.
 # This function is now officially out of control
 # TODO: AGAIN, this is wayyyy out of control. It's got good test coverage but FFS
+# TODO: This function is out of control and needs to be broken up. too bad!
 def next_card_creation_step(card: Card,
                             session: Session,
                             user_input: str) -> Tuple[Card, List[Union[str, dict]]]:

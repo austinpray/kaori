@@ -289,14 +289,13 @@ def battle_blocks(attacker: Card, defender: Card, battle_url: str):
 
 
 def create_are_you_sure_blocks(card):
+    cost = f"This card will cost you {card.price():,} kkreds to create"
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                # TODO beta notice
-                "text": f"~This card will cost {card.price()} kkreds~ "
-                        "Cards are free to create during the beta!\n"
+                "text": f"{cost} "
                         "*Are you sure you want to create this card?*\n"
                         "(ex. `@kaori yes`)"
             },
