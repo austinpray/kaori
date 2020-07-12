@@ -28,6 +28,7 @@ class Card(Base):
 
     # creation related
     owner = sa.Column('owner', sa.Integer, sa.ForeignKey('users.id'), nullable=False)
+    owner_user = sa.orm.relationship('User')
     published = sa.Column('published', sa.Boolean, nullable=False, default=False)
     creation_thread_channel = sa.Column('creation_thread_channel', sa.Text, nullable=False)
     creation_thread_ts = sa.Column('creation_thread_ts', sa.Text, nullable=False, unique=True)
