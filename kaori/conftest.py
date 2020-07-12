@@ -149,7 +149,7 @@ def find_nested_text():
             if k == 'text' and type(v) == str:
                 text.append(v)
 
-            if type(v) == dict:
+            if type(v) == dict or type(v) == list:
                 text.append(_fn(v))
 
         return "\n".join(text)
