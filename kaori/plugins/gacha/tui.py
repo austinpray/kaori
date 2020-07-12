@@ -63,7 +63,7 @@ def render_stats_blocks(card: Card) -> List[dict]:
                     "type": "mrkdwn",
                     "text": f'*{title}*\n`{text[0]:<4} {"(" + text[1] + ")":>11}`'
                 } for title, text in {
-                    'HP':  (eng.max_hp, f'{card.stupid} stupid'),
+                    'HP': (eng.max_hp, f'{card.stupid} stupid'),
                     'EVA': (_percent(eng.evasion), f'{card.baby} baby'),
                     'AMR': (eng.armor, f'{card.clown} clown'),
                     'DMG': (eng.dmg, f'{card.horny} horny'),
@@ -113,8 +113,6 @@ def instructions_blocks(bot_name: str) -> List[dict]:
         f"• To avoid a fiasco *I will only respond to direct mentions* and I will only respond to you.",
         f"• *To quit card creation* just send `{bot_name} quit`",
         f"• *To start over* just send `{bot_name} start over`",
-        # TODO: beta notice
-        "• *Beta Notice:* cards are currently free to create.",
     ]
 
     return [
@@ -133,24 +131,21 @@ def instructions_blocks(bot_name: str) -> List[dict]:
                 "text": '\n'.join(bullets)
             }
         },
-        # TODO: beta notice
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*Beta Notice:* cards are currently free to create. They might be cleared from the database "
-                        "at some point when the beta period ends."
-            },
-        },
     ]
+
+
+def price_string(rank, price):
+    if price == 0:
+        return f"*{rank}:* _FREE_"
+
+    return f"*{rank}:* {price:,} kkreds"
 
 
 def price_blocks():
     prices = [
         {
             "type": "mrkdwn",
-            # "text": f"*{rank}:* {price} kkreds",
-            "text": f"*{rank}:* ~{price} kkreds~ _free_",
+            "text": price_string(rank=rank, price=price)
         } for rank, price in Card.rarity_prices().items()
     ]
     return [
@@ -294,14 +289,13 @@ def battle_blocks(attacker: Card, defender: Card, battle_url: str):
 
 
 def create_are_you_sure_blocks(card):
+    cost = f"This card will cost you {card.price():,} kkreds to create"
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                # TODO beta notice
-                "text": f"~This card will cost {card.price()} kkreds~ "
-                        "Cards are free to create during the beta!\n"
+                "text": f"{cost} "
                         "*Are you sure you want to create this card?*\n"
                         "(ex. `@kaori yes`)"
             },

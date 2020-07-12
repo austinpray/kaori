@@ -3,6 +3,8 @@ import re
 from typing import Tuple, List, Optional, Union
 from uuid import uuid4
 
+from kaori.plugins.kkreds import get_kkred_balance, KKredsTransaction
+
 from kaori.support.slacktools.message import extract_mentions
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -130,7 +132,8 @@ class UpdateCardCommand(SlackCommand):
 
                 card, replies = next_card_creation_step(card=card,
                                                         user_input=user_input,
-                                                        session=session)
+                                                        session=session,
+                                                        kaori_user=User.get_by_slack_id(session, bot.id))
 
                 refresh_card_preview(card, bot)
 
@@ -181,15 +184,37 @@ def initialize_card(message: SlackMessage, user: User) -> Card:
     return card
 
 
+def charge_for_card(card: Card, session: Session, kaori_user: User) -> Tuple[bool, str]:
+    if card.price() == 0:
+        return True, 'Card is free!'
+
+    # TODO: any time we are dealing with balance we should acquire a lock. Too lazy to do that rn. too bad!
+    balance = get_kkred_balance(user=card.owner_user, session=session)
+
+    if balance < card.price():
+        return False, 'You do not have enough kkreds to pay for this card.'
+
+    transaction = KKredsTransaction(from_user=card.owner_user,
+                                    to_user=kaori_user,
+                                    amount=card.price())
+
+    session.add(transaction)
+    session.commit()
+
+    return True, 'Successfully paid for card!'
+
+
 # This is essentially a state machine.
 # Right now this is spaghetti code for prototyping purposes.
 # TODO: Once the functionality is totally built out we can break this into multiple functions etc.
 # BODY: Oh god break this into some functions please, this should be a dispatcher or something.
 # This function is now officially out of control
 # TODO: AGAIN, this is wayyyy out of control. It's got good test coverage but FFS
+# TODO: This function is out of control and needs to be broken up. too bad!
 def next_card_creation_step(card: Card,
                             session: Session,
-                            user_input: str) -> Tuple[Card, List[Union[str, dict]]]:
+                            user_input: str,
+                            kaori_user: User) -> Tuple[Card, List[Union[str, dict]]]:
     replies = []
 
     if user_input == 'quit':
@@ -252,9 +277,13 @@ def next_card_creation_step(card: Card,
                 replies.append('Need to specify a rarity')
         elif cursor == 'set_confirm_price':
             # todo: make utility for capturing english affirmatives
-            if re.search(r'yes+|yep+|ye+|yeah+', user_input, re.IGNORECASE):
+            if re.search(r'yes+|yep+|ye+|yeah+|pay|try again', user_input, re.IGNORECASE):
                 replies.append(':+1:')
-                cursor = 'do_stats_roll'
+                success, reason = charge_for_card(card=card, session=session, kaori_user=kaori_user)
+                if success:
+                    cursor = 'do_stats_roll'
+                else:
+                    replies.append(reason + ' To attempt payment again: send `@kaori try again`')
             # todo: make utility for capturing english negatives
             elif re.search(r'no+|nope+|', user_input, re.IGNORECASE):
                 replies.append("Okay. If you change your mind:\n"

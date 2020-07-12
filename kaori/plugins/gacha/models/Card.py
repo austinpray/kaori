@@ -28,6 +28,7 @@ class Card(Base):
 
     # creation related
     owner = sa.Column('owner', sa.Integer, sa.ForeignKey('users.id'), nullable=False)
+    owner_user = sa.orm.relationship('User')
     published = sa.Column('published', sa.Boolean, nullable=False, default=False)
     creation_thread_channel = sa.Column('creation_thread_channel', sa.Text, nullable=False)
     creation_thread_ts = sa.Column('creation_thread_ts', sa.Text, nullable=False, unique=True)
@@ -108,10 +109,14 @@ class Card(Base):
     def rarity_prices() -> Dict[RarityName, int]:
         return {
             RarityName.S: 1000,
-            RarityName.A: 403,
-            RarityName.B: 181,
-            RarityName.C: 81,
-            RarityName.F: 7,
+            RarityName.A: 0,
+            # RarityName.A: 403,
+            RarityName.B: 0,
+            # RarityName.B: 181,
+            RarityName.C: 0,
+            # RarityName.C: 81,
+            RarityName.F: 0,
+            # RarityName.F: 7,
         }
 
     def price(self) -> int:
