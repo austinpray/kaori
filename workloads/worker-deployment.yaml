@@ -33,7 +33,7 @@ spec:
         envFrom:
         - configMapRef:
             name: web-config
-        image: us.gcr.io/kizuna-188702/kaori/kaori:master-982bf6bb2e247b6473f78f6f7929969cecdaeee0
+        image: us.gcr.io/kizuna-188702/kaori/kaori:master-4a4f23c2a72e198b62ab204e15279e1aafff2d53
         imagePullPolicy: Always
         name: worker
       restartPolicy: Always
