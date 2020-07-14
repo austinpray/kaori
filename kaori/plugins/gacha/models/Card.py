@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 import re
-from typing import Tuple, Optional, Dict
+from typing import Tuple, Optional, Dict, List, Union
 
 import sqlalchemy as sa
 import sqlalchemy.orm
+from sqlalchemy.orm import Session
 
 from kaori.support.models.Models import Base
+from ..engine import Card as GameCard
 from ..engine.core import RarityName, Card as EngineCard, NatureName
+from ...users import User
 
 
 class InvalidCardName(RuntimeError):
@@ -23,6 +28,7 @@ class Card(Base):
 
     # creation related
     owner = sa.Column('owner', sa.Integer, sa.ForeignKey('users.id'), nullable=False)
+    owner_user = sa.orm.relationship('User')
     published = sa.Column('published', sa.Boolean, nullable=False, default=False)
     creation_thread_channel = sa.Column('creation_thread_channel', sa.Text, nullable=False)
     creation_thread_ts = sa.Column('creation_thread_ts', sa.Text, nullable=False, unique=True)
@@ -86,17 +92,31 @@ class Card(Base):
 
     @staticmethod
     def sluggify_name(name: str) -> str:
-        return '-'.join(name.strip().split()).lower().encode('idna').decode('utf-8')
+        # TODO: oof: using idna was a mistake, it's limited to 63 character chunks
+        # this is gonna cause undefined behavior at the chunk boundaries with multibyte characters.
+        # also good luck generating n-grams for search.
+        parts = [
+            ''.join([
+                chunk.encode('idna').decode('utf-8')
+                for chunk in re.findall(r'.{1,63}', part)
+            ])
+            for part in name.strip().split()
+        ]
+        return '-'.join(parts).lower()
 
     # todo: too complicated
     @staticmethod
     def rarity_prices() -> Dict[RarityName, int]:
         return {
             RarityName.S: 1000,
-            RarityName.A: 403,
-            RarityName.B: 181,
-            RarityName.C: 81,
-            RarityName.F: 7,
+            RarityName.A: 0,
+            # RarityName.A: 403,
+            RarityName.B: 0,
+            # RarityName.B: 181,
+            RarityName.C: 0,
+            # RarityName.C: 81,
+            RarityName.F: 0,
+            # RarityName.F: 7,
         }
 
     def price(self) -> int:
@@ -123,9 +143,32 @@ class Card(Base):
         self.name = name
         self.slug = self.sluggify_name(name)
 
+    @property
+    def is_complete(self) -> bool:
+        required_attrs = [
+            self.id,
+            self.name,
+            self.rarity,
+            self.primary_nature,
+            self.secondary_nature,
+            self.stupid,
+            self.baby,
+            self.clown,
+            self.horny,
+            self.cursed,
+            self.feral,
+        ]
+        for required_value in required_attrs:
+            if not required_value:
+                return False
+
+        return True
+
     # TODO get rid of this optional return type somehow
     @property
     def engine(self) -> Optional[EngineCard]:
+
+        # TODO: make this use self.is_complete
         required_attrs = [self.id, self.name, self.rarity, self.primary_nature, self.secondary_nature]
         for required_value in required_attrs:
             if not required_value:
@@ -152,5 +195,57 @@ class Card(Base):
             **maybe,
         )
 
+    @classmethod
+    def search_for(cls, session: Session, search: str) -> List[Card]:
+        slug = cls.sluggify_name(search)
+        return session.query(cls) \
+            .filter(cls.published == True) \
+            .filter(cls.slug.ilike(f'%{slug}%')) \
+            .all()
+
+    @classmethod
+    def search_for_one(cls, session: Session, search: str) -> Optional[Card]:
+        slug = cls.sluggify_name(search)
+
+        results = cls.search_for(session, search)
+
+        if not results:
+            return None
+
+        # return exact match if it exists
+        for result in results:
+            if result.slug == slug:
+                return result
+
+        # return shortest match
+        results.sort(key=lambda card: len(card.slug))
+        return results[0]
+
     def __repr__(self):
         return f"<Card(id='{self.id}', name='{self.name}' owner='{self.owner}')>"
+
+
+_user_identity = Union[User, int]
+
+
+def get_game_cards(session: Session,
+                   user: _user_identity = None,
+                   user_slack_id: str = None) -> List[GameCard]:
+    cards = session.query(Card).join(User).filter(Card.published == True)
+
+    if user:
+        if isinstance(user, User):
+            cards = cards.filter(User.id == user.id)
+        elif isinstance(user, int):
+            cards = cards.filter(User.id == user)
+        else:
+            raise ValueError("Don't know how to handle this user param")
+    elif user_slack_id:
+        cards = cards.filter(User.slack_id == user_slack_id)
+
+    cards = cards.all()
+
+    if not cards:
+        return []
+
+    return [card.engine for card in cards if card.engine]

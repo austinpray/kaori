@@ -14,6 +14,10 @@ _readme_link = f"<{_readme_url}|README>"
 _card_guide_link = f'<{_readme_url}#card-guide|Card Guide>'
 
 
+def _percent(number) -> str:
+    return f'{round(number * 100)}%'
+
+
 def card_meta_block(card: Card, with_image=True):
     block = {
         "type": "section",
@@ -37,7 +41,42 @@ def card_meta_block(card: Card, with_image=True):
     return block
 
 
+def render_stats_blocks(card: Card) -> List[dict]:
+    if not card.is_complete:
+        return [{
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"_stats pending..._"
+                },
+            ]
+        }]
+
+    eng = card.engine
+
+    return [
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f'*{title}*\n`{text[0]:<4} {"(" + text[1] + ")":>11}`'
+                } for title, text in {
+                    'HP': (eng.max_hp, f'{card.stupid} stupid'),
+                    'EVA': (_percent(eng.evasion), f'{card.baby} baby'),
+                    'AMR': (eng.armor, f'{card.clown} clown'),
+                    'DMG': (eng.dmg, f'{card.horny} horny'),
+                    'CRT': (_percent(eng.crit), f'{card.cursed} cursed'),
+                    'SPD': (round(eng.speed, 2), f'{card.feral} feral'),
+                }.items()
+            ],
+        },
+    ]
+
+
 def render_card(card: Card, preview_header=False) -> dict:
+    stats_blocks = render_stats_blocks(card)
     blocks = [
         {
             "type": "image",
@@ -45,48 +84,8 @@ def render_card(card: Card, preview_header=False) -> dict:
             "alt_text": card.name if not card.description else card.description
         },
         card_meta_block(card, with_image=False),
-        {
-            "type": "section",
-            "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Rarity:* {card.rarity_string()}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Max HP:* {card.engine.max_hp}" if card.engine else '?'
-                },
-            ]
-        },
-        {
-            "type": "section",
-            "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Stupid:* {card.stupid}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Baby:* {card.baby}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Clown:* {card.clown}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Horny:* {card.horny}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Cursed:* {card.cursed}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Feral:* {card.feral}"
-                },
-            ],
-        },
+        {"type": "divider"},
+        *stats_blocks,
     ]
 
     if preview_header:
@@ -114,8 +113,6 @@ def instructions_blocks(bot_name: str) -> List[dict]:
         f"• To avoid a fiasco *I will only respond to direct mentions* and I will only respond to you.",
         f"• *To quit card creation* just send `{bot_name} quit`",
         f"• *To start over* just send `{bot_name} start over`",
-        # TODO: beta notice
-        "• *Beta Notice:* cards are currently free to create.",
     ]
 
     return [
@@ -134,24 +131,21 @@ def instructions_blocks(bot_name: str) -> List[dict]:
                 "text": '\n'.join(bullets)
             }
         },
-        # TODO: beta notice
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*Beta Notice:* cards are currently free to create. They might be cleared from the database "
-                        "at some point when the beta period ends."
-            },
-        },
     ]
+
+
+def price_string(rank, price):
+    if price == 0:
+        return f"*{rank}:* _FREE_"
+
+    return f"*{rank}:* {price:,} kkreds"
 
 
 def price_blocks():
     prices = [
         {
             "type": "mrkdwn",
-            # "text": f"*{rank}:* {price} kkreds",
-            "text": f"*{rank}:* ~{price} kkreds~ _free_",
+            "text": price_string(rank=rank, price=price)
         } for rank, price in Card.rarity_prices().items()
     ]
     return [
@@ -183,6 +177,7 @@ def help_blocks():
         'Show a full card: `kaori show card NAME`',
         'Battle cards: `kaori battle NAME vs. NAME`',
         'Show card creation prices: `kaori card prices`',
+        'Show card statistics: `kaori card stats`',
     ]
     commands = "\n".join([f'• {command}' for command in commands])
     return [
@@ -294,17 +289,40 @@ def battle_blocks(attacker: Card, defender: Card, battle_url: str):
 
 
 def create_are_you_sure_blocks(card):
+    cost = f"This card will cost you {card.price():,} kkreds to create"
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"{cost} "
+                        "*Are you sure you want to create this card?*\n"
+                        "(ex. `@kaori yes`)"
+            },
+        },
+    ]
+
+
+def create_confirmation_blocks(card):
     return [
         *render_card(card)['blocks'],
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                # TODO beta notice
-                "text": f"~This card will cost {card.price()} kkreds~ "
-                        "Cards are free to create during the beta!\n"
-                        "*Are you sure you want to create this card?*\n"
-                        "(ex. `@kaori yes`)"
+                "text": "*Congrats!* Your card was created. Enjoy."
+            },
+        },
+    ]
+
+
+def card_stats_blocks(card_total: int):
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"We have a total of {card_total} card{'' if card_total == 1 else 's'} created so far!"
             },
         },
     ]
