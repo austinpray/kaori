@@ -146,7 +146,7 @@ docker-compose run test
 If you want an interactive shell to run tests in:
 
 ```bash
-docker-compose run test sh -l
+docker-compose run test bash -l
 ```
 
 ## Deployment
