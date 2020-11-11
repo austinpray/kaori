@@ -29,7 +29,8 @@ if hasattr(config, 'SENTRY_URL') and config.SENTRY_URL:  # pragma: no cover
     import sentry_sdk
 
     sentry_sdk.init(dsn=config.SENTRY_URL,
-                    environment=config.KIZUNA_ENV)
+                    environment=config.KIZUNA_ENV,
+                    traces_sample_rate=1)
 
 rabbitmq_broker = RabbitmqBroker(url=config.RABBITMQ_URL)
 dramatiq.set_broker(rabbitmq_broker)
