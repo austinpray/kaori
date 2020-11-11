@@ -16,25 +16,24 @@ spec:
       app: api
   template:
     metadata:
-      creationTimestamp:
       labels:
         app: api
     spec:
       containers:
-      - command:
-        - gunicorn
-        args:
-        - --config
-        - python:config.gunicorn_api
-        - kaori.api:app
-        envFrom:
-        - configMapRef:
-            name: web-config
-        image: us.gcr.io/kizuna-188702/kaori/kaori:master-f2b97241c71ce3c9d2a09a5945bca7e10d40dcbb
-        imagePullPolicy: Always
-        name: api
-        ports:
-        - containerPort: 8001
+        - command:
+            - gunicorn
+          args:
+            - --config
+            - python:config.gunicorn_api
+            - kaori.api:app
+          envFrom:
+            - configMapRef:
+                name: web-config
+          image: us.gcr.io/kizuna-188702/kaori/kaori:master-f2b97241c71ce3c9d2a09a5945bca7e10d40dcbb
+          imagePullPolicy: Always
+          name: api
+          ports:
+            - containerPort: 8001
       restartPolicy: Always
       tolerations:
         - key: cloud.google.com/gke-preemptible

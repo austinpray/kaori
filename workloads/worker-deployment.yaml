@@ -16,25 +16,24 @@ spec:
       app: worker
   template:
     metadata:
-      creationTimestamp:
       labels:
         app: worker
     spec:
       containers:
-      - command:
-        - dramatiq-gevent
-        args:
-        - kaori.worker
-        - -p
-        - "2"
-        - -t
-        - "8"
-        envFrom:
-        - configMapRef:
-            name: web-config
-        image: us.gcr.io/kizuna-188702/kaori/kaori:master-f2b97241c71ce3c9d2a09a5945bca7e10d40dcbb
-        imagePullPolicy: Always
-        name: worker
+        - command:
+            - dramatiq-gevent
+          args:
+            - kaori.worker
+            - -p
+            - "2"
+            - -t
+            - "8"
+          envFrom:
+            - configMapRef:
+                name: web-config
+          image: us.gcr.io/kizuna-188702/kaori/kaori:master-f2b97241c71ce3c9d2a09a5945bca7e10d40dcbb
+          imagePullPolicy: Always
+          name: worker
       restartPolicy: Always
       tolerations:
         - key: cloud.google.com/gke-preemptible
