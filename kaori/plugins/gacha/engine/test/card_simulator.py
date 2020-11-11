@@ -4,7 +4,7 @@ import arrow
 import mdv
 
 from .cards import *
-from .utils import collect_cards
+from .utils import collect_cards, card_markdown
 from .. import *
 from ..utils import trim_doc
 
@@ -55,7 +55,7 @@ def run_card_simulator(raw=False):
         p()
         card: Card
         for card in cards:
-            p(card.to_markdown())
+            p(card_markdown(card))
         p(f"</details>" if raw else "")
         p()
 

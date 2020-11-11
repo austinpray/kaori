@@ -3,7 +3,9 @@ import re
 from typing import Tuple, List, Optional, Union
 from uuid import uuid4
 
-from slacktools.message import extract_mentions
+from kaori.plugins.kkreds import get_kkred_balance, KKredsTransaction
+
+from kaori.support.slacktools.message import extract_mentions
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
@@ -13,7 +15,8 @@ from kaori.skills import DB, FileUploader
 from ..engine.core import RarityName, NatureName
 from ..models.Card import InvalidCardName, Card
 from ..models.Image import Image
-from ..tui import render_card, instructions_blocks, query_rarity_blocks, query_nature_blocks
+from ..tui import render_card, instructions_blocks, query_rarity_blocks, query_nature_blocks, \
+    create_are_you_sure_blocks, create_confirmation_blocks
 from ..utils import tmp_prefix
 
 
@@ -50,14 +53,14 @@ class CreateCardCommand(SlackCommand):
                     session.add(card)
                     session.commit()
 
+                draft_message = bot.reply(message,
+                                          **render_card(card=card, preview_header=True),
+                                          create_thread=True,
+                                          reply_broadcast=True)
+
                 bot.reply(message,
                           blocks=instructions_blocks(bot_name=bot.mention_string),
                           create_thread=True)
-
-                draft_message = bot.reply(message,
-                                          **render_card(card=card),
-                                          create_thread=True,
-                                          reply_broadcast=True)
 
                 if not draft_message.get('ok'):
                     print(draft_message)
@@ -129,7 +132,8 @@ class UpdateCardCommand(SlackCommand):
 
                 card, replies = next_card_creation_step(card=card,
                                                         user_input=user_input,
-                                                        session=session)
+                                                        session=session,
+                                                        kaori_user=User.get_by_slack_id(session, bot.id))
 
                 refresh_card_preview(card, bot)
 
@@ -161,7 +165,7 @@ def refresh_card_preview(card: Card, bot: SlackAdapter):
                 'channel': card.creation_thread_channel
             }
         }),
-        **render_card(card)
+        **render_card(card, preview_header=True)
     )
     if not res['ok']:
         print(res)
@@ -180,14 +184,37 @@ def initialize_card(message: SlackMessage, user: User) -> Card:
     return card
 
 
+def charge_for_card(card: Card, session: Session, kaori_user: User) -> Tuple[bool, str]:
+    if card.price() == 0:
+        return True, 'Card is free!'
+
+    # TODO: any time we are dealing with balance we should acquire a lock. Too lazy to do that rn. too bad!
+    balance = get_kkred_balance(user=card.owner_user, session=session)
+
+    if balance < card.price():
+        return False, 'You do not have enough kkreds to pay for this card.'
+
+    transaction = KKredsTransaction(from_user=card.owner_user,
+                                    to_user=kaori_user,
+                                    amount=card.price())
+
+    session.add(transaction)
+    session.commit()
+
+    return True, 'Successfully paid for card!'
+
+
 # This is essentially a state machine.
 # Right now this is spaghetti code for prototyping purposes.
 # TODO: Once the functionality is totally built out we can break this into multiple functions etc.
 # BODY: Oh god break this into some functions please, this should be a dispatcher or something.
 # This function is now officially out of control
+# TODO: AGAIN, this is wayyyy out of control. It's got good test coverage but FFS
+# TODO: This function is out of control and needs to be broken up. too bad!
 def next_card_creation_step(card: Card,
                             session: Session,
-                            user_input: str) -> Tuple[Card, List[Union[str, dict]]]:
+                            user_input: str,
+                            kaori_user: User) -> Tuple[Card, List[Union[str, dict]]]:
     replies = []
 
     if user_input == 'quit':
@@ -241,21 +268,22 @@ def next_card_creation_step(card: Card,
                 replies.append('You need to specify some natures.')
 
         elif cursor == 'set_rarity':
-            pattern = f'({RarityName.to_regex()})(?:-tier)?'
-            match = None
-            for token in user_input.split():
-                match = re.match(pattern, token)
-                if match:
-                    card.set_rarity(RarityName(match.group(1)))
-                    replies.append(':+1:')
-                    cursor = 'do_stats_roll'
-            if not match:
+            rarity = user_extract_rarity(user_input)
+            if rarity:
+                card.set_rarity(rarity)
+                replies.append(':+1:')
+                cursor = 'query_confirm_price'
+            else:
                 replies.append('Need to specify a rarity')
         elif cursor == 'set_confirm_price':
             # todo: make utility for capturing english affirmatives
-            if re.search(r'yes+|yep+|ye+|yeah+', user_input, re.IGNORECASE):
-                card.published = True
-                cursor = 'done'
+            if re.search(r'yes+|yep+|ye+|yeah+|pay|try again', user_input, re.IGNORECASE):
+                replies.append(':+1:')
+                success, reason = charge_for_card(card=card, session=session, kaori_user=kaori_user)
+                if success:
+                    cursor = 'do_stats_roll'
+                else:
+                    replies.append(reason + ' To attempt payment again: send `@kaori try again`')
             # todo: make utility for capturing english negatives
             elif re.search(r'no+|nope+|', user_input, re.IGNORECASE):
                 replies.append("Okay. If you change your mind:\n"
@@ -266,7 +294,8 @@ def next_card_creation_step(card: Card,
 
     if cursor == 'do_stats_roll':
         card.roll_stats()
-        cursor = 'query_confirm_price'
+        card.published = True
+        cursor = 'done'
 
     if cursor.startswith('query_'):
         if cursor == 'query_name':
@@ -285,21 +314,13 @@ def next_card_creation_step(card: Card,
             replies.append({'blocks': query_rarity_blocks()})
             cursor = 'set_rarity'
         elif cursor == 'query_confirm_price':
-            replies.append({'blocks': [
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f"This card will cost {card.price()}\n"
-                                "*Are you sure* you want to create this card?"
-                    },
-                },
-                *render_card(card)['blocks']
-            ]})
+            are_you_sure_blocks = create_are_you_sure_blocks(card)
+            replies.append({'blocks': are_you_sure_blocks})
             cursor = 'set_confirm_price'
 
     if cursor == 'done':
-        replies.append('*Congrats!* Your card is created. Enjoy.')
+        are_you_sure_blocks = create_confirmation_blocks(card)
+        replies.append({'blocks': are_you_sure_blocks})
 
     card.creation_cursor = cursor
     return card, replies
@@ -313,3 +334,15 @@ def resume_card(session, thread_ts, user) -> Optional[Card]:
         .filter(Card.published == False) \
         .filter(User.slack_id == user) \
         .first()
+
+
+def user_extract_rarity(user_input: str) -> Optional[RarityName]:
+    pattern = f'^({RarityName.to_regex()})(?:-tier)?$'
+    # we scan the user input right to left because english is a subject, verb, object language
+    # the rarity is the object we want so it will always come last in typical speech
+    for token in reversed(user_input.split()):
+        match = re.match(pattern, token, re.I)
+        if match:
+            return RarityName(match.group(1).upper())
+
+    return None

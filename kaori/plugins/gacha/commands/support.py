@@ -1,7 +1,6 @@
 import re
 
 from kaori.adapters.slack import SlackCommand, SlackMessage, SlackAdapter
-from kaori.skills import DB
 from ..tui import price_blocks, help_blocks
 
 
@@ -9,7 +8,7 @@ class CardPriceCommand(SlackCommand):
     """usage: {bot} card prices - start card creation"""
 
     @staticmethod
-    async def handle(message: SlackMessage, bot: SlackAdapter, db: DB):
+    async def handle(message: SlackMessage, bot: SlackAdapter):
         if not bot.addressed_by(message):
             return
 
@@ -25,7 +24,7 @@ class CardHelpCommand(SlackCommand):
     """usage: {bot} card prices - start card creation"""
 
     @staticmethod
-    async def handle(message: SlackMessage, bot: SlackAdapter, db: DB):
+    async def handle(message: SlackMessage, bot: SlackAdapter):
         if not bot.addressed_by(message):
             return
 

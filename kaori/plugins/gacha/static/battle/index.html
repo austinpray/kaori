@@ -241,6 +241,17 @@
 
     </style>
     <link rel="preload" as="style" href="vendor/animate.min.css" data-preload-style>
+    <script src="https://browser.sentry-cdn.com/5.19.0/bundle.min.js" integrity="sha384-edPCPWtQrj57nipnV3wt78Frrb12XdZsyMbmpIKZ9zZRi4uAxNWiC6S8xtGCqwDG" crossorigin="anonymous">
+    </script>
+    <script>
+      const host = (new URL(window.location.href)).host;
+      if (host === 'battle.kaori.io') {
+        Sentry.init({
+          dsn: 'https://e6818b5787224b3783df018763086ab0@o115107.ingest.sentry.io/5307401',
+          environment: 'production',
+        });
+      }
+    </script>
 </head>
 <body>
 <div id="app">

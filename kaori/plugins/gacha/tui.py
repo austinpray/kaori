@@ -1,6 +1,7 @@
+import random
 from typing import List
 
-from .engine import NatureName, RarityName
+from .engine import NatureName
 from .models.Card import Card
 from .utils import tmp_prefix
 
@@ -13,9 +14,82 @@ _readme_link = f"<{_readme_url}|README>"
 _card_guide_link = f'<{_readme_url}#card-guide|Card Guide>'
 
 
-def render_card(card: Card) -> dict:
-    return {
-        'blocks': [
+def _percent(number) -> str:
+    return f'{round(number * 100)}%'
+
+
+def card_meta_block(card: Card, with_image=True):
+    block = {
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": '\n'.join([
+                f"*{'(no name)' if card.name.startswith(tmp_prefix) else card.name}*",
+                f"_{card.engine.subtitle}_" if card.engine else '(stats pending)',
+                card.description if card.description else '_(no description)_'
+            ])
+        },
+    }
+
+    if with_image:
+        block['accessory'] = {
+            "type": "image",
+            "image_url": card.image.url if card.image else _default_image,
+            "alt_text": card.name if not card.description else card.description
+        }
+
+    return block
+
+
+def render_stats_blocks(card: Card) -> List[dict]:
+    if not card.is_complete:
+        return [{
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"_stats pending..._"
+                },
+            ]
+        }]
+
+    eng = card.engine
+
+    return [
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f'*{title}*\n`{text[0]:<4} {"(" + text[1] + ")":>11}`'
+                } for title, text in {
+                    'HP': (eng.max_hp, f'{card.stupid} stupid'),
+                    'EVA': (_percent(eng.evasion), f'{card.baby} baby'),
+                    'AMR': (eng.armor, f'{card.clown} clown'),
+                    'DMG': (eng.dmg, f'{card.horny} horny'),
+                    'CRT': (_percent(eng.crit), f'{card.cursed} cursed'),
+                    'SPD': (round(eng.speed, 2), f'{card.feral} feral'),
+                }.items()
+            ],
+        },
+    ]
+
+
+def render_card(card: Card, preview_header=False) -> dict:
+    stats_blocks = render_stats_blocks(card)
+    blocks = [
+        {
+            "type": "image",
+            "image_url": card.image.url if card.image else _default_image,
+            "alt_text": card.name if not card.description else card.description
+        },
+        card_meta_block(card, with_image=False),
+        {"type": "divider"},
+        *stats_blocks,
+    ]
+
+    if preview_header:
+        blocks = [
             {
                 "type": "section",
                 "text": {
@@ -26,65 +100,11 @@ def render_card(card: Card) -> dict:
             {
                 "type": "divider"
             },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": '\n'.join([
-                        f"*{'(no name)' if card.name.startswith(tmp_prefix) else card.name}*",
-                        f"_{card.engine.subtitle}_" if card.engine else '(stats pending)',
-                        card.description if card.description else '_(no description)_'
-                    ])
-                },
-                "accessory": {
-                    "type": "image",
-                    "image_url": card.image.url if card.image else _default_image,
-                    "alt_text": card.name if not card.description else card.description
-                }
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Rarity:* {card.rarity_string()}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Max HP:* {card.engine.max_hp}" if card.engine else '?'
-                    },
-                ]
-            },
-            {
-                "type": "section",
-                "fields": [
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Stupid:* {card.stupid}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Baby:* {card.baby}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Cursed:* {card.cursed}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Horny:* {card.horny}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Clown:* {card.clown}"
-                    },
-                    {
-                        "type": "mrkdwn",
-                        "text": f"*Feral:* {card.feral}"
-                    },
-                ],
-            },
+            *blocks,
         ]
+
+    return {
+        'blocks': blocks
     }
 
 
@@ -111,53 +131,41 @@ def instructions_blocks(bot_name: str) -> List[dict]:
                 "text": '\n'.join(bullets)
             }
         },
-        # TODO: beta notice
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "*Beta Notice:* cards are currently free to create. They might be cleared from the database "
-                        "at some point when the beta period ends."
-            },
-        },
     ]
 
 
+def price_string(rank, price):
+    if price == 0:
+        return f"*{rank}:* _FREE_"
+
+    return f"*{rank}:* {price:,} kkreds"
+
+
 def price_blocks():
+    prices = [
+        {
+            "type": "mrkdwn",
+            "text": price_string(rank=rank, price=price)
+        } for rank, price in Card.rarity_prices().items()
+    ]
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "Card price breakdown by rank:",
+                "text": "Card price breakdown by rarity:"
             }
         },
         {
             "type": "section",
-            "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*{rank}:* {price} kkreds"
-                } for rank, price in Card.rarity_prices().items()
-            ]
+            "fields": prices,
         },
     ]
 
 
 def card_index_blocks(cards: List[Card]):
     return [
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": f"*{card.name}*\n"
-            },
-            "accessory": {
-                "type": "image",
-                "image_url": card.image.url if card.image else _default_image,
-                "alt_text": card.name if not card.description else card.description
-            }
-        } for card in cards
+        card_meta_block(card) for card in cards
     ]
 
 
@@ -167,6 +175,9 @@ def help_blocks():
         'Create a card: `kaori create card`',
         'List your cards: `kaori show cards`',
         'Show a full card: `kaori show card NAME`',
+        'Battle cards: `kaori battle NAME vs. NAME`',
+        'Show card creation prices: `kaori card prices`',
+        'Show card statistics: `kaori card stats`',
     ]
     commands = "\n".join([f'• {command}' for command in commands])
     return [
@@ -201,14 +212,8 @@ def help_blocks():
 
 
 def query_nature_blocks():
+    examples = get_nature_examples()
     return [
-        {
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "Choose two natures for your card (ex. `@kaori stupid baby` or `@kaori feral horny`)"
-            },
-        },
         {
             "type": "section",
             "fields": [
@@ -218,26 +223,106 @@ def query_nature_blocks():
                 } for n in NatureName
             ]
         },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"*Choose two natures for your card.*\n(ex. {' or '.join(examples)})"
+            },
+        },
     ]
 
 
+def get_nature_examples():
+    examples = [
+        f"`@kaori {' '.join(random.sample([str(n) for n in NatureName], 2))}`"
+        for _ in range(2)
+    ]
+    return examples
+
+
 def query_rarity_blocks():
+    return [
+        *price_blocks(),
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*What rarity would you like your card to be?*\n"
+                        "(ex. `@kaori C`)"
+            },
+        },
+    ]
+
+
+def battle_blocks(attacker: Card, defender: Card, battle_url: str):
+    return [
+        card_meta_block(attacker),
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "🆚"
+            },
+        },
+        card_meta_block(defender),
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"Let's go!"
+            },
+            "accessory": {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Watch Battle",
+                },
+                "style": "primary",
+                "url": battle_url,
+            }
+        },
+    ]
+
+
+def create_are_you_sure_blocks(card):
+    cost = f"This card will cost you {card.price():,} kkreds to create"
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "What rarity would you like your card to be? This will impact how expensive your card will be "
-                        "to create."
+                "text": f"{cost} "
+                        "*Are you sure you want to create this card?*\n"
+                        "(ex. `@kaori yes`)"
             },
         },
-        # TODO: beta notice
+    ]
+
+
+def create_confirmation_blocks(card):
+    return [
+        *render_card(card)['blocks'],
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "*Beta Notice:* card creation is free at the moment. You will not be charged."
+                "text": "*Congrats!* Your card was created. Enjoy."
             },
         },
-        *price_blocks(),
+    ]
+
+
+def card_stats_blocks(card_total: int):
+    return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"We have a total of {card_total} card{'' if card_total == 1 else 's'} created so far!"
+            },
+        },
     ]

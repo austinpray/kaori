@@ -25,20 +25,15 @@ class CardDisplayCommand(SlackCommand):
         if not search:
             return
 
-        search = Card.sluggify_name(search[1])
-
         with db.session_scope() as session:
 
-            card = session.query(Card) \
-                .filter(Card.published == True) \
-                .filter(Card.slug.ilike(f'%{search}%')) \
-                .first()
+            card = Card.search_for_one(session, search[1])
 
             if not card:
                 bot.reply(message, 'no card with that name', create_thread=True)
                 return
 
-            bot.reply(message, create_thread=True, **render_card(card))
+            bot.reply(message, **render_card(card))
 
 
 class CardIndexCommand(SlackCommand):

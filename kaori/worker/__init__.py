@@ -1,4 +1,3 @@
-import importlib.util
 import logging
 import os
 
@@ -6,7 +5,6 @@ import dramatiq
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 from google.cloud import storage
 from google.oauth2 import service_account
-from raven import Client
 from slackclient import SlackClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -21,14 +19,17 @@ from kaori.adapters.slack import SlackAdapter
 from kaori.skills import DB, LocalFileUploader, GCloudStorageUploader
 from kaori.support import Kaori
 from kaori.support.config import get_config
+from kaori.plugins.gacha.skills import CardBattler
 
 logging.basicConfig(level=logging.INFO)
 
 config = get_config(os.path.join(os.getcwd(), 'config/kaori.py'))
 
-sentry = Client(config.SENTRY_URL,
-                # release=DEV_INFO.get('revision'),
-                environment=config.KIZUNA_ENV) if config.SENTRY_URL else None
+if hasattr(config, 'SENTRY_URL') and config.SENTRY_URL:  # pragma: no cover
+    import sentry_sdk
+
+    sentry_sdk.init(dsn=config.SENTRY_URL,
+                    environment=config.KIZUNA_ENV)
 
 rabbitmq_broker = RabbitmqBroker(url=config.RABBITMQ_URL)
 dramatiq.set_broker(rabbitmq_broker)
@@ -60,6 +61,13 @@ elif config.KIZUNA_ENV == 'development':
     k.skills.add(LocalFileUploader())
 else:
     k.logger.warning('no file upload handler specified!')
+
+if hasattr(config, 'GACHA_BATTLE_URL_BASE') and config.GACHA_BATTLE_URL_BASE:
+    k.skills.add(CardBattler(player_url_base=config.GACHA_BATTLE_URL_BASE))
+elif config.KIZUNA_ENV == 'development':
+    k.skills.add(CardBattler(player_url_base='http://localhost:8080/battle/'))
+else:
+    k.logger.warning('No gacha battle url set!')
 
 k.plugins |= {
     # kaori.plugins.chat,
