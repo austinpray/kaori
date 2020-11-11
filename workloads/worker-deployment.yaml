@@ -36,3 +36,8 @@ spec:
         imagePullPolicy: Always
         name: worker
       restartPolicy: Always
+      tolerations:
+        - key: cloud.google.com/gke-preemptible
+          operator: Equal
+          value: "true"
+          effect: NoSchedule

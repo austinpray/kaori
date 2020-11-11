@@ -36,3 +36,8 @@ spec:
         ports:
         - containerPort: 8001
       restartPolicy: Always
+      tolerations:
+        - key: cloud.google.com/gke-preemptible
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
