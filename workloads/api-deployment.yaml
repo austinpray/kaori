@@ -47,3 +47,20 @@ spec:
           operator: Equal
           value: "true"
           effect: NoSchedule
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "api-service"
+  namespace: "kaori"
+  labels:
+    app: "api"
+spec:
+  ports:
+  - protocol: "TCP"
+    port: 8000
+    targetPort: 8000
+  selector:
+    app: "api"
+  type: "LoadBalancer"
+  # loadBalancerIP: ""
