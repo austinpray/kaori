@@ -19,7 +19,8 @@ if hasattr(config, 'SENTRY_URL') and config.SENTRY_URL:  # pragma: no cover
     import sentry_sdk
 
     sentry_sdk.init(dsn=config.SENTRY_URL,
-                    environment=config.KIZUNA_ENV)
+                    environment=config.KIZUNA_ENV,
+                    traces_sample_rate=1)
 
 db_engine = create_engine(config.DATABASE_URL)
 make_session = sessionmaker(bind=db_engine)
