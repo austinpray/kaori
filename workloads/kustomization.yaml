@@ -3,3 +3,4 @@ resources:
   - namespace.yml
   - api-deployment.yaml
   - worker-deployment.yaml
+  - vpa.yaml
