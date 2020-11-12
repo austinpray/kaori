@@ -48,6 +48,14 @@ spec:
           value: "true"
           effect: NoSchedule
 ---
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: api-kaori-io
+spec:
+  domains:
+    - api.kaori.io
+---
 apiVersion: "v1"
 kind: "Service"
 metadata:
@@ -62,5 +70,16 @@ spec:
     targetPort: 8000
   selector:
     app: "api"
-  type: "LoadBalancer"
-  # loadBalancerIP: ""
+  type: "NodePort"
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: api-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: api-kaori-io
+    networking.gke.io/managed-certificates: api-kaori-io
+spec:
+  backend:
+    serviceName: api-service
+    servicePort: 8000
