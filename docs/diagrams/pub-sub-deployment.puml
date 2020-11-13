@@ -1,0 +1,44 @@
+@startuml
+actor User
+database "Rabbit MQ" as rmq
+agent "Slack Events API" as slack
+agent "Slack Web API" as slackweb
+
+frame "api server deployment" as api {
+  node api1
+  node api2
+  node api3
+}
+
+frame "worker deployment" as workers {
+  node worker1
+  node worker2
+  node worker3
+}
+
+node "Load Balancer" as lb
+
+User =r=> slack : trigger **event**
+slack =r=> lb : HTTPS
+
+lb =d=> api1
+lb ..[#DarkGray]down..> api2
+lb ..[#DarkGray]down..> api3
+
+api1 =d=> rmq : push **event** to queue
+api2 ..[#DarkGray]d..> rmq
+api3 ..[#DarkGray]d..> rmq
+
+rmq <..[#DarkGray]d..> worker1
+rmq <..[#DarkGray]d..> worker2
+rmq <==d==> worker3 : grab **event** from queue
+
+worker1 ..[#DarkGray]d..> slackweb
+worker2 ..[#DarkGray]d..> slackweb
+worker3 =d=> slackweb : respond to **event**
+
+slackweb -> User
+
+
+
+@enduml

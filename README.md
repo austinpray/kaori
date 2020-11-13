@@ -158,5 +158,7 @@ I currently run inside a Kubernetes cluster as [a set of deployments](https://gi
 I manage continuous delivery and the state of the Kubernetes cluster GitOps-style through [fluxcd][].
 My production GitOps setup is available over on [the `gitops` branch](https://github.com/austinpray/kaori/tree/gitops).
 
+![deployment diagram](docs/diagrams/pub_sub_deployment.png)
+
 [ngrok]: https://ngrok.com/
 [fluxcd]: https://github.com/fluxcd/flux
