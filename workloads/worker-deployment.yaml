@@ -10,7 +10,7 @@ metadata:
     fluxcd.io/automated: "true"
     fluxcd.io/tag.worker: glob:master-*
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: worker
@@ -29,21 +29,26 @@ spec:
             - -t
             - "8"
           envFrom:
-            - configMapRef:
-                name: web-config
+            - secretRef:
+                name: kaori-env
           image: us.gcr.io/kizuna-188702/kaori/kaori:master-f2b97241c71ce3c9d2a09a5945bca7e10d40dcbb
           imagePullPolicy: Always
           name: worker
           resources:
             requests:
-              memory: "64Mi"
               cpu: "250m"
-            limits:
               memory: "256Mi"
+            limits:
               cpu: "500m"
+              memory: "512Mi"
       restartPolicy: Always
-      tolerations:
-        - key: cloud.google.com/gke-preemptible
-          operator: Equal
-          value: "true"
-          effect: NoSchedule
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: worker-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: worker
