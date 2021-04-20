@@ -164,3 +164,5 @@ def test_2021_mega_pay():
     assert mega_pay_amount(30, 0) == 210
     assert mega_pay_amount(59, 0) == 4
     assert mega_pay_amount(60, 0) == 0
+
+    assert mega_pay_amount(good_2021_pm.second, good_2021_pm.microsecond) == 4
