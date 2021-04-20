@@ -29,7 +29,7 @@ spec:
           envFrom:
             - secretRef:
                 name: kaori-env
-          image: us.gcr.io/kizuna-188702/kaori/kaori:master-f2b97241c71ce3c9d2a09a5945bca7e10d40dcbb
+          image: us.gcr.io/kizuna-188702/kaori/kaori:master-bc5b01db3d4f17b429e671314eabfaacc6532984
           imagePullPolicy: Always
           name: api
           ports:
