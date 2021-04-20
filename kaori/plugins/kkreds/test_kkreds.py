@@ -2,7 +2,7 @@ import arrow
 import os
 from uuid import uuid4
 
-from . import is_payable, should_2020_04_mega_pay
+from . import is_payable, should_mega_pay, mega_pay_amount
 from .models import KKredsTransaction
 from ..users import User
 
@@ -142,15 +142,25 @@ def test_is_payable_time():
     assert is_payable(samplebad5) is False
 
 
-def test_2020_mega_pay():
-    good_2020_am = arrow.get('2020-04-20T09:20:58.970460+00:00')
-    good_2020_pm = arrow.get('2020-04-20T21:20:58.970460+00:00')
+def test_2021_mega_pay():
+    good_2021_am = arrow.get('2021-04-20T09:20:58.970460+00:00')
+    good_2021_pm = arrow.get('2021-04-20T21:20:58.970460+00:00')
 
-    print(good_2020_am.to('America/Chicago'))
-    print(good_2020_pm.to('America/Chicago'))
+    print(good_2021_am.to('America/Chicago'))
+    print(good_2021_pm.to('America/Chicago'))
 
-    assert should_2020_04_mega_pay(good_2020_am) is True
-    assert should_2020_04_mega_pay(good_2020_pm) is True
+    assert should_mega_pay(good_2021_am) is True
+    assert should_mega_pay(good_2021_pm) is True
 
-    assert should_2020_04_mega_pay(arrow.get('2020-04-20T22:20:58.970460+00:00')) is False
-    assert should_2020_04_mega_pay(arrow.get('2013-05-11T09:20:58.970460+00:00')) is False
+    assert should_mega_pay(arrow.get('2020-04-20T22:20:58.970460+00:00')) is False
+    assert should_mega_pay(arrow.get('2013-05-11T09:20:58.970460+00:00')) is False
+
+    assert mega_pay_amount(0, 0) == 4200
+    assert mega_pay_amount(0, 1) == 4200
+    assert mega_pay_amount(0, 500_000) == 3622
+    assert mega_pay_amount(1, 0) == 3177
+    assert mega_pay_amount(1, 100) == 3177
+    assert mega_pay_amount(2, 0) == 2538
+    assert mega_pay_amount(30, 0) == 210
+    assert mega_pay_amount(59, 0) == 4
+    assert mega_pay_amount(60, 0) == 0

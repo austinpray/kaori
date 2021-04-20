@@ -51,15 +51,21 @@ def is_payable(utc: Arrow) -> bool:
     return True
 
 
-def should_2020_04_mega_pay(utc: Arrow) -> bool:
-    """Should return True it is 4/20/2020 4:20 AM/PM in Texas"""
+# 2020: https://github.com/austinpray/kaori/commit/232c01ffee9c8013ae845e4cc19c2018ea2b40c6
+# 2021:
+def should_mega_pay(utc: Arrow) -> bool:
+    """Should return True it is 4/20/2021 4:20 AM/PM in Texas"""
 
     central = utc.to('America/Chicago')
 
     return (central.month == 4 and
             central.day == 20 and
-            central.year == 2020 and
+            central.year == 2021 and
             is_payable(utc))
+
+def mega_pay_amount(seconds: int, microseconds: int) -> int:
+    x = (seconds+(microseconds*1e-6))/60
+    return round(4200-((79800*x)/(1+18*abs(x))))
 
 
 def strip_date(target_date):
@@ -133,8 +139,8 @@ class KKredsMiningCommand(SlackCommand):
 
             amount = 1
 
-            if should_2020_04_mega_pay(message_ts):
-                amount = randint(1, 10_000)
+            if should_mega_pay(message_ts):
+                amount = mega_pay_amount(message_ts.second, message_ts.microsecond)
 
             kaori_user = User.get_by_slack_id(session, bot.id)
             mined_kkred = KKredsTransaction(from_user=kaori_user,
