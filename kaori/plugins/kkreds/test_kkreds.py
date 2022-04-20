@@ -142,15 +142,15 @@ def test_is_payable_time():
     assert is_payable(samplebad5) is False
 
 
-def test_2021_mega_pay():
-    good_2021_am = arrow.get('2021-04-20T09:20:58.970460+00:00')
-    good_2021_pm = arrow.get('2021-04-20T21:20:58.970460+00:00')
+def test_2022_mega_pay():
+    good_2022_am = arrow.get('2022-04-20T09:20:58.970460+00:00')
+    good_2022_pm = arrow.get('2022-04-20T21:20:58.970460+00:00')
 
-    print(good_2021_am.to('America/Chicago'))
-    print(good_2021_pm.to('America/Chicago'))
+    print(good_2022_am.to('America/Chicago'))
+    print(good_2022_pm.to('America/Chicago'))
 
-    assert should_mega_pay(good_2021_am) is True
-    assert should_mega_pay(good_2021_pm) is True
+    assert should_mega_pay(good_2022_am) is True
+    assert should_mega_pay(good_2022_pm) is True
 
     assert should_mega_pay(arrow.get('2020-04-20T22:20:58.970460+00:00')) is False
     assert should_mega_pay(arrow.get('2013-05-11T09:20:58.970460+00:00')) is False
@@ -165,4 +165,4 @@ def test_2021_mega_pay():
     assert mega_pay_amount(59, 0) == 4
     assert mega_pay_amount(60, 0) == 0
 
-    assert mega_pay_amount(good_2021_pm.second, good_2021_pm.microsecond) == 4
+    assert mega_pay_amount(good_2022_pm.second, good_2022_pm.microsecond) == 4
