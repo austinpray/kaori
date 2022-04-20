@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+    - uses: google-github-actions/setup-gcloud@v0
       with:
         version: '297.0.1'
         project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
