@@ -53,14 +53,15 @@ def is_payable(utc: Arrow) -> bool:
 
 # 2020: https://github.com/austinpray/kaori/commit/232c01ffee9c8013ae845e4cc19c2018ea2b40c6
 # 2021:
+# 2022:
 def should_mega_pay(utc: Arrow) -> bool:
-    """Should return True it is 4/20/2021 4:20 AM/PM in Texas"""
+    """Should return True it is 4/20/2022 4:20 AM/PM in Texas"""
 
     central = utc.to('America/Chicago')
 
     return (central.month == 4 and
             central.day == 20 and
-            central.year == 2021 and
+            central.year == 2022 and
             is_payable(utc))
 
 def mega_pay_amount(seconds: int, microseconds: int) -> int:
