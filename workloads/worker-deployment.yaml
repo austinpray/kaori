@@ -31,7 +31,7 @@ spec:
           envFrom:
             - secretRef:
                 name: kaori-env
-          image: us.gcr.io/kizuna-188702/kaori/kaori:master-bc5b01db3d4f17b429e671314eabfaacc6532984
+          image: us.gcr.io/kizuna-188702/kaori/kaori@sha256:154dccbe283d7543da956cae9cff1663314d451d1412ec117161482a42fac51a
           imagePullPolicy: Always
           name: worker
           resources:
