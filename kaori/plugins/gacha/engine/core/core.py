@@ -46,6 +46,9 @@ class RarityName(Enum):
     def __str__(self):
         return self.value
 
+    def __lt__(self, other):
+        return self.value < other.value
+
     @classmethod
     def to_regex(cls) -> str:
         return '|'.join([str(n) for n in cls])
