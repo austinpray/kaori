@@ -1,7 +1,6 @@
 from io import StringIO
 
 import arrow
-import mdv
 
 from .cards import *
 from .utils import collect_cards, card_markdown
@@ -59,7 +58,4 @@ def run_card_simulator(raw=False):
         p(f"</details>" if raw else "")
         p()
 
-    if raw:
-        print(out.getvalue())
-    else:
-        print(mdv.main(out.getvalue(), theme="960.847"))
+    print(out.getvalue())
