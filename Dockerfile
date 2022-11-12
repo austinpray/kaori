@@ -1,4 +1,4 @@
-FROM python:3.7.3 as base
+FROM python:3.7.15-bullseye as base
 
 WORKDIR /app
 
@@ -25,5 +25,9 @@ FROM base as production
 COPY . .
 
 FROM base as development
+
+# Mount for docker-in-docker
+ENV DOCKER_BUILDKIT=1
+VOLUME [ "/var/lib/docker" ]
 
 RUN $HOME/.poetry/bin/poetry install
